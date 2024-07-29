@@ -1,19 +1,36 @@
+import { useEffect, useState } from 'react';
+
 import { css } from '@emotion/react';
 
-import { LOGIN_ASK } from '../constants/constant';
+import { LOGIN_ASK, REGEX, REGEX_MSG } from '../constants/constant';
 import { buttonProps, InputProps } from '../types/props';
+import { inputValid } from '../utils/Validators';
 
 const Login = () => {
-  const errMsg = {
-    email: '이메일 주소가 올바르지 않습니다.',
-    pwd: '비밀번호는 최소 8자 이상이어야 합니다.',
+  const [email, setEmail] = useState('');
+  const [errMsgEmail, setMsgEmail] = useState('');
+
+  const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
   };
+
+  useEffect(() => {
+    if (email.trim().length > 1)
+      setMsgEmail(
+        inputValid({ value: email, regex: REGEX.email }) ? REGEX_MSG.empty : REGEX_MSG.email
+      );
+  }, [email]);
 
   return (
     <div css={LoginDiv}>
       <Logo />
-      <Input label='이메일' placeholder='이메일' errMsg={errMsg.email} />
-      <Input label='비밀번호' placeholder='비밀번호' errMsg={errMsg.pwd} />
+      <Input
+        label='이메일'
+        placeholder='이메일 @studiot.com'
+        onChange={onChangeEmail}
+        errMsg={errMsgEmail}
+      />
+      <Input label='비밀번호' placeholder='비밀번호' />
       <LongButton label='로그인' color='primary' />
       <div css={Ask}>
         <span>{LOGIN_ASK.msg}</span>
@@ -22,6 +39,10 @@ const Login = () => {
     </div>
   );
 };
+
+/**
+ * 아래 항목들은 개별 컴포넌트 완료 후 지우고 대체할 예정.
+ */
 
 // 없앨거
 const LoginDiv = css`
@@ -39,9 +60,9 @@ const LogoDiv = css`
   text-align: center;
 `;
 
-const Input = ({ label, placeholder, errMsg }: InputProps) => (
+const Input = ({ label, placeholder, onChange, errMsg }: InputProps) => (
   <div css={InputDiv}>
-    <input type='text' id={label} placeholder={placeholder} />
+    <input type='text' id={label} placeholder={placeholder} onChange={onChange} />
     <span css={ErrMsg}>{errMsg}</span>
   </div>
 );
@@ -63,13 +84,6 @@ const LongButton = ({ label }: buttonProps) => (
     <button css={Button}>{label}</button>
   </div>
 );
-
-const ButtonDiv = css`
-  width: 100%;
-  border: 0;
-  padding: 10px;
-`;
-
 const Button = css`
   width: inherit;
   line-height: 2rem;

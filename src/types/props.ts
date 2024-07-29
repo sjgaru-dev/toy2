@@ -1,11 +1,16 @@
 export type InputProps = {
   label: string;
-  defaultValue?: string | null; // 필요한가
   placeholder?: string;
   errMsg?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export type buttonProps = {
   label: string;
   color?: string;
+};
+
+export type validProps = {
+  value: string;
+  regex: RegExp;
 };
