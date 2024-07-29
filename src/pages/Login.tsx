@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
 import { login } from '../api/User';
@@ -42,6 +43,10 @@ const Login = () => {
       );
   }, [email]);
 
+  const testFnc = () => {
+    console.log(getAuth().currentUser);
+  };
+
   return (
     <div css={LoginDiv}>
       <Logo />
@@ -67,6 +72,9 @@ const Login = () => {
         <span>{LOGIN_ASK.msg}</span>
         <span>{LOGIN_ASK.contact}</span>
       </div>
+      <button type='button' onClick={testFnc}>
+        테스트버튼
+      </button>
     </div>
   );
 };
