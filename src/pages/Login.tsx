@@ -1,17 +1,38 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 
+import { login } from '../api/User';
 import { LOGIN_ASK, REGEX, REGEX_MSG } from '../constants/constant';
-import { buttonProps, InputProps } from '../types/props';
+import { ButtonProps, InputProps } from '../types/props';
 import { inputValid } from '../utils/Validators';
 
 const Login = () => {
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [errMsgEmail, setMsgEmail] = useState('');
+  const navigate = useNavigate();
 
-  const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case 'email':
+        setEmail(value);
+        break;
+      case 'password':
+        setPassword(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const result = await login({ email, password });
+    if (result) navigate('/');
   };
 
   useEffect(() => {
@@ -24,14 +45,24 @@ const Login = () => {
   return (
     <div css={LoginDiv}>
       <Logo />
-      <Input
-        label='이메일'
-        placeholder='이메일 @studiot.com'
-        onChange={onChangeEmail}
-        errMsg={errMsgEmail}
-      />
-      <Input label='비밀번호' placeholder='비밀번호' />
-      <LongButton label='로그인' color='primary' />
+      <form onSubmit={onSubmit}>
+        <Input
+          type='text'
+          label='이메일'
+          name='email'
+          placeholder='이메일 @studiot.com'
+          onChange={onChange}
+          errMsg={errMsgEmail}
+        />
+        <Input
+          type='password'
+          label='비밀번호'
+          name='password'
+          placeholder='비밀번호'
+          onChange={onChange}
+        />
+        <LongButton label='로그인' color='primary' />
+      </form>
       <div css={Ask}>
         <span>{LOGIN_ASK.msg}</span>
         <span>{LOGIN_ASK.contact}</span>
@@ -60,10 +91,16 @@ const LogoDiv = css`
   text-align: center;
 `;
 
-const Input = ({ label, placeholder, onChange, errMsg }: InputProps) => (
+const Input = (props: InputProps) => (
   <div css={InputDiv}>
-    <input type='text' id={label} placeholder={placeholder} onChange={onChange} />
-    <span css={ErrMsg}>{errMsg}</span>
+    <input
+      type={props.type}
+      id={props.label}
+      name={props.name}
+      placeholder={props.placeholder}
+      onChange={props.onChange}
+    />
+    <span css={ErrMsg}>{props.errMsg}</span>
   </div>
 );
 
@@ -79,9 +116,11 @@ const ErrMsg = css`
   color: red;
 `;
 
-const LongButton = ({ label }: buttonProps) => (
+const LongButton = (props: ButtonProps) => (
   <div>
-    <button css={Button}>{label}</button>
+    <button type='submit' css={Button} onClick={props.onClick}>
+      {props.label}
+    </button>
   </div>
 );
 const Button = css`

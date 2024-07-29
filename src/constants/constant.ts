@@ -4,7 +4,7 @@ export const LOGIN_ASK = {
 };
 
 export const REGEX = {
-  email: new RegExp(/^[\w.%+-]+@studiot\.com$/i),
+  email: new RegExp(/^[\w.%+-]+@(studiot\.com|gmail\.com)$/i),
 };
 
 export const REGEX_MSG = {
