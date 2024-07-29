@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  env: { browser: true, es2021: true },
+  env: { browser: true, es2021: true, node: true },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -20,7 +20,6 @@ module.exports = {
   plugins: ['@typescript-eslint', 'react', 'prettier', 'import', 'import-order'],
   rules: {
     'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'no-unused-vars': 'warn',
     'react/function-component-definition': [
       2,
       {
@@ -86,6 +85,7 @@ module.exports = {
     'no-useless-rename': 'error',
     'object-shorthand': 'error',
     'react/jsx-key': ['error', { checkFragmentShorthand: true }],
+    'react/react-in-jsx-scope': 'off',
   },
   settings: {
     react: {
