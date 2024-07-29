@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+import { PATH } from './constants/path';
 import RootLayout from './layouts/Root';
 import HomePage from './pages/Home';
 import NotFoundPage from './pages/NotFound';
@@ -14,10 +15,10 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: '/schedule', element: <SchedulePage /> },
-      { path: '/salary', element: <SalaryPage /> },
+      { path: PATH.SCHEDULE, element: <SchedulePage /> },
+      { path: PATH.SALARY, element: <SalaryPage /> },
       {
-        path: '/profile',
+        path: PATH.PROFILE,
         element: <ProfilePage />,
       },
     ],
