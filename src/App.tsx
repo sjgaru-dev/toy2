@@ -1,5 +1,8 @@
+import { useEffect } from 'react';
+
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+import { auth } from './api';
 import { PATH } from './constants/path';
 import RootLayout from './layouts/Root';
 import HomePage from './pages/Home';
@@ -25,6 +28,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => <RouterProvider router={router} />;
+const App = () => {
+  useEffect(() => {
+    (async () => {
+      await auth.authStateReady(); // wait for firebase
+    })();
+  }, []);
+  <RouterProvider router={router} />;
+};
 
 export default App;
