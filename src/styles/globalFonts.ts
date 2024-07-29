@@ -1,13 +1,14 @@
 import { css } from '@emotion/react';
-import Black from '/src/assets/fonts/woff/Pretendard-Black.woff';
-import ExtraBold from '/src/assets/fonts/woff/Pretendard-ExtraBold.woff';
-import Bold from '/src/assets/fonts/woff/Pretendard-Bold.woff';
-import SemiBold from '/src/assets/fonts/woff/Pretendard-SemiBold.woff';
-import Medium from '/src/assets/fonts/woff/Pretendard-Medium.woff';
-import Regular from '/src/assets/fonts/woff/Pretendard-Regular.woff';
-import Light from '/src/assets/fonts/woff/Pretendard-Light.woff';
-import ExtraLight from '/src/assets/fonts/woff/Pretendard-ExtraLight.woff';
-import Thin from '/src/assets/fonts/woff/Pretendard-Thin.woff';
+
+import Black from '../assets/fonts/woff/Pretendard-Black.woff';
+import Bold from '../assets/fonts/woff/Pretendard-Bold.woff';
+import ExtraBold from '../assets/fonts/woff/Pretendard-ExtraBold.woff';
+import ExtraLight from '../assets/fonts/woff/Pretendard-ExtraLight.woff';
+import Light from '../assets/fonts/woff/Pretendard-Light.woff';
+import Medium from '../assets/fonts/woff/Pretendard-Medium.woff';
+import Regular from '../assets/fonts/woff/Pretendard-Regular.woff';
+import SemiBold from '../assets/fonts/woff/Pretendard-SemiBold.woff';
+import Thin from '../assets/fonts/woff/Pretendard-Thin.woff';
 
 const fontStyles = css`
   @font-face {
