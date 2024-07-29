@@ -22,7 +22,3 @@ export type LoginProps = {
   email: string;
   password: string;
 };
-
-export type LogoutProps = {
-  email: string;
-};
