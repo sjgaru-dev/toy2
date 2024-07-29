@@ -7,6 +7,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:prettier/recommended',
     'plugin:import/recommended',
+    'plugin:import/typescript',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
@@ -38,6 +39,7 @@ module.exports = {
     ],
     'import/no-default-export': 'off',
     'import/prefer-default-export': 'off',
+    'import/no-unresolved': 'error',
     'react-hooks/rules-of-hooks': 'error',
     'react/prop-types': 'warn',
     'prefer-const': 'error',
@@ -94,6 +96,7 @@ module.exports = {
     'import/resolver': {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        paths: ['src'],
       },
     },
   },
