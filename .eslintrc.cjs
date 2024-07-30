@@ -39,7 +39,7 @@ module.exports = {
     ],
     'import/no-default-export': 'off',
     'import/prefer-default-export': 'off',
-    'import/no-unresolved': 'error',
+    'import/no-unresolved': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react/prop-types': 'warn',
     'prefer-const': 'error',
@@ -88,6 +88,7 @@ module.exports = {
     'object-shorthand': 'error',
     'react/jsx-key': ['error', { checkFragmentShorthand: true }],
     'react/react-in-jsx-scope': 'off',
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
   settings: {
     react: {

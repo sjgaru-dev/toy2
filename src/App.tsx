@@ -1,13 +1,12 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { PATH } from './constants/path';
-import RootLayout from './layouts/Root';
-import HomePage from './pages/Home';
-import Login from './pages/Login';
-import NotFoundPage from './pages/NotFound';
-import ProfilePage from './pages/Profile';
-import SalaryPage from './pages/Salary';
-import SchedulePage from './pages/Schedule';
+import { PATH } from '@/constants/path';
+import RootLayout from '@/layouts/Root';
+import HomePage from '@/pages/Home';
+import NotFoundPage from '@/pages/NotFound';
+import ProfilePage from '@/pages/Profile';
+import SalaryPage from '@/pages/Salary';
+import SchedulePage from '@/pages/Schedule';
 
 const router = createBrowserRouter([
   {
@@ -30,14 +29,13 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => 
+const App = () => (
   // useEffect(() => {
   //   (async () => {
   //     await auth.authStateReady(); // wait for firebase
   //   })();
   // }, []);
 
-   <RouterProvider router={router} />
-;
-
+  <RouterProvider router={router} />
+);
 export default App;

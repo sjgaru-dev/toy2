@@ -5,7 +5,7 @@ module.exports = {
   semi: true,
   useTabs: false,
   printWidth: 100,
-  endOfLine: 'lf',
+  endOfLine: 'auto',
   arrowParens: 'always',
   jsxBracketSameLine: false,
   jsxSingleQuote: true,
