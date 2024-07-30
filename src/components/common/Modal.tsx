@@ -1,213 +1,110 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { css } from '@emotion/react';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog } from '@headlessui/react';
 
+import Button from './Button';
 import theme from '@/styles/theme';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onConfirm: () => void;
   title: string;
-  primaryAction?: {
-    label: string;
-    onClick: () => void;
-    color?: 'primary' | 'danger';
-  };
-  secondaryAction?: {
-    label: string;
-    onClick: () => void;
-  };
-  children?: React.ReactNode;
-  variant?: 'default' | 'bottomSheet';
+  confirmText: string;
+  cancelText: string;
+  variant: 'center' | 'bottom';
 }
 
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
+  onConfirm,
   title,
-  primaryAction,
-  secondaryAction,
-  children,
-  variant = 'default',
-}) => {
-  const handlePrimaryAction = () => {
-    if (primaryAction) {
-      primaryAction.onClick();
-    }
-  };
-
-  const handleSecondaryAction = () => {
-    if (secondaryAction) {
-      secondaryAction.onClick();
-    }
-  };
-
-  return (
-    <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as='div' css={dialogStyle} onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter='ease-out duration-300'
-          enterFrom='opacity-0'
-          enterTo='opacity-100'
-          leave='ease-in duration-200'
-          leaveFrom='opacity-100'
-          leaveTo='opacity-0'
-        >
-          <div css={overlayStyle} />
-        </Transition.Child>
-
-        <div css={containerStyle(variant)}>
-          <div css={contentContainerStyle(variant)}>
-            <Transition.Child
-              as={Fragment}
-              enter='ease-out duration-300'
-              enterFrom={
-                variant === 'bottomSheet' ? 'transform translate-y-full' : 'opacity-0 scale-95'
-              }
-              enterTo={
-                variant === 'bottomSheet' ? 'transform translate-y-0' : 'opacity-100 scale-100'
-              }
-              leave='ease-in duration-200'
-              leaveFrom={
-                variant === 'bottomSheet' ? 'transform translate-y-0' : 'opacity-100 scale-100'
-              }
-              leaveTo={
-                variant === 'bottomSheet' ? 'transform translate-y-full' : 'opacity-0 scale-95'
-              }
-            >
-              <Dialog.Panel css={panelStyle(variant)}>
-                <Dialog.Title as='h3' css={titleStyle(variant)}>
-                  {title}
-                </Dialog.Title>
-                {children && <div css={childrenStyle}>{children}</div>}
-                <div css={actionContainerStyle(variant)}>
-                  {primaryAction && (
-                    <button
-                      css={[buttonStyle, primaryButtonStyle(primaryAction.color)]}
-                      onClick={handlePrimaryAction}
-                    >
-                      {primaryAction.label}
-                    </button>
-                  )}
-                  {secondaryAction && (
-                    <button
-                      css={[buttonStyle, secondaryButtonStyle]}
-                      onClick={handleSecondaryAction}
-                    >
-                      {secondaryAction.label}
-                    </button>
-                  )}
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
+  confirmText,
+  cancelText,
+  variant,
+}) => (
+  <Dialog open={isOpen} onClose={onClose} css={dialogStyle}>
+    <div css={overlayStyle} />
+    <div css={containerStyle(variant)}>
+      <Dialog.Panel css={panelStyle(variant)}>
+        <Dialog.Title css={titleStyle}>{title}</Dialog.Title>
+        <div css={buttonContainerStyle}>
+          <Button
+            label={confirmText}
+            onClick={onConfirm}
+            styleType='primary'
+            customStyle={confirmButtonStyle(variant)}
+          />
+          <Button
+            label={cancelText}
+            onClick={onClose}
+            styleType='secondary'
+            customStyle={cancelButtonStyle}
+          />
         </div>
-      </Dialog>
-    </Transition>
-  );
-};
+      </Dialog.Panel>
+    </div>
+  </Dialog>
+);
 
 const dialogStyle = css`
-  position: relative;
+  position: fixed;
+  inset: 0;
   z-index: 10;
+  overflow-y: auto;
 `;
 
 const overlayStyle = css`
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const containerStyle = (variant: 'default' | 'bottomSheet') => css`
-  position: fixed;
-  inset: 0;
-  overflow-y: auto;
-  ${variant === 'bottomSheet' &&
-  `
-    display: flex;
-    align-items: flex-end;
-  `}
+const containerStyle = (variant: 'center' | 'bottom') => css`
+  display: flex;
+  min-height: 100vh;
+  align-items: ${variant === 'center' ? 'center' : 'flex-end'};
+  justify-content: center;
 `;
 
-const contentContainerStyle = (variant: 'default' | 'bottomSheet') => css`
-  ${variant === 'default' &&
-  `
-    display: flex;
-    min-height: 100%;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-  `}
-`;
-
-const panelStyle = (variant: 'default' | 'bottomSheet') => css`
+const panelStyle = (variant: 'center' | 'bottom') => css`
+  width: ${variant === 'center' ? '90%' : '100%'};
+  max-width: ${variant === 'center' ? '400px' : 'none'};
   background-color: ${theme.colors.white};
-  ${variant === 'default'
-    ? `
-    width: 100%;
-    max-width: 28rem;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-  `
-    : `
-    width: 100%;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  `}
+  padding: 20px;
+  border-radius: ${variant === 'center' ? '8px' : '16px 16px 0 0'};
+  z-index: 20;
 `;
 
-const titleStyle = (variant: 'default' | 'bottomSheet') => css`
-  text-align: center;
+const titleStyle = css`
   font-size: ${theme.fontSizes.large};
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  ${variant === 'bottomSheet' &&
-  `
-    width: 100%;
-  `}
+  color: ${theme.colors.black};
+  text-align: center;
+  margin-bottom: 20px;
 `;
 
-const childrenStyle = css`
-  margin-bottom: 1.5rem;
-  width: 100%;
-`;
-
-const actionContainerStyle = (variant: 'default' | 'bottomSheet') => css`
+const buttonContainerStyle = css`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-  ${variant === 'bottomSheet' &&
-  `
-    width: 100%;
-    max-width: 100%;
-    padding-bottom: 1rem;
-  `}
-`;
-const buttonStyle = css`
-  padding: 1rem;
-  border-radius: 0.5rem;
-  font-size: ${theme.fontSizes.normal};
-  font-weight: 500;
-  width: 100%;
-  border: none;
-  cursor: pointer;
-  text-align: center;
+  gap: 10px;
 `;
 
-const primaryButtonStyle = (color: 'primary' | 'danger' = 'primary') => css`
-  background-color: ${color === 'primary' ? theme.colors.primary : theme.colors.alertRed};
-  color: ${theme.colors.white};
+const confirmButtonStyle = (variant: 'center' | 'bottom') => css`
+  background-color: ${variant === 'center' ? theme.colors.primary : theme.colors.lightestGray};
+  color: ${variant === 'center' ? theme.colors.white : theme.colors.alertRed};
+
+  &:hover {
+    ${variant === 'bottom' &&
+    `
+      background-color: ${theme.colors.lightGray};
+    `}
+  }
 `;
 
-const secondaryButtonStyle = css`
-  background-color: transparent;
+const cancelButtonStyle = css`
+  background-color: ${theme.colors.white};
   color: ${theme.colors.darkGray};
 `;
 
