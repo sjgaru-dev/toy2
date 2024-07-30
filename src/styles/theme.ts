@@ -3,7 +3,7 @@ const colors = {
   hoverPrimary: '#46AF83',
   supportOrange: '#FF8E3D',
   alertRed: '#E45148',
-  black: '#121212',
+  black: '#1E1E1E',
   white: '#ffffff',
   darkestGray: '#333D4B',
   darkGray: '#8B95A1',
