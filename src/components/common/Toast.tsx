@@ -5,7 +5,6 @@ import { Transition } from '@headlessui/react';
 
 import theme from '@/styles/theme';
 
-// Define keyframes for animations
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -64,7 +63,6 @@ const Toast: React.FC<ToastProps> = ({ message, isVisible, onClose, duration = 2
   );
 };
 
-// Define animation styles
 const toastStyle = css`
   display: flex;
   align-items: center;
