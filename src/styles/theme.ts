@@ -20,12 +20,12 @@ const colors = {
 };
 
 const fontSizes = {
-  small: '10px',
-  medium: '12px',
-  large: '14px',
-  xlarge: '16px',
-  xxlarge: '18px',
-  xxxlarge: '20px',
+  xsmall: '10px',
+  small: '12px',
+  normal: '14px',
+  large: '16px',
+  xlarge: '18px',
+  xxlarge: '20px',
 };
 
 // input, button, toast 등의 높이를 정의
