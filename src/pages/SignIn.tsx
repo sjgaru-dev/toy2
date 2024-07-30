@@ -3,12 +3,14 @@ import { FormEvent, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import { login } from '../api/User';
-import { LOGIN_ASK, REGEX, REGEX_MSG } from '../constants/constant';
-import { ButtonProps, InputProps } from '../types/props';
-import { inputValid } from '../utils/Validators';
+import { login } from '@/api/User';
+import Button from '@/components/common/Button';
+import { LOGIN_ASK, REGEX, REGEX_MSG } from '@/constants/constant';
+import theme from '@/styles/theme';
+import { InputProps } from '@/types/props';
+import { inputValid } from '@/utils/Validators';
 
-const Login = () => {
+const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errMsgEmail, setMsgEmail] = useState('');
@@ -61,11 +63,14 @@ const Login = () => {
           placeholder='비밀번호'
           onChange={onChange}
         />
-        <LongButton label='로그인' color='primary' />
+        <Button label='로그인' />
       </form>
-      <div css={Ask}>
-        <span>{LOGIN_ASK.msg}</span>
-        <span>{LOGIN_ASK.contact}</span>
+      <div>
+        <p css={spanStyles} className={'basic'}>
+          {LOGIN_ASK.msg}
+          <br />
+          {LOGIN_ASK.contact}
+        </p>
       </div>
     </div>
   );
@@ -100,7 +105,11 @@ const Input = (props: InputProps) => (
       placeholder={props.placeholder}
       onChange={props.onChange}
     />
-    <span css={ErrMsg}>{props.errMsg}</span>
+    {props.errMsg && (
+      <span css={spanStyles} className={'error'}>
+        {props.errMsg}
+      </span>
+    )}
   </div>
 );
 
@@ -112,27 +121,17 @@ const InputDiv = css`
     padding: 0.5rem;
   }
 `;
-const ErrMsg = css`
-  color: red;
+
+const spanStyles = css`
+  padding: 5px;
+  font-size: ${theme.fontSizes.normal};
+
+  &.basic {
+    color: ${theme.colors.darkGray};
+  }
+  &.error {
+    color: ${theme.colors.alertRed};
+  }
 `;
 
-const LongButton = (props: ButtonProps) => (
-  <div>
-    <button type='submit' css={Button} onClick={props.onClick}>
-      {props.label}
-    </button>
-  </div>
-);
-const Button = css`
-  width: inherit;
-  line-height: 2rem;
-  color: white;
-  border: 0;
-  background-color: green;
-`;
-
-const Ask = css`
-  color: grey;
-`;
-
-export default Login;
+export default SignIn;

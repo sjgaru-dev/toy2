@@ -7,6 +7,7 @@ import NotFoundPage from '@/pages/NotFound';
 import ProfilePage from '@/pages/Profile';
 import SalaryPage from '@/pages/Salary';
 import SchedulePage from '@/pages/Schedule';
+import SignIn from '@/pages/SignIn';
 
 const router = createBrowserRouter([
   {
@@ -21,11 +22,11 @@ const router = createBrowserRouter([
         path: PATH.PROFILE,
         element: <ProfilePage />,
       },
-      {
-        path: PATH.SIGNIN,
-        element: <Login />,
-      },
     ],
+  },
+  {
+    path: PATH.SIGNIN,
+    element: <SignIn />,
   },
 ]);
 
