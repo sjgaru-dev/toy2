@@ -1,9 +1,32 @@
 import React, { Fragment, useEffect } from 'react';
 
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import { Transition } from '@headlessui/react';
 
 import theme from '@/styles/theme';
+
+// Define keyframes for animations
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+`;
 
 interface ToastProps {
   message: string;
@@ -24,14 +47,14 @@ const Toast: React.FC<ToastProps> = ({ message, isVisible, onClose, duration = 2
     <Transition
       show={isVisible}
       as={Fragment}
-      enter='transition ease-out duration-300'
-      enterFrom='transform opacity-0 scale-95'
-      enterTo='transform opacity-100 scale-100'
-      leave='transition ease-in duration-200'
-      leaveFrom='transform opacity-100 scale-100'
-      leaveTo='transform opacity-0 scale-95'
+      enter='enter'
+      enterFrom='enterFrom'
+      enterTo='enterTo'
+      leave='leave'
+      leaveFrom='leaveFrom'
+      leaveTo='leaveTo'
     >
-      <div css={toastStyle}>
+      <div css={toastStyle} className={isVisible ? 'enter' : 'leave'}>
         <div css={checkmarkContainerStyle}>
           <span css={checkmarkStyle}>✓</span>
         </div>
@@ -41,20 +64,33 @@ const Toast: React.FC<ToastProps> = ({ message, isVisible, onClose, duration = 2
   );
 };
 
+// Define animation styles
 const toastStyle = css`
   display: flex;
   align-items: center;
   background-color: ${theme.colors.darkGray};
   color: ${theme.colors.white};
-  padding: 0.75rem 1rem;
+  padding: 16px 32px;
   border-radius: 4px;
   position: fixed;
   bottom: ${theme.heights.tall};
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   z-index: 1000;
-  width: 100%;
+  width: 90%;
   justify-content: center;
+  transition:
+    opacity 200ms ease-in,
+    transform 200ms ease-in;
+
+  &.enter {
+    animation: ${fadeIn} 300ms ease-out;
+  }
+
+  &.leave {
+    animation: ${fadeOut} 300ms ease-in;
+  }
 `;
 
 const checkmarkContainerStyle = css`
@@ -70,12 +106,12 @@ const checkmarkContainerStyle = css`
 
 const checkmarkStyle = css`
   color: ${theme.colors.white};
-  font-size: 12px;
+  font-size: ${theme.fontSizes.large};
   line-height: 1;
 `;
 
 const messageStyle = css`
-  font-size: ${theme.fontSizes.normal};
+  font-size: ${theme.fontSizes.large};
   font-weight: 500;
 `;
 
