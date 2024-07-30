@@ -1,12 +1,12 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { PATH } from './constants/path';
-import RootLayout from './layouts/Root';
-import HomePage from './pages/Home';
-import NotFoundPage from './pages/NotFound';
-import ProfilePage from './pages/Profile';
-import SalaryPage from './pages/Salary';
-import SchedulePage from './pages/Schedule';
+import { PATH } from '@/constants/path';
+import RootLayout from '@/layouts/Root';
+import HomePage from '@/pages/Home';
+import NotFoundPage from '@/pages/NotFound';
+import ProfilePage from '@/pages/Profile';
+import SalaryPage from '@/pages/Salary';
+import SchedulePage from '@/pages/Schedule';
 
 const router = createBrowserRouter([
   {
