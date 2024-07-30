@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { css, SerializedStyles } from '@emotion/react';
 
 import theme from '../../styles/theme';
