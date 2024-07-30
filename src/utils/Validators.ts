@@ -1,3 +1,3 @@
-import { validProps } from '../types/props';
+import { ValidProps } from '../types/props';
 
-export const inputValid = ({ value, regex }: validProps) => regex.test(value.trim());
+export const inputValid = ({ value, regex }: ValidProps) => regex.test(value.trim());
