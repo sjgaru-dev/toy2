@@ -1,6 +1,6 @@
 import { css, SerializedStyles } from '@emotion/react';
 
-import theme from '../../styles/theme';
+import theme from '@/styles/theme';
 
 interface ButtonProps {
   label: string;
