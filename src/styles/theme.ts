@@ -3,8 +3,8 @@ const colors = {
   hoverPrimary: '#46AF83',
   supportOrange: '#FF8E3D',
   alertRed: '#E45148',
-  black: '#121212',
-  white: '#ffffff',
+  black: '#1E1E1E',
+  white: '#FFFFFF',
   darkestGray: '#333D4B',
   darkGray: '#8B95A1',
   lightGray: '#E3E5EB',
@@ -17,6 +17,7 @@ const colors = {
   paleBlue: '#A2CDFF',
   palePurple: '#C394FF',
   bgGray: '#F6F7F9', // 배경색
+  borderLightGray: '#F4F5F7',
 };
 
 const fontSizes = {
