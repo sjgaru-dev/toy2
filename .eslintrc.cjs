@@ -88,6 +88,7 @@ module.exports = {
     'object-shorthand': 'error',
     'react/jsx-key': ['error', { checkFragmentShorthand: true }],
     'react/react-in-jsx-scope': 'off',
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
   },
   settings: {
     react: {
