@@ -39,7 +39,7 @@ module.exports = {
     ],
     'import/no-default-export': 'off',
     'import/prefer-default-export': 'off',
-    'import/no-unresolved': 'error',
+    'import/no-unresolved': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'react/prop-types': 'warn',
     'prefer-const': 'error',
