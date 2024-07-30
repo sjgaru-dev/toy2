@@ -1,7 +1,7 @@
 name: ✨ Feature
 description: 새로운 기능이나 명세가 있나요?
-title: "[feat] "
-labels: ["✨ Feature"]
+title: '[feat] '
+labels: ['✨ Feature']
 body:
   - type: textarea
     id: feature-description
