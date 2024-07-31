@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { FcMoneyTransfer } from 'react-icons/fc';
 import { HiX } from 'react-icons/hi';
 
-import Button from './Buttons/Button';
+import Button from '@/components/common/Buttons/Button';
 import theme from '@/styles/theme';
 
 const cardContainerStyle = css`
@@ -51,7 +51,7 @@ const descriptionStyle = css`
   margin-bottom: 16px;
 `;
 
-const SalaryCard: React.FC = () => {
+const PayrollNotice: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
 
   const handleButtonClick = () => {
@@ -73,4 +73,4 @@ const SalaryCard: React.FC = () => {
   );
 };
 
-export default SalaryCard;
+export default PayrollNotice;

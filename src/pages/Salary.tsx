@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 
-import SalaryCard from '@/components/common/SalaryCard';
 import Tabs from '@/components/common/Tabs';
+import PayrollNotice from '@/components/dashboard/PayrollNotice';
 import theme from '@/styles/theme';
 
 const headerStyle = css`
@@ -16,7 +16,7 @@ const SalaryPage = () => (
     <h1 css={headerStyle}>급여</h1>
     <Tabs tabs={['급여명세서', '정정 내역', '정정 신청']}>
       <div>
-        <SalaryCard /> {}
+        <PayrollNotice /> {}
       </div>
       <div>정정 내역 내용</div>
       <div>정정 신청 내용</div>
