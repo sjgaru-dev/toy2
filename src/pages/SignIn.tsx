@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Buttons/Button';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
-import { ERROR_MSG, LOGIN_ASK, REGEX } from '@/constants/constant';
+import { ERROR_MSG, LOGIN_ASK, REGEX } from '@/constants/signIn';
 import { fetchSignIn } from '@/store/reducer/authSlice';
 import { AppDispatch, RootState } from '@/store/store';
 import theme from '@/styles/theme';
