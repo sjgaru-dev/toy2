@@ -12,6 +12,7 @@ interface InputProps {
   isError?: boolean;
   errorMessage?: string;
   readOnly?: boolean;
+  type?: string;
 }
 
 const Input = ({
@@ -22,6 +23,7 @@ const Input = ({
   isError = false,
   errorMessage = '',
   readOnly = false,
+  type = 'text',
 }: InputProps) => (
   <div css={wrapperStyle}>
     <Field>
@@ -32,6 +34,7 @@ const Input = ({
         css={[inputStyle, readOnly && readOnlyStyle]}
         placeholder={placeholder}
         readOnly={readOnly}
+        type={type}
       />
       {isError && <Description css={errorStyle}>{errorMessage}</Description>}
       {readOnly && <div css={readOnlyStyle} />}
