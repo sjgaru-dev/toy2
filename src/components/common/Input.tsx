@@ -41,19 +41,19 @@ const Input = ({
 
 const wrapperStyle = css`
   display: inline-block;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
   width: 100%;
 `;
 
 const labelStyle = css`
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.black};
 `;
 
 const inputStyle = css`
   width: 100%;
-  padding: 8px 12px;
+  padding: 0.5rem 1rem;
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
   font-size: ${theme.fontSizes.normal};
@@ -67,7 +67,7 @@ const inputStyle = css`
 `;
 
 const errorStyle = css`
-  margin-top: 8px;
+  margin-top: 0.5rem;
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.alertRed};
 `;
