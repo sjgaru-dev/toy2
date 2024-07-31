@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import { css } from '@emotion/react';
-import { Dialog, Description, DialogPanel, DialogTitle } from '@headlessui/react';
 import { FcMoneyTransfer } from 'react-icons/fc';
 import { HiX } from 'react-icons/hi';
 
@@ -13,7 +12,6 @@ const cardContainerStyle = css`
   border-radius: 8px;
   padding: 16px;
   background-color: ${theme.colors.white};
-  width: 350px;
   text-align: left;
   position: relative;
   font-size: ${theme.fontSizes.xlarge};
@@ -22,8 +20,8 @@ const cardContainerStyle = css`
 
 const closeButtonStyle = css`
   position: absolute;
-  top: 10px;
-  right: 2px;
+  top: 8px;
+  right: 8px;
   background: none;
   border: none;
   cursor: pointer;
@@ -44,41 +42,25 @@ const closeIconStyle = css`
   color: ${theme.colors.darkGray};
 `;
 
-const dialogContainerStyle = css`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  background-color: ${theme.colors.bgGray};
-`;
-
 const SalaryCard: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isVisible, setIsVisible] = useState(true);
 
   const handleButtonClick = () => {
     // 급여명세서 상세 페이지로 이동
   };
 
+  if (!isVisible) return null;
+
   return (
-    <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-      <div css={dialogContainerStyle}>
-        <DialogPanel css={cardContainerStyle}>
-          <DialogTitle as='div'>
-            <button css={closeButtonStyle} onClick={() => setIsOpen(false)}>
-              <HiX css={closeIconStyle} />
-            </button>
-            <h3>2024년 7월</h3>
-          </DialogTitle>
-          <Description>
-            <p>급여명세서가 도착했습니다!</p>
-          </Description>
-          <FcMoneyTransfer css={iconStyle} />
-          <Button onClick={handleButtonClick}>조회하기</Button>
-        </DialogPanel>
-      </div>
-    </Dialog>
+    <div css={cardContainerStyle}>
+      <button css={closeButtonStyle} onClick={() => setIsVisible(false)}>
+        <HiX css={closeIconStyle} />
+      </button>
+      <h3>2024년 7월</h3>
+      <p>급여명세서가 도착했습니다!</p>
+      <FcMoneyTransfer css={iconStyle} />
+      <Button onClick={handleButtonClick}>조회하기</Button>
+    </div>
   );
 };
 
