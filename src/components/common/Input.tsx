@@ -46,7 +46,8 @@ const wrapperStyle = css`
 `;
 
 const labelStyle = css`
-  margin-bottom: 1rem;
+  display: flex;
+  margin-bottom: 0.5rem;
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.black};
 `;
