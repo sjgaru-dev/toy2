@@ -30,13 +30,5 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => (
-  // useEffect(() => {
-  //   (async () => {
-  //     await auth.authStateReady(); // wait for firebase
-  //   })();
-  // }, []);
-
-  <RouterProvider router={router} />
-);
+const App = () => <RouterProvider router={router} />;
 export default App;

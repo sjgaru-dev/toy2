@@ -1,137 +1,96 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { login } from '@/api/User';
-import Button from '@/components/common/Button';
-import { LOGIN_ASK, REGEX, REGEX_MSG } from '@/constants/constant';
+import Button from '@/components/common/Buttons/Button';
+import Input from '@/components/common/Input';
+import Spinner from '@/components/common/Spinner';
+import { ERROR_MSG, LOGIN_ASK, REGEX } from '@/constants/constant';
+import { fetchSignIn } from '@/store/reducer/authSlice';
+import { AppDispatch, RootState } from '@/store/store';
 import theme from '@/styles/theme';
-import { InputProps } from '@/types/props';
 import { inputValid } from '@/utils/Validators';
 
 const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errMsgEmail, setMsgEmail] = useState('');
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, isAuth } = useSelector((state: RootState) => state.auth);
+  const { status } = useSelector((state: RootState) => state.auth.apiResult);
   const navigate = useNavigate();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    switch (name) {
-      case 'email':
-        setEmail(value);
-        break;
-      case 'password':
-        setPassword(value);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const result = await login({ email, password });
-    if (result) navigate('/');
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isInputError, setInputError] = useState(false);
 
   useEffect(() => {
-    if (email.trim().length > 1)
-      setMsgEmail(
-        inputValid({ value: email, regex: REGEX.email }) ? REGEX_MSG.empty : REGEX_MSG.email
-      );
-  }, [email]);
+    if (isAuth) navigate('/');
+  }, [isAuth, navigate]);
+
+  const onChangeEmail = (value: string) => {
+    setInputError(!inputValid({ value, regex: REGEX.email }));
+    setEmail(value);
+  };
+  const onChangePassword = (value: string) => {
+    setPassword(value);
+  };
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(fetchSignIn({ email, password }));
+  };
 
   return (
-    <div css={LoginDiv}>
-      <Logo />
+    <div css={containerStyle}>
+      <div css={logoStyle}>임시로고</div>
       <form onSubmit={onSubmit}>
         <Input
-          type='text'
           label='이메일'
-          name='email'
-          placeholder='이메일 @studiot.com'
-          onChange={onChange}
-          errMsg={errMsgEmail}
+          value={email}
+          placeholder='이메일@studiot.com'
+          onChange={onChangeEmail}
+          isError={isInputError}
+          errorMessage={ERROR_MSG.regex.email}
         />
+
         <Input
-          type='password'
           label='비밀번호'
-          name='password'
+          type='password'
+          value={password}
           placeholder='비밀번호'
-          onChange={onChange}
+          onChange={onChangePassword}
+          isError={status === 'error'}
+          errorMessage={ERROR_MSG.signIn}
         />
-        <Button label='로그인' />
+        <div>
+          <Button>{isLoading === 'pending' ? <Spinner /> : '로그인'}</Button>
+        </div>
       </form>
-      <div>
-        <p css={spanStyles} className={'basic'}>
-          {LOGIN_ASK.msg}
-          <br />
-          {LOGIN_ASK.contact}
-        </p>
+      <div css={msgStyle}>
+        {LOGIN_ASK.msg}
+        <br />
+        {LOGIN_ASK.contact}
       </div>
     </div>
   );
 };
 
-/**
- * 아래 항목들은 개별 컴포넌트 완료 후 지우고 대체할 예정.
- */
-
-// 없앨거
-const LoginDiv = css`
-  width: 400px;
-
-  & div {
-    width: 100%;
-    padding: 10px;
-  }
+const containerStyle = css`
+  width: 90%;
+  height: 100vh;
+  margin: 0 auto;
+  align-content: center;
 `;
 
-const Logo = () => <div css={LogoDiv}>Logo</div>;
-
-const LogoDiv = css`
+const logoStyle = css`
   text-align: center;
+  line-height: 2rem;
 `;
 
-const Input = (props: InputProps) => (
-  <div css={InputDiv}>
-    <input
-      type={props.type}
-      id={props.label}
-      name={props.name}
-      placeholder={props.placeholder}
-      onChange={props.onChange}
-    />
-    {props.errMsg && (
-      <span css={spanStyles} className={'error'}>
-        {props.errMsg}
-      </span>
-    )}
-  </div>
-);
-
-const InputDiv = css`
-  display: flex;
-  flex-direction: column;
-
-  & input {
-    padding: 0.5rem;
-  }
-`;
-
-const spanStyles = css`
-  padding: 5px;
+const msgStyle = css`
+  margin-top: 1rem;
+  color: ${theme.colors.darkGray};
   font-size: ${theme.fontSizes.normal};
-
-  &.basic {
-    color: ${theme.colors.darkGray};
-  }
-  &.error {
-    color: ${theme.colors.alertRed};
-  }
 `;
 
 export default SignIn;
