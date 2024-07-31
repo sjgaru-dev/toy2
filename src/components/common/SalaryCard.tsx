@@ -42,6 +42,15 @@ const closeIconStyle = css`
   color: ${theme.colors.darkGray};
 `;
 
+const titleStyle = css`
+  margin-bottom: 8px;
+`;
+
+const descriptionStyle = css`
+  margin-top: 8px;
+  margin-bottom: 16px;
+`;
+
 const SalaryCard: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -56,8 +65,8 @@ const SalaryCard: React.FC = () => {
       <button css={closeButtonStyle} onClick={() => setIsVisible(false)}>
         <HiX css={closeIconStyle} />
       </button>
-      <h3>2024년 7월</h3>
-      <p>급여명세서가 도착했습니다!</p>
+      <h3 css={titleStyle}>2024년 7월</h3>
+      <p css={descriptionStyle}>급여명세서가 도착했습니다!</p>
       <FcMoneyTransfer css={iconStyle} />
       <Button onClick={handleButtonClick}>조회하기</Button>
     </div>
