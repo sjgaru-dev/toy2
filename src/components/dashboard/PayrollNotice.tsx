@@ -7,6 +7,28 @@ import { HiX } from 'react-icons/hi';
 import Button from '@/components/common/Buttons/Button';
 import theme from '@/styles/theme';
 
+const PayrollNotice: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  const handleButtonClick = () => {
+    // 급여명세서 상세 페이지로 이동
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div css={cardContainerStyle}>
+      <button css={closeButtonStyle} onClick={() => setIsVisible(false)}>
+        <HiX css={closeIconStyle} />
+      </button>
+      <h3 css={titleStyle}>2024년 7월</h3>
+      <p css={descriptionStyle}>급여명세서가 도착했습니다!</p>
+      <FcMoneyTransfer css={iconStyle} />
+      <Button onClick={handleButtonClick}>조회하기</Button>
+    </div>
+  );
+};
+
 const cardContainerStyle = css`
   margin: 1rem;
   border: 1px solid ${theme.colors.borderLightGray};
@@ -50,27 +72,5 @@ const descriptionStyle = css`
   margin-top: 8px;
   margin-bottom: 16px;
 `;
-
-const PayrollNotice: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(true);
-
-  const handleButtonClick = () => {
-    // 급여명세서 상세 페이지로 이동
-  };
-
-  if (!isVisible) return null;
-
-  return (
-    <div css={cardContainerStyle}>
-      <button css={closeButtonStyle} onClick={() => setIsVisible(false)}>
-        <HiX css={closeIconStyle} />
-      </button>
-      <h3 css={titleStyle}>2024년 7월</h3>
-      <p css={descriptionStyle}>급여명세서가 도착했습니다!</p>
-      <FcMoneyTransfer css={iconStyle} />
-      <Button onClick={handleButtonClick}>조회하기</Button>
-    </div>
-  );
-};
 
 export default PayrollNotice;
