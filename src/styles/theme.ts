@@ -18,6 +18,7 @@ const colors = {
   palePurple: '#C394FF',
   bgGray: '#F6F7F9', // 배경색
   borderLightGray: '#F4F5F7',
+  toastGray: '#7D7F84',
 };
 
 const fontSizes = {
