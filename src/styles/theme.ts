@@ -1,6 +1,6 @@
 const colors = {
   primary: '#2DC384',
-  hoverPrimary: '#46AF83',
+  hoverPrimary: '#3BB77D',
   supportOrange: '#FF8E3D',
   alertRed: '#E45148',
   black: '#1E1E1E',
