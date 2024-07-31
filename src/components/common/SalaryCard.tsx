@@ -8,6 +8,7 @@ import Button from './Buttons/Button';
 import theme from '@/styles/theme';
 
 const cardContainerStyle = css`
+  margin: 1rem;
   border: 1px solid ${theme.colors.borderLightGray};
   border-radius: 8px;
   padding: 16px;
@@ -20,8 +21,7 @@ const cardContainerStyle = css`
 
 const closeButtonStyle = css`
   position: absolute;
-  top: 8px;
-  right: 8px;
+  right: 16px;
   background: none;
   border: none;
   cursor: pointer;
