@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { Dialog } from '@headlessui/react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
-import Button from './Button';
+import Button from './Buttons/Button';
 import theme from '@/styles/theme';
 
 interface ModalProps {
@@ -12,8 +12,8 @@ interface ModalProps {
   onConfirm: () => void;
   title: string;
   confirmText: string;
-  cancelText: string;
-  variant: 'center' | 'bottom';
+  cancelText?: string;
+  styleType?: 'primary' | 'secondary';
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -22,29 +22,37 @@ const Modal: React.FC<ModalProps> = ({
   onConfirm,
   title,
   confirmText,
-  cancelText,
-  variant,
+  cancelText = '취소',
+  styleType = 'primary',
 }) => (
   <Dialog open={isOpen} onClose={onClose} css={dialogStyle}>
     <div css={overlayStyle} />
-    <div css={containerStyle(variant)}>
-      <Dialog.Panel css={panelStyle(variant)}>
-        <Dialog.Title css={titleStyle}>{title}</Dialog.Title>
+    <div css={containerStyle}>
+      <DialogPanel css={styleType === 'primary' ? panelStylePrimary : panelStyleSecondary}>
+        <DialogTitle css={styleType === 'primary' ? titleStylePrimary : titleStyleSecondary}>
+          {title}
+        </DialogTitle>
         <div css={buttonContainerStyle}>
           <Button
-            label={confirmText}
             onClick={onConfirm}
             styleType='primary'
-            customStyle={confirmButtonStyle(variant)}
-          />
+            customStyle={
+              styleType === 'primary' ? confirmButtonStylePrimary : confirmButtonStyleSecondary
+            }
+          >
+            {confirmText}
+          </Button>
           <Button
-            label={cancelText}
             onClick={onClose}
             styleType='secondary'
-            customStyle={cancelButtonStyle}
-          />
+            customStyle={
+              styleType === 'primary' ? cancelButtonStylePrimary : cancelButtonStyleSecondary
+            }
+          >
+            {cancelText}
+          </Button>
         </div>
-      </Dialog.Panel>
+      </DialogPanel>
     </div>
   </Dialog>
 );
@@ -52,7 +60,7 @@ const Modal: React.FC<ModalProps> = ({
 const dialogStyle = css`
   position: fixed;
   inset: 0;
-  z-index: 10;
+  z-index: 1000;
   overflow-y: auto;
 `;
 
@@ -62,23 +70,37 @@ const overlayStyle = css`
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const containerStyle = (variant: 'center' | 'bottom') => css`
+const containerStyle = css`
   display: flex;
   min-height: 100vh;
-  align-items: ${variant === 'center' ? 'center' : 'flex-end'};
+  align-items: flex-end;
   justify-content: center;
 `;
 
-const panelStyle = (variant: 'center' | 'bottom') => css`
-  width: ${variant === 'center' ? '90%' : '100%'};
-  max-width: ${variant === 'center' ? '400px' : 'none'};
+const panelStylePrimary = css`
+  width: 100%;
   background-color: ${theme.colors.white};
   padding: 20px;
-  border-radius: ${variant === 'center' ? '8px' : '16px 16px 0 0'};
-  z-index: 20;
+  border-radius: 16px 16px 0 0;
+  z-index: 1001;
 `;
 
-const titleStyle = css`
+const panelStyleSecondary = css`
+  width: 100%;
+  background-color: ${theme.colors.white};
+  padding: 20px;
+  border-radius: 16px 16px 0 0;
+  z-index: 1001;
+`;
+
+const titleStylePrimary = css`
+  font-size: ${theme.fontSizes.large};
+  color: ${theme.colors.black};
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
+const titleStyleSecondary = css`
   font-size: ${theme.fontSizes.large};
   color: ${theme.colors.black};
   text-align: center;
@@ -91,19 +113,26 @@ const buttonContainerStyle = css`
   gap: 10px;
 `;
 
-const confirmButtonStyle = (variant: 'center' | 'bottom') => css`
-  background-color: ${variant === 'center' ? theme.colors.primary : theme.colors.lightestGray};
-  color: ${variant === 'center' ? theme.colors.white : theme.colors.alertRed};
+const confirmButtonStylePrimary = css`
+  background-color: ${theme.colors.primary};
+  color: ${theme.colors.white};
+`;
+
+const confirmButtonStyleSecondary = css`
+  background-color: ${theme.colors.lightestGray};
+  color: ${theme.colors.alertRed};
 
   &:hover {
-    ${variant === 'bottom' &&
-    `
-      background-color: ${theme.colors.lightGray};
-    `}
+    background-color: ${theme.colors.hoverLightGray};
   }
 `;
 
-const cancelButtonStyle = css`
+const cancelButtonStylePrimary = css`
+  background-color: ${theme.colors.white};
+  color: ${theme.colors.darkGray};
+`;
+
+const cancelButtonStyleSecondary = css`
   background-color: ${theme.colors.white};
   color: ${theme.colors.darkGray};
 `;
