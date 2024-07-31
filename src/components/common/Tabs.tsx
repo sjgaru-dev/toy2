@@ -38,7 +38,7 @@ const tabListStyle = css`
 
 const tabStyle = css`
   flex: 1;
-  padding: 32px 0;
+  padding: 32px 0 0 0;
   font-size: ${theme.fontSizes.large};
   background: transparent;
   border: 0;
