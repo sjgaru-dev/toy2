@@ -24,44 +24,38 @@ const Modal: React.FC<ModalProps> = ({
   confirmText,
   cancelText = '취소',
   styleType = 'primary',
-}) => {
-  const handleClose = () => {
-    onClose();
-  };
-
-  return (
-    <Dialog open={isOpen} onClose={handleClose} css={dialogStyle}>
-      <div css={overlayStyle} />
-      <div css={containerStyle}>
-        <DialogPanel css={styleType === 'primary' ? panelStylePrimary : panelStyleSecondary}>
-          <DialogTitle css={styleType === 'primary' ? titleStylePrimary : titleStyleSecondary}>
-            {title}
-          </DialogTitle>
-          <div css={buttonContainerStyle}>
-            <Button
-              onClick={onConfirm}
-              styleType='primary'
-              customStyle={
-                styleType === 'primary' ? confirmButtonStylePrimary : confirmButtonStyleSecondary
-              }
-            >
-              {confirmText}
-            </Button>
-            <Button
-              onClick={handleClose}
-              styleType='secondary'
-              customStyle={
-                styleType === 'primary' ? cancelButtonStylePrimary : cancelButtonStyleSecondary
-              }
-            >
-              {cancelText}
-            </Button>
-          </div>
-        </DialogPanel>
-      </div>
-    </Dialog>
-  );
-};
+}) => (
+  <Dialog open={isOpen} onClose={onClose} css={dialogStyle}>
+    <div css={overlayStyle} />
+    <div css={containerStyle}>
+      <DialogPanel css={styleType === 'primary' ? panelStylePrimary : panelStyleSecondary}>
+        <DialogTitle css={styleType === 'primary' ? titleStylePrimary : titleStyleSecondary}>
+          {title}
+        </DialogTitle>
+        <div css={buttonContainerStyle}>
+          <Button
+            onClick={onConfirm}
+            styleType='primary'
+            customStyle={
+              styleType === 'primary' ? confirmButtonStylePrimary : confirmButtonStyleSecondary
+            }
+          >
+            {confirmText}
+          </Button>
+          <Button
+            onClick={onClose}
+            styleType='secondary'
+            customStyle={
+              styleType === 'primary' ? cancelButtonStylePrimary : cancelButtonStyleSecondary
+            }
+          >
+            {cancelText}
+          </Button>
+        </div>
+      </DialogPanel>
+    </div>
+  </Dialog>
+);
 
 const dialogStyle = css`
   position: fixed;
