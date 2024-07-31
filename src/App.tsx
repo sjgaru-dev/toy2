@@ -7,6 +7,7 @@ import NotFoundPage from '@/pages/NotFound';
 import ProfilePage from '@/pages/Profile';
 import SalaryPage from '@/pages/Salary';
 import SchedulePage from '@/pages/Schedule';
+import SignIn from '@/pages/SignIn';
 
 const router = createBrowserRouter([
   {
@@ -23,8 +24,11 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: PATH.SIGNIN,
+    element: <SignIn />,
+  },
 ]);
 
 const App = () => <RouterProvider router={router} />;
-
 export default App;
