@@ -1,6 +1,6 @@
 const colors = {
   primary: '#2DC384',
-  hoverPrimary: '#46AF83',
+  hoverPrimary: '#3BB77D',
   supportOrange: '#FF8E3D',
   alertRed: '#E45148',
   black: '#1E1E1E',
@@ -18,6 +18,7 @@ const colors = {
   palePurple: '#C394FF',
   bgGray: '#F6F7F9', // 배경색
   borderLightGray: '#F4F5F7',
+  toastGray: '#7D7F84',
 };
 
 const fontSizes = {
