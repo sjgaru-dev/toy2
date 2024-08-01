@@ -41,12 +41,14 @@ const Navbar = () => {
 const navStyle = css`
   z-index: 999;
   position: fixed;
-  right: 0;
+  left: 50%;
   bottom: 0;
-  left: 0;
   height: 80px;
+  width: 100vw;
+  max-width: 500px;
   border-top: 1px solid ${theme.colors.borderLightGray};
   background-color: ${theme.colors.white};
+  transform: translateX(-50%);
 `;
 
 const ulStyle = css`

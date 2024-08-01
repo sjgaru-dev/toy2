@@ -41,7 +41,7 @@ const CalendarToolbar = ({ date, onNavigate, setActiveDate }: CalendarToolbarPro
 const toolbarContainerStyle = css`
   display: flex;
   justify-content: space-between;
-  padding-bottom: 1rem;
+  padding-bottom: 1.2rem;
 `;
 
 const dateContainerStyle = css`

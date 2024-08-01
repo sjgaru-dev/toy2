@@ -55,7 +55,7 @@ const Calendar = ({ schedule, activeDate, setActiveDate }: CalendarProps) => {
 };
 
 const calendarStyle = css`
-  height: 450px;
+  height: 500px;
 
   .rbc-month-view,
   .rbc-header {

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { HiChevronRight } from 'react-icons/hi';
+import { HiChevronRight } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 import theme from '@/styles/theme';
@@ -31,7 +31,7 @@ const PayrollList: React.FC = () => {
   };
 
   return (
-    <div css={containerStyle}>
+    <div css={containerStyle} className='wrapper'>
       {payrollItems.map((item, index) => (
         <React.Fragment key={`${item.year}-${item.month}`}>
           {index === 0 || payrollItems[index - 1].year !== item.year ? (
@@ -54,16 +54,15 @@ const PayrollList: React.FC = () => {
 };
 
 const containerStyle = css`
-  padding: 8px 2rem 2rem;
+  padding-bottom: 96px;
+  margin-top: 12px;
   background-color: ${theme.colors.white};
-  border-radius: 8px;
-  margin: 16px;
 `;
 
 const yearHeaderStyle = css`
   font-size: ${theme.fontSizes.xlarge};
   font-weight: bold;
-  margin: 2rem 0 0.5rem 0;
+  padding: 32px 0 12px;
   color: ${theme.colors.darkGray};
 `;
 
@@ -71,8 +70,7 @@ const itemStyle = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 0;
-  border-bottom: 1px solid ${theme.colors.borderLightGray};
+  height: 80px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 `;
@@ -85,7 +83,7 @@ const leftContentStyle = css`
 const monthStyle = css`
   font-size: ${theme.fontSizes.large};
   font-weight: bold;
-  color: ${theme.colors.black};
+  color: ${theme.colors.darkestGray};
   margin-bottom: 0.25rem;
 `;
 
@@ -102,12 +100,13 @@ const rightContentStyle = css`
 
 const amountStyle = css`
   font-size: ${theme.fontSizes.large};
-  font-weight: 700;
+  font-weight: 600;
   color: ${theme.colors.primary};
   margin-right: 0.5rem;
 `;
 
 const arrowStyle = css`
+  margin-bottom: 2px;
   color: ${theme.colors.darkGray};
 `;
 
