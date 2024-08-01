@@ -138,6 +138,16 @@ const baseStyles = css`
     font-size: ${theme.fontSizes.xlarge}; /* 16px */
     color: ${theme.colors.black};
   }
+
+  .wrapper {
+    padding: 0 16px;
+  }
+
+  .page-title {
+    margin: 32px 0 20px;
+    font-weight: bold;
+    font-size: ${theme.fontSizes.xxlarge};
+  }
 `;
 
 const GlobalStyle = () => <Global styles={baseStyles} />;
