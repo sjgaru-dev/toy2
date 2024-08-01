@@ -52,11 +52,10 @@ const tabStyle = css`
 `;
 
 const tabContainerStyle = (selected: boolean) => css`
+  width: fit-content;
   position: relative;
-  width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 0 2rem;
   padding-bottom: 8px;
   border-bottom: ${selected
     ? `3px solid ${theme.colors.primary}`
