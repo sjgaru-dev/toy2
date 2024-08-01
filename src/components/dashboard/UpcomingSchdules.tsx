@@ -17,8 +17,12 @@ const UpcomingSchdules = ({ upcomingData }: UpcomingProps) => (
         <div css={upcomingStyle}>
           {upcomingData.map((item, index) => (
             <div key={index} css={upcomingItemStyle}>
-              <div css={imgStyle}>
-                <UserDefaultImage size='3rem' />
+              <div css={imgDivStyle}>
+                {item.img ? (
+                  <img src={item.img} css={imgStyle} />
+                ) : (
+                  <UserDefaultImage size={'3rem'} />
+                )}
               </div>
               <div css={[textWrapStyle, nameStyle]}>{item.name}</div>
               <div css={[textWrapStyle, eventStyle]}>{item.event}</div>
@@ -53,9 +57,14 @@ const upcomingStyle = css`
   }
 `;
 
-const imgStyle = css`
+const imgDivStyle = css`
   border: 1px solid ${theme.colors.borderLightGray};
   border-radius: 1rem;
+`;
+
+const imgStyle = css`
+  width: 3rem;
+  height: 3rem;
 `;
 
 const textWrapStyle = css`
