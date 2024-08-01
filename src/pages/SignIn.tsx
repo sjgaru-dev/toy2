@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { Description, Field } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/Buttons/Button';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
-import { ERROR_MSG, LOGIN_ASK, REGEX } from '@/constants/signIn';
+import { LOADING_TYPE, REGEX, RESPONSE_STATUS_TYPE, TEXT } from '@/constants/signIn';
 import { fetchSignIn } from '@/store/reducer/authSlice';
 import { AppDispatch, RootState } from '@/store/store';
 import theme from '@/styles/theme';
@@ -22,6 +23,7 @@ const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isInputError, setInputError] = useState(false);
+  const [isInputErrorPwd, setInputErrorPwd] = useState(false);
 
   useEffect(() => {
     if (isAuth) navigate('/');
@@ -32,6 +34,7 @@ const SignIn = () => {
     setEmail(value);
   };
   const onChangePassword = (value: string) => {
+    setInputErrorPwd(!inputValid({ value, regex: REGEX.password }));
     setPassword(value);
   };
 
@@ -45,31 +48,34 @@ const SignIn = () => {
       <div css={logoStyle}>임시로고</div>
       <form onSubmit={onSubmit}>
         <Input
-          label='이메일'
           value={email}
-          placeholder='이메일@studiot.com'
+          placeholder={TEXT.email.placeholder}
           onChange={onChangeEmail}
           isError={isInputError}
-          errorMessage={ERROR_MSG.regex.email}
+          errorMessage={TEXT.email.regexError}
         />
 
         <Input
-          label='비밀번호'
           type='password'
           value={password}
-          placeholder='비밀번호'
+          placeholder={TEXT.password.placeholder}
           onChange={onChangePassword}
-          isError={status === 'error'}
-          errorMessage={ERROR_MSG.signIn}
+          isError={isInputErrorPwd}
+          errorMessage={TEXT.password.regexError}
         />
         <div>
-          <Button>{isLoading === 'pending' ? <Spinner /> : '로그인'}</Button>
+          {status === RESPONSE_STATUS_TYPE.error && (
+            <Field>
+              <Description css={errorStyle}>{TEXT.signin.error}</Description>
+            </Field>
+          )}
+          <Button>{isLoading === LOADING_TYPE.pending ? <Spinner /> : TEXT.signin.label}</Button>
         </div>
       </form>
       <div css={msgStyle}>
-        {LOGIN_ASK.msg}
+        {TEXT.common.msg}
         <br />
-        {LOGIN_ASK.contact}
+        {TEXT.common.contact}
       </div>
     </div>
   );
@@ -91,6 +97,13 @@ const msgStyle = css`
   margin-top: 1rem;
   color: ${theme.colors.darkGray};
   font-size: ${theme.fontSizes.normal};
+`;
+
+const errorStyle = css`
+  display: block;
+  margin-top: 0.5rem;
+  font-size: ${theme.fontSizes.normal};
+  color: ${theme.colors.alertRed};
 `;
 
 export default SignIn;

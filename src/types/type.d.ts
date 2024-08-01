@@ -2,6 +2,8 @@ import { FirebaseError } from 'firebase/app';
 import { UserCredential } from 'firebase/auth';
 import { Timestamp } from 'firebase/firestore';
 
+import { LOADING_TYPE, RESPONSE_STATUS_TYPE } from '@/constants/signIn';
+
 export type LoadingType = 'idle' | 'pending' | 'fulfilled';
 
 export interface ApiResponse<T> {
