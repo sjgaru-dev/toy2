@@ -137,6 +137,7 @@ const baseStyles = css`
     line-height: 1;
     font-size: ${theme.fontSizes.xlarge}; /* 16px */
     color: ${theme.colors.black};
+    letter-spacing: -0.14px;
     background-color: ${theme.colors.bgGray};
   }
 

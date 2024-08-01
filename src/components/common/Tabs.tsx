@@ -55,6 +55,7 @@ const tabContainerStyle = (selected: boolean) => css`
   display: flex;
   padding-bottom: 8px;
   border-bottom: ${selected ? `3px solid ${theme.colors.primary}` : 0};
+  border-bottom: ${`3px solid ${selected ? theme.colors.primary : theme.colors.white}`};
 `;
 
 const tabTextStyle = (selected: boolean) => css`
