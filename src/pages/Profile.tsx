@@ -10,7 +10,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div style={{ margin: '100px 100px' }}>
+    <div style={{ padding: '100px 100px' }}>
       <Input
         label='이름'
         value={inputValue}

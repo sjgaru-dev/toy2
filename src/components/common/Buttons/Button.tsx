@@ -28,7 +28,8 @@ const baseButtonStyles = css`
   align-items: center;
   width: 100%;
   height: ${theme.heights.tall};
-  font-weight: 700;
+  font-weight: 600;
+  font-size: ${theme.fontSizes.large};
   border-radius: 4px;
   transition: all 300ms ease;
 `;
