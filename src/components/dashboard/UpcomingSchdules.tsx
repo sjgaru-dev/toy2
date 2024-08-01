@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
-import { HiUser } from 'react-icons/hi';
 
+import UserDefaultImage from '@/assets/image/userDefault';
 import Badge from '@/components/common/Badge';
 import theme from '@/styles/theme';
 import { UpcomingProps } from '@/types/props';
@@ -18,7 +18,7 @@ const UpcomingSchdules = ({ upcomingData }: UpcomingProps) => (
           {upcomingData.map((item, index) => (
             <div key={index} css={upcomingItemStyle}>
               <div css={imgStyle}>
-                <HiUser size={`3rem`} />
+                <UserDefaultImage size='3rem' />
               </div>
               <div css={[textWrapStyle, nameStyle]}>{item.name}</div>
               <div css={[textWrapStyle, eventStyle]}>{item.event}</div>
