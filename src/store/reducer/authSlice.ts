@@ -38,6 +38,14 @@ export const authSlice = createSlice({
       .addCase(fetchSignIn.rejected, (state, action) => {
         state.isLoading = 'idle';
         state.apiResult = { status: 'error', response: action.error };
+      })
+      .addCase(fetchSignOut.pending, (state) => {
+        state.isLoading = 'pending';
+      })
+      .addCase(fetchSignOut.fulfilled, (state) => {
+        state.isLoading = 'fulfilled';
+        state.isAuth = false;
+        state.apiResult = { status: 'idle', response: null };
       });
   },
 });
