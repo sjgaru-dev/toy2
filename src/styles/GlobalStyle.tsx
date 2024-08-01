@@ -137,6 +137,7 @@ const baseStyles = css`
     line-height: 1;
     font-size: ${theme.fontSizes.xlarge}; /* 16px */
     color: ${theme.colors.black};
+    background-color: ${theme.colors.bgGray};
   }
 
   .wrapper {
@@ -144,9 +145,10 @@ const baseStyles = css`
   }
 
   .page-title {
-    margin: 32px 0 20px;
+    padding: 32px 0 20px 16px;
     font-weight: bold;
     font-size: ${theme.fontSizes.xxlarge};
+    background-color: ${theme.colors.white};
   }
 `;
 
