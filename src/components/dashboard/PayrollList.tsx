@@ -106,6 +106,7 @@ const amountStyle = css`
 `;
 
 const arrowStyle = css`
+  margin-bottom: 2px;
   color: ${theme.colors.darkGray};
 `;
 
