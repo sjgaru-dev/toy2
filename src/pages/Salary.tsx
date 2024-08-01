@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 
 import Tabs from '@/components/common/Tabs';
-import PayrollList from '@/components/dashboard/PayrollList';
 import PayrollNotice from '@/components/dashboard/PayrollNotice';
+import PayrollList from '@/components/payroll/PayrollList';
 import theme from '@/styles/theme';
 
 const SalaryPage = () => (
