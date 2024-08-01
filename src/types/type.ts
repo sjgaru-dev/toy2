@@ -24,3 +24,13 @@ export type UserType = {
   team: string;
   position: string;
 };
+
+export interface UpcomingType {
+  img?: string;
+  name: string;
+  event: string;
+  badge: {
+    text: string;
+    color: string;
+  };
+}
