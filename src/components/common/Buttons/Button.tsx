@@ -17,7 +17,11 @@ const Button: React.FC<ButtonProps> = ({
   customStyle,
   children,
 }: ButtonProps) => (
-  <button css={[baseButtonStyles, buttonStyles[styleType], customStyle]} onClick={onClick}>
+  <button
+    css={[baseButtonStyles, buttonStyles[styleType], customStyle]}
+    onClick={onClick}
+    disabled={styleType === 'disabled'}
+  >
     {children}
   </button>
 );

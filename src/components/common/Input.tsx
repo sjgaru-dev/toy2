@@ -6,6 +6,7 @@ import theme from '@/styles/theme';
 
 interface InputProps {
   label?: string;
+  name?: string;
   value: string;
   placeholder: string;
   onChange: (value: string) => void;
@@ -17,6 +18,7 @@ interface InputProps {
 
 const Input = ({
   label,
+  name,
   value,
   placeholder,
   onChange,
@@ -36,6 +38,7 @@ const Input = ({
           placeholder={placeholder}
           readOnly={readOnly}
           type={type}
+          name={name}
         />
         {isError && <Description css={errorStyle}>{errorMessage}</Description>}
       </div>
