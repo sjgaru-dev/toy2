@@ -15,12 +15,12 @@ dayjs.locale('ko');
 const localizer = dayjsLocalizer(dayjs);
 
 interface CalendarProps {
-  schedule: EventModel[];
+  events: EventModel[];
   activeDate: Date;
   setActiveDate: (date: Date) => void;
 }
 
-const Calendar = ({ schedule, activeDate, setActiveDate }: CalendarProps) => {
+const Calendar = ({ events, activeDate, setActiveDate }: CalendarProps) => {
   const Toolbar = ({ date, onNavigate }: ToolbarProps) => (
     <CalendarToolbar setActiveDate={setActiveDate} date={date} onNavigate={onNavigate} />
   );
@@ -40,7 +40,7 @@ const Calendar = ({ schedule, activeDate, setActiveDate }: CalendarProps) => {
       <BigCalendar
         css={calendarStyle}
         localizer={localizer as DateLocalizer}
-        events={schedule}
+        events={events}
         startAccessor='start'
         endAccessor='end'
         components={{
