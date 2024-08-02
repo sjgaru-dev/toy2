@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Buttons/Button';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
-import { LOADING_TYPE, REGEX, RESPONSE_STATUS_TYPE, TEXT } from '@/constants/signIn';
+import { REGEX, TEXT } from '@/constants/signIn';
 import { useAppDispatch } from '@/store/hooks';
 import { fetchSignIn } from '@/store/reducer/authSlice';
 import { RootState } from '@/store/store';
@@ -16,8 +16,9 @@ import { inputValid } from '@/utils/validators';
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
-  const { isLoading, isAuth } = useSelector((state: RootState) => state.auth);
-  const { status } = useSelector((state: RootState) => state.auth.apiResult);
+
+  const { status } = useSelector((state: RootState) => state.auth);
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -28,8 +29,8 @@ const SignIn = () => {
   const [ableLogin, setAbleLogin] = useState(false);
 
   useEffect(() => {
-    if (isAuth) navigate('/');
-  }, [isAuth, navigate]);
+    if (status === 'succeeded') navigate('/');
+  }, [status]);
 
   useEffect(() => {
     setAbleLogin(!isInputError && !isInputErrorPwd);
@@ -76,11 +77,9 @@ const SignIn = () => {
           errorMessage={TEXT.password.regexError}
         />
         <div>
-          {status === RESPONSE_STATUS_TYPE.error && (
-            <span css={errorStyle}>{TEXT.signin.error}</span>
-          )}
+          {status === 'failed' && <span css={errorStyle}>{TEXT.signin.error}</span>}
           <Button styleType={ableLogin ? 'primary' : 'disabled'}>
-            {isLoading === LOADING_TYPE.pending ? <Spinner /> : TEXT.signin.label}
+            {status === 'loading' ? <Spinner /> : TEXT.signin.label}
           </Button>
         </div>
       </form>
