@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import UserDefaultImage from '@/assets/image/userDefault';
+import UserDefaultImage from '@/assets/image/user_default.svg';
 import Badge from '@/components/common/Badge';
 import theme from '@/styles/theme';
 import { UpcomingProps } from '@/types/props';
@@ -18,11 +18,7 @@ const UpcomingSchdules = ({ upcomingData }: UpcomingProps) => (
           {upcomingData.map((item, index) => (
             <div key={index} css={upcomingItemStyle}>
               <div css={imgDivStyle}>
-                {item.img ? (
-                  <img src={item.img} css={imgStyle} />
-                ) : (
-                  <UserDefaultImage size={'3rem'} />
-                )}
+                <img src={item.img ? item.img : UserDefaultImage} css={imgStyle} />
               </div>
               <div css={[textWrapStyle, nameStyle]}>{item.name}</div>
               <div css={[textWrapStyle, eventStyle]}>{item.event}</div>
@@ -65,6 +61,7 @@ const imgDivStyle = css`
 const imgStyle = css`
   width: 3rem;
   height: 3rem;
+  border-radius: inherit;
 `;
 
 const textWrapStyle = css`
