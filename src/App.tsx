@@ -20,8 +20,10 @@ const router = createBrowserRouter([
       { path: PATH.SCHEDULE, element: <SchedulePage /> },
       {
         path: PATH.SALARY,
-        element: <SalaryPage />,
-        children: [{ path: PATH.SALARY_DETAIL, element: <PayrollDetail /> }],
+        children: [
+          { path: '', element: <SalaryPage /> },
+          { path: PATH.SALARY_DETAIL, element: <PayrollDetail /> },
+        ],
       },
       { path: PATH.PROFILE, element: <ProfilePage /> },
     ],
