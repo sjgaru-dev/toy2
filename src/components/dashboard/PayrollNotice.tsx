@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import moneyImage from '@/assets/images/money.png';
 import Button from '@/components/common/Buttons/Button';
+import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
 const PayrollNotice: React.FC = () => {
@@ -25,7 +26,9 @@ const PayrollNotice: React.FC = () => {
   }, []);
 
   const handleButtonClick = () => {
-    navigate(`/salary/detail/${year}/${month}`);
+    navigate(
+      `${PATH.SALARY}/${PATH.SALARY_DETAIL.replace(':year', year.toString()).replace(':month', month.toString())}`
+    );
   };
 
   if (!isVisible) return null;
