@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import authSlice from '@/store/reducer/authSlice';
+import authReducer from '@/store/reducer/authSlice';
+import scheduleReducer from '@/store/reducer/scheduleSlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authSlice,
+    auth: authReducer,
+    schedule: scheduleReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
