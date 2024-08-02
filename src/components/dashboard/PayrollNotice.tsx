@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import { css } from '@emotion/react';
 import { HiX } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
 
 import moneyImage from '@/assets/images/money.png';
 import Button from '@/components/common/Buttons/Button';
@@ -9,9 +10,22 @@ import theme from '@/styles/theme';
 
 const PayrollNotice: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const navigate = useNavigate();
+
+  const { year, month } = useMemo(() => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    if (currentMonth === 1) {
+      return { year: currentYear - 1, month: 12 };
+    } else {
+      return { year: currentYear, month: currentMonth - 1 };
+    }
+  }, []);
 
   const handleButtonClick = () => {
-    // 급여명세서 상세 페이지로 이동
+    navigate(`/salary/detail/${year}/${month}`);
   };
 
   if (!isVisible) return null;
@@ -22,7 +36,7 @@ const PayrollNotice: React.FC = () => {
         <HiX css={closeIconStyle} />
       </button>
       <h3 css={titleStyle}>
-        2024년 7월
+        {year}년 {month}월
         <br /> 급여명세서가 도착했습니다!
       </h3>
       <img src={moneyImage} alt='돈뭉치' css={imageStyle} />
