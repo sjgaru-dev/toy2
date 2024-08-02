@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-import { Description, Field } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/Buttons/Button';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
 import { LOADING_TYPE, REGEX, RESPONSE_STATUS_TYPE, TEXT } from '@/constants/signIn';
+import { useAppDispatch } from '@/store/hooks';
 import { fetchSignIn } from '@/store/reducer/authSlice';
-import { AppDispatch, RootState } from '@/store/store';
+import { RootState } from '@/store/store';
 import theme from '@/styles/theme';
-import { inputValid } from '@/utils/Validators';
+import { inputValid } from '@/utils/validators';
 
 const SignIn = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const { isLoading, isAuth } = useSelector((state: RootState) => state.auth);
   const { status } = useSelector((state: RootState) => state.auth.apiResult);
   const navigate = useNavigate();
@@ -25,9 +25,19 @@ const SignIn = () => {
   const [isInputError, setInputError] = useState(false);
   const [isInputErrorPwd, setInputErrorPwd] = useState(false);
 
+  const [ableLogin, setAbleLogin] = useState(false);
+
   useEffect(() => {
     if (isAuth) navigate('/');
   }, [isAuth, navigate]);
+
+  useEffect(() => {
+    setAbleLogin(!isInputError && !isInputErrorPwd);
+  }, [isInputError, isInputErrorPwd]);
+
+  useEffect(() => {
+    setAbleLogin(false);
+  }, []);
 
   const onChangeEmail = (value: string) => {
     setInputError(!inputValid({ value, regex: REGEX.email }));
@@ -49,6 +59,7 @@ const SignIn = () => {
       <form onSubmit={onSubmit}>
         <Input
           value={email}
+          name='email'
           placeholder={TEXT.email.placeholder}
           onChange={onChangeEmail}
           isError={isInputError}
@@ -57,6 +68,7 @@ const SignIn = () => {
 
         <Input
           type='password'
+          name='password'
           value={password}
           placeholder={TEXT.password.placeholder}
           onChange={onChangePassword}
@@ -65,11 +77,11 @@ const SignIn = () => {
         />
         <div>
           {status === RESPONSE_STATUS_TYPE.error && (
-            <Field>
-              <Description css={errorStyle}>{TEXT.signin.error}</Description>
-            </Field>
+            <span css={errorStyle}>{TEXT.signin.error}</span>
           )}
-          <Button>{isLoading === LOADING_TYPE.pending ? <Spinner /> : TEXT.signin.label}</Button>
+          <Button styleType={ableLogin ? 'primary' : 'disabled'}>
+            {isLoading === LOADING_TYPE.pending ? <Spinner /> : TEXT.signin.label}
+          </Button>
         </div>
       </form>
       <div css={msgStyle}>
@@ -101,7 +113,7 @@ const msgStyle = css`
 
 const errorStyle = css`
   display: block;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0;
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.alertRed};
 `;
