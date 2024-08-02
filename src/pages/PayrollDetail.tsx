@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { css } from '@emotion/react';
 import html2canvas from 'html2canvas';
 import { HiDownload } from 'react-icons/hi';
@@ -10,7 +8,7 @@ import IconTextButton from '@/components/common/Buttons/IconTextButton';
 import Header from '@/components/layout/Header';
 import theme from '@/styles/theme';
 
-const PayrollDetail: React.FC = () => {
+const PayrollDetail = () => {
   const { year, month } = useParams<{ year: string; month: string }>();
 
   const payrollData = {
