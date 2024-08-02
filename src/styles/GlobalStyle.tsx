@@ -135,7 +135,7 @@ const baseStyles = css`
     font-family: 'Pretendard', sans-serif;
     font-weight: 400;
     line-height: 1;
-    font-size: ${theme.fontSizes.xlarge}; /* 16px */
+    font-size: ${theme.fontSizes.large}; /* 16px */
     color: ${theme.colors.black};
     letter-spacing: -0.14px;
     background-color: ${theme.colors.bgGray};
