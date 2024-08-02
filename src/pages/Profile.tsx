@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { css } from '@emotion/react';
 import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
 
 import Button from '@/components/common/Buttons/Button';
@@ -55,6 +56,7 @@ const ProfilePage = () => {
     <div>
       {isEditing && <Header />}
       <div
+        css={wrapperStyle}
         style={{
           display: 'block',
           textAlign: 'center',
@@ -63,7 +65,7 @@ const ProfilePage = () => {
         }}
       >
         <div style={{ position: 'relative', display: 'inline-block' }}>
-          <img src={user.pic} width='150px' alt='profile' style={{ borderRadius: '50%' }} />
+          <img src={user.pic} width='120px' alt='profile' style={{ borderRadius: '50%' }} />
           {isEditing && (
             <div
               style={{
@@ -87,7 +89,7 @@ const ProfilePage = () => {
             display: 'flex',
             textAlign: 'center',
             justifyContent: 'center',
-            margin: '1rem 0 2rem 0',
+            marginTop: '1rem',
           }}
         >
           {!isEditing && (
@@ -104,7 +106,7 @@ const ProfilePage = () => {
           )}
         </div>
       </div>
-      <div style={{ margin: '0 2rem 3rem 2rem' }}>
+      <div css={[formStyle, wrapperStyle]}>
         {/* Button components */}
         <Input
           label='이름'
@@ -179,8 +181,8 @@ const ProfilePage = () => {
           readOnly={true}
         />
       </div>
-      <div style={{ paddingBottom: '96px' }}>
-        {!isEditing && <Button styleType='secondary'>로그아웃</Button>}
+      <div css={signOutButtonDivStyle}>
+        {!isEditing && <Button styleType='tertiary'>로그아웃</Button>}
         {isEditing && (
           <>
             <div style={{ margin: '1rem' }}>
@@ -206,5 +208,22 @@ const ProfilePage = () => {
     </div>
   );
 };
+
+const wrapperStyle = css`
+  background-color: ${theme.colors.white};
+`;
+
+const formStyle = css`
+  margin-top: 12px;
+  padding: 20px 16px;
+`;
+
+const signOutButtonDivStyle = css`
+  padding-bottom: 80px;
+
+  button {
+    border-radius: 0;
+  }
+`;
 
 export default ProfilePage;
