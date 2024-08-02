@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import { css } from '@emotion/react';
 import { HiX } from 'react-icons/hi';
@@ -13,6 +13,23 @@ const PayrollNotice: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => {
+      localStorage.removeItem('payrollNoticeChecked');
+    });
+
+    const checked = localStorage.getItem('payrollNoticeChecked');
+    if (checked) {
+      setIsVisible(false);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', () => {
+        localStorage.removeItem('payrollNoticeChecked');
+      });
+    };
+  }, []);
+
   const { year, month } = useMemo(() => {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -26,16 +43,22 @@ const PayrollNotice: React.FC = () => {
   }, []);
 
   const handleButtonClick = () => {
+    localStorage.setItem('payrollNoticeChecked', 'true');
     navigate(
       `${PATH.SALARY}/${PATH.SALARY_DETAIL.replace(':year', year.toString()).replace(':month', month.toString())}`
     );
+  };
+
+  const handleCloseClick = () => {
+    localStorage.setItem('payrollNoticeChecked', 'true');
+    setIsVisible(false);
   };
 
   if (!isVisible) return null;
 
   return (
     <div css={cardContainerStyle}>
-      <button css={closeButtonStyle} onClick={() => setIsVisible(false)}>
+      <button css={closeButtonStyle} onClick={handleCloseClick}>
         <HiX css={closeIconStyle} />
       </button>
       <h3 css={titleStyle}>
