@@ -13,23 +13,6 @@ const PayrollNotice: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    window.addEventListener('beforeunload', () => {
-      localStorage.removeItem('payrollNoticeChecked');
-    });
-
-    const checked = localStorage.getItem('payrollNoticeChecked');
-    if (checked) {
-      setIsVisible(false);
-    }
-
-    return () => {
-      window.removeEventListener('beforeunload', () => {
-        localStorage.removeItem('payrollNoticeChecked');
-      });
-    };
-  }, []);
-
   const { year, month } = useMemo(() => {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -41,6 +24,30 @@ const PayrollNotice: React.FC = () => {
       return { year: currentYear, month: currentMonth - 1 };
     }
   }, []);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => {
+      localStorage.removeItem('payrollNoticeChecked');
+    });
+
+    const checked = localStorage.getItem('payrollNoticeChecked');
+    const lastNoticeMonth = localStorage.getItem('lastNoticeMonth');
+    const currentNoticeMonth = `${year}-${month}`;
+
+    if (lastNoticeMonth !== currentNoticeMonth) {
+      localStorage.setItem('lastNoticeMonth', currentNoticeMonth);
+      localStorage.removeItem('payrollNoticeChecked');
+      setIsVisible(true);
+    } else if (checked) {
+      setIsVisible(false);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', () => {
+        localStorage.removeItem('payrollNoticeChecked');
+      });
+    };
+  }, [year, month]);
 
   const handleButtonClick = () => {
     localStorage.setItem('payrollNoticeChecked', 'true');
