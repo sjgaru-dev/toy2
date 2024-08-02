@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { css } from '@emotion/react';
+
 import CalendarComponent from '@/components/Calendar/Calendar';
 import theme from '@/styles/theme';
 import { EventModel } from '@/types/calendar';
@@ -103,8 +105,8 @@ const SchedulePage = () => {
 
   return (
     <>
-      <h1 className='page-title wrapper'>일정</h1>
-      <div className='wrapper'>
+      <h1 className='page-title'>일정</h1>
+      <div className='wrapper' css={calendarWrapperStyle}>
         <CalendarComponent
           schedule={schedule}
           activeDate={activeDate}
@@ -114,5 +116,10 @@ const SchedulePage = () => {
     </>
   );
 };
+
+const calendarWrapperStyle = css`
+  background-color: ${theme.colors.white};
+  padding-bottom: 1rem;
+`;
 
 export default SchedulePage;

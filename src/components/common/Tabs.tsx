@@ -12,7 +12,7 @@ interface TabsProps {
 
 const Tabs: React.FC<TabsProps> = ({ tabs, children }) => (
   <TabGroup>
-    <TabList css={tabListStyle}>
+    <TabList css={tabListStyle} className='wrapper'>
       {tabs.map((tab) => (
         <Tab key={tab} css={tabStyle}>
           {({ selected }) => (
@@ -33,18 +33,16 @@ const Tabs: React.FC<TabsProps> = ({ tabs, children }) => (
 
 const tabListStyle = css`
   display: flex;
+  gap: 28px;
   background-color: ${theme.colors.white};
 `;
 
 const tabStyle = css`
-  flex: 1;
-  padding: 32px 0 0 0;
+  border: 0;
+  outline: none;
   font-size: ${theme.fontSizes.large};
   background: transparent;
-  border: 0;
   cursor: pointer;
-  outline: none;
-  text-align: center;
 
   &:focus {
     outline: none;
@@ -55,16 +53,14 @@ const tabContainerStyle = (selected: boolean) => css`
   width: fit-content;
   position: relative;
   display: flex;
-  margin: 0 2rem;
   padding-bottom: 8px;
-  border-bottom: ${selected
-    ? `3px solid ${theme.colors.primary}`
-    : `1px solid ${theme.colors.borderLightGray}`};
+  border-bottom: ${selected ? `3px solid ${theme.colors.primary}` : 0};
+  border-bottom: ${`3px solid ${selected ? theme.colors.primary : theme.colors.white}`};
 `;
 
 const tabTextStyle = (selected: boolean) => css`
-  color: ${selected ? theme.colors.black : theme.colors.black};
-  font-weight: ${selected ? 'bold' : 'normal'};
+  color: ${selected ? theme.colors.black : theme.colors.darkGray};
+  font-weight: bold;
 `;
 
 export default Tabs;
