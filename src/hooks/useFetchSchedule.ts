@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useSelector } from 'react-redux';
-
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchSchedule, ScheduleState } from '@/store/reducer/scheduleSlice';
 import { EventModel } from '@/types/calendar';
 import { getEventList } from '@/utils/schedule';
@@ -11,15 +9,13 @@ const useFetchSchedule = () => {
   const [events, setEvents] = useState<EventModel[]>([]);
 
   const dispatch = useAppDispatch();
-  const { schedule, status, error } = useSelector(
+  const { schedule, status, error } = useAppSelector(
     (state: { schedule: ScheduleState }) => state.schedule
   );
 
   useEffect(() => {
-    if (!schedule.length) {
-      dispatch(fetchSchedule());
-    }
-  }, [schedule.length, dispatch]);
+    dispatch(fetchSchedule());
+  }, [dispatch]);
 
   useEffect(() => {
     if (schedule.length > 0) {

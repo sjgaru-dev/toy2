@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import CalendarComponent from '@/components/Calendar/Calendar';
+import CalendarComponent from '@/components/calendar/Calendar';
 import DaySchedule from '@/components/daySchedule/DaySchedule';
 import useFetchSchedule from '@/hooks/useFetchSchedule';
 import theme from '@/styles/theme';
