@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { css } from '@emotion/react';
 import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
 
-import Button from '@/components/common/Buttons/Button';
-import IconTextButton from '@/components/common/Buttons/IconTextButton';
+import Button from '@/components/common/buttons/Button';
+import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';

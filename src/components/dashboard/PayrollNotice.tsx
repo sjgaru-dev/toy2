@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { HiX } from 'react-icons/hi';
 
 import moneyImage from '@/assets/images/money.png';
-import Button from '@/components/common/Buttons/Button';
+import Button from '@/components/common/buttons/Button';
 import theme from '@/styles/theme';
 
 const PayrollNotice: React.FC = () => {
