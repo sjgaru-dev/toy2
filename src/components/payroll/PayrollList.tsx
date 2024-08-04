@@ -60,7 +60,7 @@ const containerStyle = css`
 `;
 
 const yearHeaderStyle = css`
-  font-size: ${theme.fontSizes.xlarge};
+  font-size: ${theme.fontSizes.large};
   font-weight: bold;
   padding: 32px 0 12px;
   color: ${theme.colors.darkGray};

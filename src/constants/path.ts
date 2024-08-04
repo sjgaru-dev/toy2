@@ -2,6 +2,7 @@ export const PATH = {
   HOME: '/',
   SCHEDULE: '/schedule',
   SALARY: '/salary',
+  SALARY_DETAIL: 'detail/:year/:month',
   PROFILE: '/profile',
   SIGNIN: '/signin',
 };

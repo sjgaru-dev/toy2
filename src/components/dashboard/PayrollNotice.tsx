@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { HiX } from 'react-icons/hi';
 
 import moneyImage from '@/assets/images/money.png';
-import Button from '@/components/common/Buttons/Button';
+import Button from '@/components/common/buttons/Button';
 import theme from '@/styles/theme';
 
 const PayrollNotice: React.FC = () => {
@@ -33,7 +33,7 @@ const PayrollNotice: React.FC = () => {
 
 const cardContainerStyle = css`
   position: relative;
-  padding: 20px;
+  padding: 24px 20px 20px;
   margin: ${theme.fontSizes.small} 1rem;
   border: 1px solid ${theme.colors.borderLightGray};
   border-radius: 8px;
@@ -52,7 +52,6 @@ const closeButtonStyle = css`
 `;
 
 const titleStyle = css`
-  margin-top: 1rem;
   font-size: ${theme.fontSizes.xxlarge};
   font-weight: 700;
   line-height: 1.4;

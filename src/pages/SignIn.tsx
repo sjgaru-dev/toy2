@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import Button from '@/components/common/Buttons/Button';
+import Button from '@/components/common/buttons/Button';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
 import { REGEX, TEXT } from '@/constants/signIn';
