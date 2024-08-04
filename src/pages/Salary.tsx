@@ -9,7 +9,7 @@ import theme from '@/styles/theme';
 const SalaryPage = () => (
   <div>
     <h1 className='page-title'>급여</h1>
-    <Tabs tabs={['급여명세서', '정정 내역', '정정 신청']}>
+    <Tabs tabs={['급여명세서', '정정 신청 내역', '정정 신청']}>
       <div>
         <PayrollNotice />
         <PayrollList />

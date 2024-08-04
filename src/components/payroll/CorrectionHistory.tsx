@@ -1,78 +1,83 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { Disclosure } from '@headlessui/react';
-import { HiChevronUp } from 'react-icons/hi2';
+import { HiArrowRight } from 'react-icons/hi2';
+import { LiaQuestionCircle } from 'react-icons/lia';
+import { useNavigate } from 'react-router-dom';
 
 import Badge from '@/components/common/Badge';
+import IconTextButton from '@/components/common/Buttons/IconTextButton';
 import theme from '@/styles/theme';
 
 interface CorrectionItem {
+  id: string;
   date: string;
   content: string;
   status: 'pending' | 'approved' | 'rejected';
-  details: string;
 }
 
 const CorrectionHistory: React.FC = () => {
+  const navigate = useNavigate();
   const correctionItems: CorrectionItem[] = [
     {
-      date: '2023-06-14',
+      id: '1',
+      date: '2024-06-14',
       content: '무급 휴가 안 썼어요',
       status: 'pending',
-      details: '상세 내용...',
     },
     {
-      date: '2023-06-14',
+      id: '2',
+      date: '2024-06-14',
       content: '무급 휴가 안 썼어요',
       status: 'approved',
-      details: '상세 내용...',
     },
     {
-      date: '2023-06-14',
+      id: '3',
+      date: '2024-06-14',
       content: '간식비 또 주세요',
       status: 'rejected',
-      details: '상세 내용...',
     },
-    { date: '2023-06-14', content: '간식비 제발', status: 'approved', details: '상세 내용...' },
+    { id: '4', date: '2024-06-14', content: '간식비 제발', status: 'approved' },
     {
-      date: '2023-06-14',
+      id: '5',
+      date: '2024-06-14',
       content: '무급 휴가 안 썼어요',
       status: 'approved',
-      details: '상세 내용...',
     },
   ];
 
+  const handleViewDetails = (id: string) => {
+    navigate(`/correction-details/${id}`);
+  };
+
   return (
-    <div css={containerStyle}>
-      <h2 css={titleStyle}>정정 내역</h2>
-      <div>
-        {correctionItems.map((item, index) => (
-          <Disclosure key={index}>
-            {({ open }) => (
-              <div css={itemStyle}>
-                <div css={cardStyle}>
-                  <Disclosure.Button css={buttonStyle}>
-                    <div css={headerStyle}>
-                      <div css={dateStyle}>{item.date}</div>
-                      <Badge
-                        label={getStatusLabel(item.status)}
-                        color={getStatusColor(item.status)}
-                      />
-                    </div>
-                    <div css={contentStyle}>{item.content}</div>
-                    <HiChevronUp
-                      css={css`
-                        ${chevronStyle}
-                        transform: ${open ? 'rotate(180deg)' : 'rotate(0deg)'};
-                      `}
-                    />
-                  </Disclosure.Button>
-                  <Disclosure.Panel css={panelStyle}>{item.details}</Disclosure.Panel>
-                </div>
+    <div css={containerStyle} className='wrapper'>
+      <h2 css={titleStyle}>
+        정정 신청 내역 <LiaQuestionCircle css={iconStyle} />
+      </h2>
+      <div css={listStyle}>
+        {correctionItems.map((item) => (
+          <div key={item.id} css={itemStyle}>
+            <div css={cardStyle}>
+              <div css={contentWrapper}>
+                <div css={dateStyle}>{item.date}</div>
+                <div css={contentStyle}>{item.content}</div>
               </div>
-            )}
-          </Disclosure>
+              <div css={actionWrapper}>
+                <div css={badgeWrapper}>
+                  <Badge label={getStatusLabel(item.status)} color={getStatusColor(item.status)} />
+                </div>
+                <IconTextButton
+                  Icon={HiArrowRight}
+                  onClick={() => handleViewDetails(item.id)}
+                  iconPosition='right'
+                  backgroundButton={false}
+                >
+                  상세
+                </IconTextButton>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
@@ -106,66 +111,73 @@ const getStatusColor = (status: string) => {
 };
 
 const containerStyle = css`
-  padding: 24px;
-  background-color: ${theme.colors.bgGray};
-  border-radius: 16px;
+  background-color: ${theme.colors.white};
+  height: 100vh;
 `;
 
 const titleStyle = css`
-  font-size: ${theme.fontSizes.xxlarge};
+  font-size: ${theme.fontSizes.xlarge};
   font-weight: bold;
-  margin-bottom: 24px;
-  color: ${theme.colors.primary};
-`;
-
-const itemStyle = css`
-  margin-bottom: 24px;
-`;
-
-const cardStyle = css`
-  background-color: ${theme.colors.white};
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-`;
-
-const buttonStyle = css`
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  padding: 16px;
-  cursor: pointer;
-`;
-
-const headerStyle = css`
+  padding-top: 32px;
+  margin-bottom: 16px;
+  color: ${theme.colors.black};
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  gap: 8px;
 `;
 
-const dateStyle = css`
-  font-size: ${theme.fontSizes.small};
+const iconStyle = css`
+  font-size: ${theme.fontSizes.xxlarge};
   color: ${theme.colors.darkGray};
 `;
 
-const contentStyle = css`
-  font-size: ${theme.fontSizes.large};
-  font-weight: 500;
+const listStyle = css`
+  display: grid;
+  gap: 16px;
 `;
 
-const chevronStyle = css`
-  width: 20px;
-  height: 20px;
-  margin-left: auto;
-  transition: transform 0.2s ease-in-out;
+const itemStyle = css`
+  background-color: ${theme.colors.white};
+  border-radius: 8px;
+  border: 1px solid ${theme.colors.lightGray};
 `;
 
-const panelStyle = css`
+const cardStyle = css`
   padding: 16px;
-  background-color: ${theme.colors.lightestGray};
-  font-size: ${theme.fontSizes.normal};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const contentWrapper = css`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const dateStyle = css`
+  font-size: ${theme.fontSizes.large};
+  color: ${theme.colors.darkGray};
+  margin-bottom: 8px;
+`;
+
+const contentStyle = css`
+  font-size: ${theme.fontSizes.xlarge};
+  font-weight: 500;
+  color: ${theme.colors.darkestGray};
+`;
+
+const actionWrapper = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const badgeWrapper = css`
+  span {
+    padding: 8px 16px;
+    font-size: ${theme.fontSizes.normal};
+  }
 `;
 
 export default CorrectionHistory;
