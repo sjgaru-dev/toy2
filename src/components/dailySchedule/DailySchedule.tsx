@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { HiChevronRight } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
+import { scheduleColors } from '@/constants/colors';
 import theme from '@/styles/theme';
 import { ScheduleModel } from '@/types/schedule';
 import { formatDate, formatTimeRange, isDailySchedule } from '@/utils/dailySchedule';
@@ -43,7 +44,9 @@ const DailySchedule = ({ date, schedules }: DailyScheduleProps) => {
         </h3>
         <ul css={scheduleItemsStyle}>
           {filteredSchedules.length === 0 ? (
-            <li css={emptyListStyle}>일정이 없습니다.</li>
+            <li css={emptyListStyle} className='empty'>
+              일정이 없습니다.
+            </li>
           ) : (
             filteredSchedules.map((schedule, idx) => (
               <li
@@ -51,8 +54,8 @@ const DailySchedule = ({ date, schedules }: DailyScheduleProps) => {
                 css={scheduleItemStyle(schedule)}
                 onClick={() => handleClick(schedule)}
               >
-                <h3>
-                  {schedule.subject}
+                <h3 css={subjectStyle}>
+                  <span>{schedule.subject}</span>
                   <HiChevronRight />
                 </h3>
                 <p>{formatTimeRange(date, schedule)}</p>
@@ -67,7 +70,7 @@ const DailySchedule = ({ date, schedules }: DailyScheduleProps) => {
 
 // 스타일
 const dailyScheduleWrap = css`
-  margin: 1rem 0 100px;
+  margin: 12px 0 80px;
   padding: 1.5rem 1rem;
   background-color: ${theme.colors.white};
   h2 {
@@ -110,6 +113,17 @@ const scheduleItemsStyle = css`
   width: inherit;
   gap: 12px;
   cursor: pointer;
+
+  &:has(.empty) {
+    position: relative;
+    height: 100px;
+
+    .empty{
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 `;
 const emptyListStyle = css`
   width: inherit;
@@ -123,7 +137,6 @@ const emptyListStyle = css`
 const scheduleItemStyle = (schedule: ScheduleModel) => css`
   position: relative;
   min-width: 200px;
-  height: 35px;
   background-color: ${theme.colors.white};
   color: ${theme.colors.darkestGray};
   padding-left: 12px;
@@ -133,8 +146,8 @@ const scheduleItemStyle = (schedule: ScheduleModel) => css`
     top: 0;
     left: 0;
     width: 4px;
-    height: 35px;
-    background-color: ${schedule.color};
+    height: 100%;
+    background-color: ${scheduleColors[schedule.color] + '9a'};
   }
   h3 {
     color: ${theme.colors.darkestGray};
@@ -142,11 +155,17 @@ const scheduleItemStyle = (schedule: ScheduleModel) => css`
     line-height: 1.2rem;
     display: flex;
     align-items: center;
+    gap: 4px;
   }
-  h3 > svg {
+  svg {
+    display: block;
     width: 12px;
+    height: 14px;
     stroke-width: 1.2;
     color: ${theme.colors.darkGray};
+    flex-shrink: 0;
+    min-width: 12px;
+    min-height: 14px;
   }
   p {
     line-height: 1rem;
@@ -154,4 +173,16 @@ const scheduleItemStyle = (schedule: ScheduleModel) => css`
     font-size: ${theme.fontSizes.small};
   }
 `;
+const subjectStyle = css`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  span {
+    display: block;
+    margin-left: 0;
+    color: ${theme.colors.darkestGray};
+    flex-shrink: 1;
+  }
+`;
+
 export default DailySchedule;
