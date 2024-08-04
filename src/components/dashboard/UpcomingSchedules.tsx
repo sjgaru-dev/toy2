@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import UserDefaultImage from '@/assets/image/user_default.svg';
+import UserDefaultImage from '@/assets/images/user_default.svg';
 import Badge from '@/components/common/Badge';
 import theme from '@/styles/theme';
 import { UpcomingProps } from '@/types/props';

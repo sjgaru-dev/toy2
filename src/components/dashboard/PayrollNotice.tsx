@@ -5,7 +5,8 @@ import { HiX } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 import moneyImage from '@/assets/images/money.png';
-import Button from '@/components/common/Buttons/Button';
+
+import Button from '@/components/common/buttons/Button';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 

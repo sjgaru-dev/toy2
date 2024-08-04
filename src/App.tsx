@@ -21,7 +21,7 @@ const router = createBrowserRouter([
       {
         path: PATH.SALARY,
         children: [
-          { path: '', element: <SalaryPage /> },
+          { index: true, element: <SalaryPage /> },
           { path: PATH.SALARY_DETAIL, element: <PayrollDetail /> },
         ],
       },

@@ -4,7 +4,7 @@ import { HiDownload } from 'react-icons/hi';
 import { useParams } from 'react-router-dom';
 
 import Badge from '@/components/common/Badge';
-import IconTextButton from '@/components/common/Buttons/IconTextButton';
+import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Header from '@/components/layout/Header';
 import theme from '@/styles/theme';
 
