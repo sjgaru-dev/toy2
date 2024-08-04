@@ -5,8 +5,8 @@ import { HiPlus } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 import CalendarComponent from '@/components/calendar/Calendar';
-import DaySchedule from '@/components/daySchedule/DaySchedule';
 import { PATH } from '@/constants/path';
+import DailySchedule from '@/components/dailySchedule/DailySchedule';
 import useFetchSchedule from '@/hooks/useFetchSchedule';
 import theme from '@/styles/theme';
 
@@ -24,7 +24,7 @@ const SchedulePage = () => {
         <CalendarComponent events={events} activeDate={activeDate} setActiveDate={setActiveDate} />
       </div>
       <div>
-        <DaySchedule date={activeDate.toISOString()} schedules={schedule} />
+        <DailySchedule date={activeDate.toISOString()} schedules={schedule} />
       </div>
       <div css={addButtonContainerStyle}>
         <button onClick={onAddEvent}>

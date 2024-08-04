@@ -1,28 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import { css } from '@emotion/react';
 import { HiX } from 'react-icons/hi';
+import { useNavigate } from 'react-router-dom';
 
 import moneyImage from '@/assets/images/money.png';
+
 import Button from '@/components/common/buttons/Button';
+import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
 const PayrollNotice: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const navigate = useNavigate();
+
+  const { year, month } = useMemo(() => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    if (currentMonth === 1) {
+      return { year: currentYear - 1, month: 12 };
+    } else {
+      return { year: currentYear, month: currentMonth - 1 };
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => {
+      localStorage.removeItem('payrollNoticeChecked');
+    });
+
+    const checked = localStorage.getItem('payrollNoticeChecked');
+    const lastNoticeMonth = localStorage.getItem('lastNoticeMonth');
+    const currentNoticeMonth = `${year}-${month}`;
+
+    if (lastNoticeMonth !== currentNoticeMonth) {
+      localStorage.setItem('lastNoticeMonth', currentNoticeMonth);
+      localStorage.removeItem('payrollNoticeChecked');
+      setIsVisible(true);
+    } else if (checked) {
+      setIsVisible(false);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', () => {
+        localStorage.removeItem('payrollNoticeChecked');
+      });
+    };
+  }, [year, month]);
 
   const handleButtonClick = () => {
-    // 급여명세서 상세 페이지로 이동
+    localStorage.setItem('payrollNoticeChecked', 'true');
+    navigate(
+      `${PATH.SALARY}/${PATH.SALARY_DETAIL.replace(':year', year.toString()).replace(':month', month.toString())}`
+    );
+  };
+
+  const handleCloseClick = () => {
+    localStorage.setItem('payrollNoticeChecked', 'true');
+    setIsVisible(false);
   };
 
   if (!isVisible) return null;
 
   return (
     <div css={cardContainerStyle}>
-      <button css={closeButtonStyle} onClick={() => setIsVisible(false)}>
+      <button css={closeButtonStyle} onClick={handleCloseClick}>
         <HiX css={closeIconStyle} />
       </button>
       <h3 css={titleStyle}>
-        2024년 7월
+        {year}년 {month}월
         <br /> 급여명세서가 도착했습니다!
       </h3>
       <img src={moneyImage} alt='돈뭉치' css={imageStyle} />
