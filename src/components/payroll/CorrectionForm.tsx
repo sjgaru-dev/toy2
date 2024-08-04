@@ -21,14 +21,19 @@ const CorrectionForm: React.FC = () => {
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
+  const isSubmitDisabled = !title.trim() || !reason.trim();
+
   useEffect(() => {
     const today = new Date();
     const formattedDate = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')} (${['일', '월', '화', '수', '목', '금', '토'][today.getDay()]})`;
     setApplicationDate(formattedDate);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+    if (e) e.preventDefault();
+    if (!isSubmitDisabled) {
+      // 여기에 제출 로직 구현
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +95,10 @@ const CorrectionForm: React.FC = () => {
             />
           </div>
           <div css={buttonStyle}>
-            <Button onClick={() => {}} styleType='primary'>
+            <Button
+              onClick={() => handleSubmit()}
+              styleType={isSubmitDisabled ? 'disabled' : 'primary'}
+            >
               정정 신청하기
             </Button>
           </div>
@@ -167,7 +175,6 @@ const selectWrapperStyle = css`
     position: absolute;
     background-color: ${theme.colors.white};
     width: 100%;
-    z-index: 2000;
   }
 `;
 
