@@ -1,6 +1,7 @@
 export const PATH = {
   HOME: '/',
   SCHEDULE: '/schedule',
+  SCHEDULE_DETAIL: 'detail/:id',
   SCHEDULE_ADD: 'add',
   SCHEDULE_EDIT: 'edit',
   SALARY: '/salary',

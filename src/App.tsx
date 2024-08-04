@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import CorrectionHistory from '@/components/payroll/CorrectionHistory';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/Root';
+import DailyScheduleDetail from '@/pages/DailyScheduleDetail';
 import HomePage from '@/pages/Home';
 import NotFoundPage from '@/pages/NotFound';
 import PayrollDetail from '@/pages/PayrollDetail';
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
         path: PATH.SCHEDULE,
         children: [
           { index: true, element: <SchedulePage /> },
+          { path: PATH.SCHEDULE_DETAIL, element: <DailyScheduleDetail /> },
           { path: PATH.SCHEDULE_ADD, element: <ScheduleAddPage /> },
           { path: PATH.SCHEDULE_EDIT, element: <ScheduleEditPage /> },
         ],
