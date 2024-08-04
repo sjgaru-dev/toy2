@@ -1,12 +1,9 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { HiArrowRight } from 'react-icons/hi2';
-import { LiaQuestionCircle } from 'react-icons/lia';
 import { useNavigate } from 'react-router-dom';
 
 import Badge from '@/components/common/Badge';
-import IconTextButton from '@/components/common/Buttons/IconTextButton';
 import theme from '@/styles/theme';
 
 interface CorrectionItem {
@@ -52,12 +49,10 @@ const CorrectionHistory: React.FC = () => {
 
   return (
     <div css={containerStyle} className='wrapper'>
-      <h2 css={titleStyle}>
-        정정 신청 내역 <LiaQuestionCircle css={iconStyle} />
-      </h2>
+      <h2 css={titleStyle}>정정 신청 내역</h2>
       <div css={listStyle}>
         {correctionItems.map((item) => (
-          <div key={item.id} css={itemStyle}>
+          <div key={item.id} css={itemStyle} onClick={() => handleViewDetails(item.id)}>
             <div css={cardStyle}>
               <div css={contentWrapper}>
                 <div css={dateStyle}>{item.date}</div>
@@ -67,14 +62,6 @@ const CorrectionHistory: React.FC = () => {
                 <div css={badgeWrapper}>
                   <Badge label={getStatusLabel(item.status)} color={getStatusColor(item.status)} />
                 </div>
-                <IconTextButton
-                  Icon={HiArrowRight}
-                  onClick={() => handleViewDetails(item.id)}
-                  iconPosition='right'
-                  backgroundButton={false}
-                >
-                  상세
-                </IconTextButton>
               </div>
             </div>
           </div>
@@ -112,23 +99,18 @@ const getStatusColor = (status: string) => {
 
 const containerStyle = css`
   background-color: ${theme.colors.white};
-  height: 100vh;
+  height: 745px;
 `;
 
 const titleStyle = css`
   font-size: ${theme.fontSizes.xlarge};
   font-weight: bold;
   padding-top: 32px;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
   color: ${theme.colors.black};
   display: flex;
   align-items: center;
   gap: 8px;
-`;
-
-const iconStyle = css`
-  font-size: ${theme.fontSizes.xxlarge};
-  color: ${theme.colors.darkGray};
 `;
 
 const listStyle = css`
@@ -140,6 +122,7 @@ const itemStyle = css`
   background-color: ${theme.colors.white};
   border-radius: 8px;
   border: 1px solid ${theme.colors.lightGray};
+  cursor: pointer;
 `;
 
 const cardStyle = css`
