@@ -1,24 +1,25 @@
 import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/images/logo.svg';
 import Button from '@/components/common/buttons/Button';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
+import { PATH } from '@/constants/path';
 import { REGEX, TEXT } from '@/constants/signIn';
-import { useAppDispatch } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchSignIn } from '@/store/reducer/authSlice';
 import { RootState } from '@/store/store';
 import theme from '@/styles/theme';
+import { checkAuth } from '@/utils/auth';
 import { inputValid } from '@/utils/validators';
 
 const SignIn = () => {
   const dispatch = useAppDispatch();
 
-  const { status } = useSelector((state: RootState) => state.auth);
+  const { status } = useAppSelector((state: RootState) => state.auth);
 
   const navigate = useNavigate();
 
@@ -30,16 +31,16 @@ const SignIn = () => {
   const [ableLogin, setAbleLogin] = useState(false);
 
   useEffect(() => {
-    if (status === 'succeeded') navigate('/');
+    setAbleLogin(false);
+  }, []);
+
+  useEffect(() => {
+    if (checkAuth()) navigate(PATH.HOME);
   }, [status]);
 
   useEffect(() => {
     setAbleLogin(!isInputError && !isInputErrorPwd);
   }, [isInputError, isInputErrorPwd]);
-
-  useEffect(() => {
-    setAbleLogin(false);
-  }, []);
 
   const onChangeEmail = (value: string) => {
     setInputError(!inputValid({ value, regex: REGEX.email }));
@@ -79,12 +80,10 @@ const SignIn = () => {
           isError={isInputErrorPwd}
           errorMessage={TEXT.password.regexError}
         />
-        <div>
-          {status === 'failed' && <span css={errorStyle}>{TEXT.signin.error}</span>}
-          <Button styleType={ableLogin ? 'primary' : 'disabled'}>
-            {status === 'loading' ? <Spinner /> : TEXT.signin.label}
-          </Button>
-        </div>
+        {status === 'failed' && <span css={errorStyle}>{TEXT.signin.error}</span>}
+        <Button type='submit' styleType={ableLogin ? 'primary' : 'disabled'}>
+          {status === 'loading' ? <Spinner /> : TEXT.signin.label}
+        </Button>
       </form>
       <div css={msgStyle}>
         {TEXT.common.msg}

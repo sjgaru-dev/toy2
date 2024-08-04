@@ -26,12 +26,10 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.status = 'succeeded';
         state.error = null;
-        state.uid = action.payload.response.user.uid;
       })
       .addCase(fetchSignIn.rejected, (state, action) => {
         state.isLoading = false;
         state.status = 'failed';
-        state.uid = undefined;
         state.error = action.error.message || '로그인에 실패했습니다.';
       })
       .addCase(fetchSignOut.pending, (state) => {
@@ -39,7 +37,14 @@ export const authSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchSignOut.fulfilled, (state) => {
-        state = { ...initialState, uid: undefined };
+        state.isLoading = false;
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(fetchSignOut.rejected, (state, action) => {
+        state.isLoading = false;
+        state.status = 'failed';
+        state.error = action.error.message || '로그아웃에 실패했습니다.';
       });
   },
 });

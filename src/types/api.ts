@@ -5,7 +5,6 @@ export type status = 'idle' | 'loading' | 'succeeded' | 'failed';
 export interface AuthState {
   isLoading: boolean;
   status: status;
-  uid?: string;
   error: string | null;
 }
 
