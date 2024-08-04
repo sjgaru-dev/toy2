@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
 import { Fieldset } from '@headlessui/react';
@@ -15,8 +15,11 @@ const CorrectionForm: React.FC = () => {
   const [applicationDate, setApplicationDate] = useState('');
   const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('');
+  const [file, setFile] = useState<File | null>(null);
 
-  const categoryOptions = ['연장 근무', '휴일 근무', '휴근 유가', '기타'];
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
   useEffect(() => {
     const today = new Date();
@@ -26,6 +29,16 @@ const CorrectionForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleFileButtonClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -43,15 +56,22 @@ const CorrectionForm: React.FC = () => {
 
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
-            <IconTextButton
-              Icon={HiOutlineDocumentArrowUp}
-              onClick={() => {
-                /* 파일 업로드 로직 */
-              }}
-              iconPosition='left'
-            >
-              파일 추가
-            </IconTextButton>
+            <div css={fileUploadStyle}>
+              {file && <span css={fileNameStyle}>{file.name}</span>}
+              <input
+                type='file'
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+              />
+              <IconTextButton
+                Icon={HiOutlineDocumentArrowUp}
+                onClick={handleFileButtonClick}
+                iconPosition='left'
+              >
+                파일 추가
+              </IconTextButton>
+            </div>
           </div>
 
           <div css={rowStyle}>
@@ -126,7 +146,7 @@ const textareaStyle = css`
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
   font-size: ${theme.fontSizes.large};
-  color: ${theme.colors.darkGray};
+  color: ${theme.colors.darkestGray};
   resize: none;
 
   &::placeholder {
@@ -147,11 +167,23 @@ const selectWrapperStyle = css`
     position: absolute;
     background-color: ${theme.colors.white};
     width: 100%;
+    z-index: 2000;
   }
 `;
 
 const buttonStyle = css`
   margin-bottom: 32px;
+`;
+
+const fileUploadStyle = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const fileNameStyle = css`
+  font-size: ${theme.fontSizes.normal};
+  color: ${theme.colors.darkGray};
 `;
 
 export default CorrectionForm;
