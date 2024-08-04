@@ -28,6 +28,7 @@ const ProfilePage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imgUrl, setImgUrl] = useState(user.pic);
 
   const handleInputChange = (value: string) => {
     setInputValue(value);
@@ -35,6 +36,12 @@ const ProfilePage = () => {
 
   const handleEditClick = () => {
     setIsEditing(true);
+  };
+
+  const defaultImgUrl = '/src/assets/images/user_default.svg';
+
+  const handleDeleteImgClick = () => {
+    setImgUrl(defaultImgUrl);
   };
 
   const handleCancelClick = () => {
@@ -59,7 +66,7 @@ const ProfilePage = () => {
 
       <div css={wrapperStyle}>
         <div>
-          <img src={user.pic} css={imgStyle} />
+          <img src={imgUrl} css={imgStyle} />
           {isEditing && (
             <div css={caremaIconStyle}>
               <MdOutlineCameraAlt size={24} />
@@ -73,7 +80,7 @@ const ProfilePage = () => {
             </IconTextButton>
           )}
           {isEditing && (
-            <IconTextButton Icon={MdDelete} onClick={handleEditClick}>
+            <IconTextButton Icon={MdDelete} onClick={handleDeleteImgClick}>
               이미지 삭제
             </IconTextButton>
           )}
