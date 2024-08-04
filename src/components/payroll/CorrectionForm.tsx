@@ -73,6 +73,7 @@ const CorrectionForm: React.FC = () => {
                 Icon={HiOutlineDocumentArrowUp}
                 onClick={handleFileButtonClick}
                 iconPosition='left'
+                backgroundButton={true}
               >
                 파일 추가
               </IconTextButton>
