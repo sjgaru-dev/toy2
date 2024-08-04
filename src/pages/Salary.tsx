@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 
 import Tabs from '@/components/common/Tabs';
 import PayrollNotice from '@/components/dashboard/PayrollNotice';
+import CorrectionHistory from '@/components/payroll/CorrectionHistory';
 import PayrollList from '@/components/payroll/PayrollList';
 import theme from '@/styles/theme';
 
@@ -13,7 +14,9 @@ const SalaryPage = () => (
         <PayrollNotice />
         <PayrollList />
       </div>
-      <div css={tabContentsStyle}>정정 내역 내용</div>
+      <div css={tabContentsStyle}>
+        <CorrectionHistory />
+      </div>
       <div css={tabContentsStyle}>정정 신청 내용</div>
     </Tabs>
   </div>
