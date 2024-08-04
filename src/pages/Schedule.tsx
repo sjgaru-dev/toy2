@@ -2,15 +2,20 @@ import { useState } from 'react';
 
 import { css } from '@emotion/react';
 import { HiPlus } from 'react-icons/hi2';
+import { useNavigate } from 'react-router-dom';
 
 import CalendarComponent from '@/components/calendar/Calendar';
 import DaySchedule from '@/components/daySchedule/DaySchedule';
+import { PATH } from '@/constants/path';
 import useFetchSchedule from '@/hooks/useFetchSchedule';
 import theme from '@/styles/theme';
 
 const SchedulePage = () => {
   const { schedule, events, status, error } = useFetchSchedule();
   const [activeDate, setActiveDate] = useState(new Date());
+  const navigate = useNavigate();
+
+  const onAddEvent = () => navigate(`${PATH.SCHEDULE}/${PATH.SCHEDULE_ADD}`);
 
   return (
     <>
@@ -22,7 +27,7 @@ const SchedulePage = () => {
         <DaySchedule date={activeDate.toISOString()} schedules={schedule} />
       </div>
       <div css={addButtonContainerStyle}>
-        <button>
+        <button onClick={onAddEvent}>
           <HiPlus />
         </button>
       </div>

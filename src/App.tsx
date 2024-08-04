@@ -8,6 +8,7 @@ import PayrollDetail from '@/pages/PayrollDetail';
 import ProfilePage from '@/pages/Profile';
 import SalaryPage from '@/pages/Salary';
 import SchedulePage from '@/pages/Schedule';
+import ScheduleFormPage from '@/pages/ScheduleForm';
 import SignIn from '@/pages/SignIn';
 
 const router = createBrowserRouter([
@@ -17,7 +18,14 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: PATH.SCHEDULE, element: <SchedulePage /> },
+      {
+        path: PATH.SCHEDULE,
+        children: [
+          { index: true, element: <SchedulePage /> },
+          { path: PATH.SCHEDULE_ADD, element: <ScheduleFormPage /> },
+          { path: PATH.SCHEDULE_EDIT, element: <ScheduleFormPage /> },
+        ],
+      },
       {
         path: PATH.SALARY,
         children: [
