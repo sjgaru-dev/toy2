@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+import CorrectionHistory from '@/components/payroll/CorrectionHistory';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/Root';
 import HomePage from '@/pages/Home';
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <SalaryPage /> },
           { path: PATH.SALARY_DETAIL, element: <PayrollDetail /> },
+          { path: PATH.SALARY_CORRECTION_HISTORY, element: <CorrectionHistory /> },
         ],
       },
       { path: PATH.PROFILE, element: <ProfilePage /> },
