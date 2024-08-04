@@ -30,6 +30,7 @@ const Select = ({ options, selected, onChange }: SelectProps) => (
 );
 
 const wrapperStyle = css`
+  position: relative;
   width: 110px;
 `;
 
@@ -55,11 +56,14 @@ const selectedStyle = css`
 `;
 
 const optionsStyle = css`
+  position: absolute;
+  width: 110px;
   padding: 4px 8px;
   margin-top: 4px;
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
   font-weight: 500;
+  background-color: ${theme.colors.white};
 `;
 
 const optionStyle = css`
@@ -68,6 +72,7 @@ const optionStyle = css`
   border-radius: 4px;
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.darkestGray};
+  cursor: pointer;
 
   &[data-selected] {
     background-color: ${theme.colors.bgGray};

@@ -35,7 +35,7 @@ const iconButtonStyle = css`
   align-items: center;
   gap: 4px;
   height: ${theme.heights.short};
-  padding: 8px 10px;
+  padding: 8px 8px 8px 12px;
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
   color: ${theme.colors.darkestGray};

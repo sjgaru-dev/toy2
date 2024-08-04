@@ -32,7 +32,7 @@ const DailySchedule = ({ date, schedules }: DailyScheduleProps) => {
   }, [filterSchedules]);
 
   const handleClick = (schedule: ScheduleModel) => {
-    navigate(`/schedule/${schedule.id}`);
+    navigate(`/schedule/detail/${schedule.id}`, { state: { schedule } });
   };
 
   return (
