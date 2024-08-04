@@ -4,8 +4,8 @@ import dayjs from 'dayjs';
 import { Calendar as BigCalendar, DateLocalizer, dayjsLocalizer } from 'react-big-calendar';
 import 'dayjs/locale/ko';
 
-import CalendarToolbar from '@/components/Calendar/CalendarToolbar';
-import DateCellWrapper from '@/components/Calendar/DateCellWrapper';
+import CalendarToolbar from '@/components/calendar/CalendarToolbar';
+import DateCellWrapper from '@/components/calendar/DateCellWrapper';
 import theme from '@/styles/theme';
 import { DateCellProps, EventModel, ToolbarProps } from '@/types/calendar';
 

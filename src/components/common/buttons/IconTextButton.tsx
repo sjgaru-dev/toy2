@@ -33,9 +33,9 @@ const iconButtonStyle = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   height: ${theme.heights.short};
-  padding: 8px;
+  padding: 8px 10px;
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
   color: ${theme.colors.darkestGray};

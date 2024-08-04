@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 
 import Tabs from '@/components/common/Tabs';
 import PayrollNotice from '@/components/dashboard/PayrollNotice';
+import CorrectionForm from '@/components/payroll/CorrectionForm';
 import CorrectionHistory from '@/components/payroll/CorrectionHistory';
 import PayrollList from '@/components/payroll/PayrollList';
 import theme from '@/styles/theme';

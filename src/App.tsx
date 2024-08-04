@@ -22,7 +22,7 @@ const router = createBrowserRouter([
       {
         path: PATH.SALARY,
         children: [
-          { path: '', element: <SalaryPage /> },
+          { index: true, element: <SalaryPage /> },
           { path: PATH.SALARY_DETAIL, element: <PayrollDetail /> },
           { path: PATH.SALARY_CORRECTION_HISTORY, element: <CorrectionHistory /> },
         ],
