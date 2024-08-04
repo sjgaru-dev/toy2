@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import logo from '@/assets/images/logo.svg';
 import Button from '@/components/common/buttons/Button';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
@@ -42,7 +43,9 @@ const SignIn = () => {
 
   return (
     <div css={containerStyle}>
-      <div css={logoStyle}>임시로고</div>
+      <div css={logoStyle}>
+        <img src={logo} alt='STUDIO T' />
+      </div>
       <form onSubmit={onSubmit}>
         <Input
           label='이메일'
@@ -83,6 +86,7 @@ const containerStyle = css`
 `;
 
 const logoStyle = css`
+  margin-bottom: 2rem;
   text-align: center;
   line-height: 2rem;
 `;
