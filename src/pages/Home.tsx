@@ -1,5 +1,7 @@
 import { css } from '@emotion/react';
+import { HiOutlineBell } from 'react-icons/hi2';
 
+import logoIcon from '@/assets/images/logo_icon.svg';
 import PayrollNotice from '@/components/dashboard/PayrollNotice';
 import UpcomingSchedules from '@/components/dashboard/UpcomingSchedules';
 import theme from '@/styles/theme';
@@ -7,17 +9,29 @@ import { UpcomingType } from '@/types/type';
 
 const HomePage = () => (
   <>
-    <header className='wrapper'>
-      <h1 css={logoStyle}>Studio T Logo</h1>
+    <header css={headerStyle}>
+      <h1 css={titleStyle} className='wrapper'>
+        <img src={logoIcon} alt='공룡 로고' />
+      </h1>
     </header>
     <PayrollNotice />
     <UpcomingSchedules upcomingData={mockData} />
   </>
 );
 
-const logoStyle = css`
-  padding: 1rem 0;
-  font-weight: bold;
+const headerStyle = css`
+  height: 60px;
+  border-bottom: 1px solid ${theme.colors.borderLightGray};
+`;
+
+const titleStyle = css`
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  img {
+    width: 50px;
+  }
 `;
 
 const mockData: UpcomingType[] = [
