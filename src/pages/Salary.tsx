@@ -18,7 +18,9 @@ const SalaryPage = () => (
       <div css={tabContentsStyle}>
         <CorrectionHistory />
       </div>
-      <div css={tabContentsStyle}>정정 신청 내용</div>
+      <div css={tabContentsStyle}>
+        <CorrectionForm />
+      </div>
     </Tabs>
   </div>
 );

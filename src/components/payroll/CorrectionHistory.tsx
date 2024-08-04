@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import { LiaQuestionCircle } from 'react-icons/lia';
 import { useNavigate } from 'react-router-dom';
 
 import Badge from '@/components/common/Badge';
@@ -49,7 +51,17 @@ const CorrectionHistory: React.FC = () => {
 
   return (
     <div css={containerStyle} className='wrapper'>
-      <h2 css={titleStyle}>정정 신청 내역</h2>
+      <h2 css={titleStyle}>
+        정정 신청 내역
+        <Popover css={popoverStyle}>
+          <PopoverButton css={popoverButtonStyle}>
+            <LiaQuestionCircle />
+          </PopoverButton>
+          <PopoverPanel css={popoverPanelStyle}>
+            <p>신청 내역을 누르면 신청 상세 내역으로 이동합니다.</p>
+          </PopoverPanel>
+        </Popover>
+      </h2>
       <div css={listStyle}>
         {correctionItems.map((item) => (
           <div key={item.id} css={itemStyle} onClick={() => handleViewDetails(item.id)}>
@@ -111,6 +123,34 @@ const titleStyle = css`
   display: flex;
   align-items: center;
   gap: 8px;
+`;
+
+const popoverStyle = css`
+  position: relative;
+`;
+
+const popoverButtonStyle = css`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: ${theme.fontSizes.xxlarge};
+  color: ${theme.colors.darkGray};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const popoverPanelStyle = css`
+  position: absolute;
+  z-index: 10;
+  background-color: ${theme.colors.darkGray};
+  border-radius: 8px;
+  padding: 12px;
+  width: 300px;
+  font-size: ${theme.fontSizes.normal};
+  color: ${theme.colors.white};
+  font-weight: 300;
+  margin-top: 4px;
 `;
 
 const listStyle = css`
