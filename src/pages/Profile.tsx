@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { css } from '@emotion/react';
 import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
 
+import { getUserData } from '@/api/User';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
@@ -54,60 +55,42 @@ const ProfilePage = () => {
 
   return (
     <div>
-      {isEditing && <Header />}
-      <div
-        css={wrapperStyle}
-        style={{
-          display: 'block',
-          textAlign: 'center',
-          justifyContent: 'center',
-          padding: '2rem 0',
-        }}
-      >
-        <div style={{ position: 'relative', display: 'inline-block' }}>
-          <img src={user.pic} width='120px' alt='profile' style={{ borderRadius: '50%' }} />
+      {/* {isEditing && <Header />} */}
+
+      <div css={wrapperStyle}>
+        <div>
+          <img src={user.pic} css={imgStyle} />
           {isEditing && (
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '-10px',
-                backgroundColor: theme.colors.toastGray,
-                color: 'white',
-                borderRadius: '50%',
-                border: '2px solid white',
-                padding: '8px 8px 4px 8px',
-              }}
-            >
+            <div css={caremaIconStyle}>
               <MdOutlineCameraAlt size={24} />
             </div>
           )}
         </div>
-
-        <div
-          style={{
-            display: 'flex',
-            textAlign: 'center',
-            justifyContent: 'center',
-            marginTop: '1rem',
-          }}
-        >
+        <div css={editIconStyle}>
           {!isEditing && (
             <IconTextButton Icon={MdEdit} onClick={handleEditClick}>
               프로필 수정
             </IconTextButton>
           )}
           {isEditing && (
-            <>
-              <IconTextButton Icon={MdDelete} onClick={handleEditClick}>
-                이미지 삭제
-              </IconTextButton>
-            </>
+            <IconTextButton Icon={MdDelete} onClick={handleEditClick}>
+              이미지 삭제
+            </IconTextButton>
           )}
         </div>
       </div>
-      <div css={[formStyle, wrapperStyle]}>
-        {/* Button components */}
+
+      <div css={[formStyle]}>
+        {isEditing && (
+          <Input
+            label='비밀번호'
+            value={inputValue}
+            placeholder='수정하실 비밀번호를 입력하세요'
+            onChange={handleInputChange}
+            type='password'
+            readOnly={!isEditing}
+          />
+        )}
         <Input
           label='이름'
           value={user.name}
@@ -131,14 +114,6 @@ const ProfilePage = () => {
           onChange={handleInputChange}
           type='text'
           readOnly={true}
-        />
-        <Input
-          label='비밀번호'
-          value={inputValue}
-          placeholder='비밀번호를 입력하세요'
-          onChange={handleInputChange}
-          type='password'
-          readOnly={!isEditing}
         />
         <Input
           label='연락처'
@@ -181,11 +156,11 @@ const ProfilePage = () => {
           readOnly={true}
         />
       </div>
-      <div css={signOutButtonDivStyle}>
+      <div css={signOutButtonStyle}>
         {!isEditing && <Button styleType='tertiary'>로그아웃</Button>}
         {isEditing && (
           <>
-            <div style={{ margin: '1rem' }}>
+            <div css={editButtonStyle}>
               <Button>수정하기</Button>
               <Button styleType='ghost' onClick={handleCancelClick}>
                 취소
@@ -210,20 +185,49 @@ const ProfilePage = () => {
 };
 
 const wrapperStyle = css`
+  padding: 3rem;
+  text-align: center;
+  justify-content: center;
   background-color: ${theme.colors.white};
+`;
+
+const imgStyle = css`
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  border-radius: 50%;
+`;
+
+const caremaIconStyle = css`
+  position: absolute;
+  bottom: 10px;
+  right: -10px;
+  background-color: ${theme.colors.toastGray};
+  color: white;
+  border-radius: 50%;
+  border: 2px solid white;
+  padding: 8px 8px 4px 8px;
+`;
+
+const editIconStyle = css`
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin-top: 1rem;
 `;
 
 const formStyle = css`
   margin-top: 12px;
-  padding: 20px 16px;
+  padding: 20px 25px;
+  background-color: ${theme.colors.white};
 `;
 
-const signOutButtonDivStyle = css`
+const signOutButtonStyle = css`
   padding-bottom: 80px;
+`;
 
-  button {
-    border-radius: 0;
-  }
+const editButtonStyle = css`
+  margin: 1rem;
 `;
 
 export default ProfilePage;
