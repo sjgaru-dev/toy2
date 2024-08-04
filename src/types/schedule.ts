@@ -1,6 +1,4 @@
-export interface ScheduleModel {
-  id: number;
-  userNo: number;
+export interface ScheduleFormDataModel {
   color: string;
   subject: string;
   content: string;
@@ -10,4 +8,9 @@ export interface ScheduleModel {
   endTime: string;
   isAlarm: boolean;
   alarmTime: number;
+}
+
+export interface ScheduleModel extends ScheduleFormDataModel {
+  id: number;
+  userNo: number;
 }

@@ -141,6 +141,18 @@ const baseStyles = css`
     background-color: ${theme.colors.bgGray};
   }
 
+  input,
+  textarea {
+    font-family: 'Pretendard', sans-serif;
+    letter-spacing: -0.14px;
+    color: ${theme.colors.black};
+
+    &::placeholder {
+      color: ${theme.colors.darkGray};
+      opacity: 1; /* Firefox */
+    }
+  }
+
   .wrapper {
     padding: 0 16px;
   }

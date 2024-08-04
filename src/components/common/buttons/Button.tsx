@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 import { css, SerializedStyles } from '@emotion/react';
 
@@ -8,6 +8,7 @@ interface ButtonProps {
   onClick?: () => void; // 리턴값이 없는 함수
   styleType?: 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'text' | 'disabled';
   customStyle?: SerializedStyles;
+  type?: 'button' | 'submit' | 'reset';
   children: ReactNode;
 }
 
@@ -16,11 +17,13 @@ const Button: React.FC<ButtonProps> = ({
   styleType = 'primary',
   customStyle,
   children,
+  type = 'button',
 }: ButtonProps) => (
   <button
     css={[baseButtonStyles, buttonStyles[styleType], customStyle]}
     onClick={onClick}
     disabled={styleType === 'disabled'}
+    type={type}
   >
     {children}
   </button>

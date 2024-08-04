@@ -3,20 +3,23 @@ import { css } from '@emotion/react';
 import Tabs from '@/components/common/Tabs';
 import PayrollNotice from '@/components/dashboard/PayrollNotice';
 import CorrectionForm from '@/components/payroll/CorrectionForm';
+import CorrectionHistory from '@/components/payroll/CorrectionHistory';
 import PayrollList from '@/components/payroll/PayrollList';
 import theme from '@/styles/theme';
 
 const SalaryPage = () => (
   <div>
     <h1 className='page-title'>급여</h1>
-    <Tabs tabs={['급여명세서', '정정 내역', '정정 신청']}>
+    <Tabs tabs={['급여명세서', '정정 신청 내역', '정정 신청']}>
       <div>
         <PayrollNotice />
         <PayrollList />
       </div>
-      <div css={tabContentsStyle}>정정 내역 내용</div>
       <div css={tabContentsStyle}>
-        <CorrectionForm /> {}
+        <CorrectionHistory />
+      </div>
+      <div css={tabContentsStyle}>
+        <CorrectionForm />
       </div>
     </Tabs>
   </div>
