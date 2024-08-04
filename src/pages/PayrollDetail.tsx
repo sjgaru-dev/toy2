@@ -44,11 +44,9 @@ const PayrollDetail = () => {
 
   return (
     <>
-      <div css={topStyle}>
-        <Header />
-      </div>
-      <div id='payroll-container' css={payrollContainerStyle}>
-        <div css={headerStyle} className='wrapper'>
+      <Header />
+      <div id='payroll-container'>
+        <div css={headerStyle}>
           <div css={headerTitleSectionStyle}>
             <span css={headerTitleStyle}>
               {year}년 {month}월 급여명세서
@@ -81,9 +79,9 @@ const PayrollDetail = () => {
           </section>
         </div>
         <div css={deductionStyle} className='wrapper'>
-          <section css={sectionStyle}>
+          <section css={[sectionStyle, lastSectionStyle]}>
             <h2 css={sectionTitleStyle}>
-              공제 총액{' '}
+              공제 총액
               <span css={deductionsTotalColorStyle}>
                 {payrollData.deductions.toLocaleString()}원
               </span>
@@ -119,26 +117,32 @@ const PayrollDetail = () => {
   );
 };
 
-const topStyle = css`
-  background-color: ${theme.colors.white};
-  padding-top: 16px;
-`;
-
 const headerStyle = css`
   background-color: ${theme.colors.white};
-  margin-bottom: 16px;
-  height: 100px;
+  padding: 20px 16px;
+`;
+
+const totalAmountSectionStyle = css`
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  padding-top: 8px;
+`;
+
+const totalAmountStyle = css`
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: ${theme.colors.black};
+  margin-right: 8px;
 `;
 
 const paymentStyle = css`
   background-color: ${theme.colors.white};
-  margin-bottom: 16px;
-  height: 250px;
+  margin: 12px 0;
 `;
 
 const deductionStyle = css`
   background-color: ${theme.colors.white};
-  height: 408px;
 `;
 
 const headerTitleSectionStyle = css`
@@ -150,21 +154,6 @@ const headerTitleStyle = css`
   font-size: ${theme.fontSizes.large};
   font-weight: bold;
   color: ${theme.colors.darkGray};
-  margin-top: 16px;
-`;
-
-const totalAmountSectionStyle = css`
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  padding: 8px 0;
-`;
-
-const totalAmountStyle = css`
-  font-size: ${theme.fontSizes.xxlarge};
-  font-weight: bold;
-  color: ${theme.colors.black};
-  margin-right: 16px;
 `;
 
 const downloadButtonStyle = css`
@@ -172,30 +161,32 @@ const downloadButtonStyle = css`
 `;
 
 const sectionStyle = css`
-  padding: 24px 0;
-  border-bottom: 1px solid ${theme.colors.lightestGray};
-  &:last-of-type {
-    border-bottom: none;
-  }
+  padding: 2rem 0;
 `;
 
 const sectionTitleStyle = css`
   font-size: ${theme.fontSizes.xlarge};
   font-weight: bold;
   color: ${theme.colors.black};
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid ${theme.colors.lightestGray};
-  padding-bottom: 16px;
 `;
 
 const itemStyle = css`
   display: flex;
   justify-content: space-between;
-  font-size: ${theme.fontSizes.large};
+  font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.darkGray};
-  margin-bottom: 32px;
+  margin-bottom: 1.2rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  span:last-child {
+    color: ${theme.colors.darkestGray};
+  }
 `;
 
 const totalAmountColorStyle = css`
@@ -206,9 +197,8 @@ const deductionsTotalColorStyle = css`
   color: ${theme.colors.paleOrange};
 `;
 
-const payrollContainerStyle = css`
-  background-color: ${theme.colors.lightestGray};
-  padding-bottom: 16px;
+const lastSectionStyle = css`
+  padding-bottom: 112px;
 `;
 
 export default PayrollDetail;
