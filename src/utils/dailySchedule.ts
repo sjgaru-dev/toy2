@@ -14,6 +14,10 @@ const formatTime = (time: string) => {
   return dayjs().hour(parseInt(hour)).minute(parseInt(minute)).format('A hh:mm');
 };
 
+// 날짜 포맷팅
+
+const formatOnlyDate = (date: string) => dayjs(date).format('M월 D일');
+
 // DateType 정의
 type DateType = 'same' | 'start' | 'end' | 'between';
 
@@ -60,4 +64,4 @@ const isDailySchedule = (date: string, schedule: ScheduleModel): boolean => {
   );
 };
 
-export { formatDate, formatTime, formatTimeRange, isDailySchedule };
+export { formatDate, formatOnlyDate, formatTime, formatTimeRange, isDailySchedule };

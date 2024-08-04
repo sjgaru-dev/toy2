@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/Root';
+import DailyScheduleDetail from '@/pages/DailyScheduleDetail';
 import HomePage from '@/pages/Home';
 import NotFoundPage from '@/pages/NotFound';
 import PayrollDetail from '@/pages/PayrollDetail';
@@ -17,7 +18,13 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: PATH.SCHEDULE, element: <SchedulePage /> },
+      {
+        path: PATH.SCHEDULE,
+        children: [
+          { index: true, element: <SchedulePage /> },
+          { path: PATH.SCHEDULE_DETAIL, element: <DailyScheduleDetail /> },
+        ],
+      },
       {
         path: PATH.SALARY,
         children: [
