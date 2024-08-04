@@ -12,3 +12,12 @@ export const scheduleColors: ColorModel = {
   blue: theme.colors.paleBlue,
   purple: theme.colors.palePurple,
 };
+
+export const schedulePickerColors: ColorModel = {
+  red: theme.pickerColors.paleRed,
+  orange: theme.pickerColors.paleOrange,
+  yellow: theme.pickerColors.paleYellow,
+  green: theme.pickerColors.paleGreen,
+  blue: theme.pickerColors.paleBlue,
+  purple: theme.pickerColors.palePurple,
+};

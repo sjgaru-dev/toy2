@@ -1,3 +1,4 @@
+import { scheduleColors } from './../constants/colors';
 const colors = {
   primary: '#2DC384',
   hoverPrimary: '#3BB77D',
@@ -21,6 +22,15 @@ const colors = {
   toastGray: '#7D7F84',
 };
 
+const pickerColors = {
+  paleRed: '#F68383',
+  paleOrange: '#FFAB8C',
+  paleYellow: '#FAD781',
+  paleGreen: '#95DB94',
+  paleBlue: '#A2CDFF',
+  palePurple: '#C394FF',
+};
+
 const fontSizes = {
   xsmall: '10px',
   small: '12px',
@@ -41,15 +51,18 @@ const heights = {
 export type ColorsTypes = typeof colors;
 export type FontSizeTypes = typeof fontSizes;
 export type HeightsTypes = typeof heights;
+export type ScheduleColorsTypes = typeof pickerColors;
 
 interface Theme {
   colors: ColorsTypes;
+  pickerColors: ScheduleColorsTypes;
   fontSizes: FontSizeTypes;
   heights: HeightsTypes;
 }
 // ThemeProvider 적용하기 위해 Theme 타입을 정의
 const theme: Theme = {
   colors,
+  pickerColors,
   fontSizes,
   heights,
 };
