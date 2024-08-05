@@ -1,72 +1,58 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { css } from '@emotion/react';
-import { MdEdit } from 'react-icons/md';
+import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
+import Header from '@/components/layout/Header';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 
-const ProfilePage = () => {
+export const user = {
+  name: '홍길동',
+  nickname: 'gildong',
+  email: 'abd@abc.com',
+  password: '1234asdf',
+  phone: '010-1234-5678',
+  birth: '1990-01-01',
+  part: '개발팀',
+  position: '개발자',
+  joinDate: '2021-01-01',
+  pic: 'https://firebasestorage.googleapis.com/v0/b/tiramisu-31d41.appspot.com/o/1.jpg?alt=media&token=c69fefa1-e36e-4cf6-bcd6-06b075fe8166',
+};
+
+const ProfileEdit = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleInputChange = (value: string) => {
+    setInputValue(value);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
 
   const defaultImg = '/src/assets/images/user_default.svg';
 
-  const navigate = useNavigate();
-  // const auth = getAuth();
-  // const user = auth.currentUser;
-
-  const user = {
-    name: '홍길동',
-    nickname: 'gildong',
-    email: 'abd@abc.com',
-    password: '1234asdf',
-    phone: '010-1234-5678',
-    birthday: '1990-01-01',
-    part: '개발팀',
-    position: '개발자',
-    hireDate: '2021-01-01',
-    pic: 'https://firebasestorage.googleapis.com/v0/b/tiramisu-31d41.appspot.com/o/1.jpg?alt=media&token=c69fefa1-e36e-4cf6-bcd6-06b075fe8166',
-  };
-
-  console.log(user);
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     if (user) {
-  //       const db = getFirestore();
-  //       const userDoc = doc(db, 'users', user.uid);
-  //       const userSnap = await getDoc(userDoc);
-
-  //       if (userSnap.exists()) {
-  //         setUserData(userSnap.data());
-  //       } else {
-  //         console.log('No such document!');
-  //       }
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, [user]);
-
-  const handleEditClick = () => {
-    navigate('/profileEdit');
+  const handleDeleteImgClick = () => {
+    setImgUrl(defaultImg);
   };
 
   const handleLogoutClick = () => {
     setIsModalOpen(true);
   };
 
-  // 로그아웃 버튼 클릭 시 로그아웃 처리
-
   const dispatch = useAppDispatch();
   const { status } = useAppSelector((state) => state.auth);
-
   const handleModalLogout = async () => {
     await dispatch(fetchSignOut());
     if (status === 'succeeded') navigate('/signin');
@@ -78,22 +64,47 @@ const ProfilePage = () => {
 
   return (
     <div>
+      {isEditing && <Header />}
+
       <div css={wrapperStyle}>
         <div css={imgStyle}>
-          <img src={user.pic || defaultImg} css={imgStyle} />
+          <img src={imgUrl} css={imgStyle} />
+          {isEditing && (
+            <div css={caremaIconStyle}>
+              <MdOutlineCameraAlt size={24} />
+            </div>
+          )}
         </div>
         <div css={editIconStyle}>
-          <IconTextButton Icon={MdEdit} onClick={handleEditClick}>
-            프로필 수정
-          </IconTextButton>
+          {!isEditing && (
+            <IconTextButton Icon={MdEdit} onClick={handleEditClick}>
+              프로필 수정
+            </IconTextButton>
+          )}
+          {isEditing && (
+            <IconTextButton Icon={MdDelete} onClick={handleDeleteImgClick}>
+              이미지 삭제
+            </IconTextButton>
+          )}
         </div>
       </div>
 
       <div css={[formStyle]}>
+        {isEditing && (
+          <Input
+            label='비밀번호'
+            value={inputValue}
+            placeholder='수정하실 비밀번호를 입력하세요'
+            onChange={handleInputChange}
+            type='password'
+            readOnly={!isEditing}
+          />
+        )}
         <Input
           label='이름'
           value={user.name}
           placeholder='이름을 입력하세요'
+          onChange={handleInputChange}
           type='text'
           readOnly={true}
         />
@@ -101,13 +112,15 @@ const ProfilePage = () => {
           label='닉네임'
           value={user.nickname}
           placeholder='닉네임을 입력하세요'
+          onChange={handleInputChange}
           type='text'
-          readOnly={true}
+          readOnly={!isEditing}
         />
         <Input
           label='이메일'
           value={user.email}
           placeholder='이메일을 입력하세요'
+          onChange={handleInputChange}
           type='text'
           readOnly={true}
         />
@@ -115,13 +128,15 @@ const ProfilePage = () => {
           label='연락처'
           value={user.phone}
           placeholder='연락처를 입력하세요'
+          onChange={handleInputChange}
           type='text'
-          readOnly={true}
+          readOnly={!isEditing}
         />
         <Input
           label='생일'
-          value={user.birthday}
+          value={user.birth}
           placeholder='생일을 입력하세요'
+          onChange={handleInputChange}
           type='date'
           readOnly={true}
         />{' '}
@@ -129,6 +144,7 @@ const ProfilePage = () => {
           label='부서'
           value={user.part}
           placeholder='부서를 입력하세요'
+          onChange={handleInputChange}
           type='text'
           readOnly={true}
         />
@@ -136,21 +152,32 @@ const ProfilePage = () => {
           label='직무'
           value={user.position}
           placeholder='직무를 입력하세요'
+          onChange={handleInputChange}
           type='text'
           readOnly={true}
         />
         <Input
           label='입사일'
-          value={user.hireDate}
+          value={user.joinDate}
           placeholder='입사일을 입력하세요'
+          onChange={handleInputChange}
           type='date'
           readOnly={true}
         />
       </div>
       <div css={signOutButtonStyle}>
-        <Button styleType='tertiary' onClick={handleLogoutClick}>
-          로그아웃
-        </Button>
+        {!isEditing && (
+          <Button styleType='tertiary' onClick={handleLogoutClick}>
+            로그아웃
+          </Button>
+        )}
+        {isEditing && (
+          <>
+            <div css={editButtonStyle}>
+              <Button>수정하기</Button>
+            </div>
+          </>
+        )}
       </div>
 
       {isModalOpen && (
@@ -181,6 +208,17 @@ const imgStyle = css`
   border-radius: 50%;
 `;
 
+const caremaIconStyle = css`
+  position: absolute;
+  bottom: 10px;
+  right: -10px;
+  background-color: ${theme.colors.toastGray};
+  color: white;
+  border-radius: 50%;
+  border: 2px solid white;
+  padding: 8px 8px 4px 8px;
+`;
+
 const editIconStyle = css`
   display: flex;
   text-align: center;
@@ -198,4 +236,8 @@ const signOutButtonStyle = css`
   padding-bottom: 80px;
 `;
 
-export default ProfilePage;
+const editButtonStyle = css`
+  margin: 1rem;
+`;
+
+export default ProfileEdit;

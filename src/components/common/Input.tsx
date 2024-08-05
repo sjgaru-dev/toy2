@@ -9,7 +9,7 @@ interface InputProps {
   name?: string;
   value: string;
   placeholder: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   isError?: boolean;
   errorMessage?: string;
   readOnly?: boolean;
@@ -33,7 +33,7 @@ const Input = ({
       <div css={inputWrapperStyle}>
         <InputFromUI
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange && onChange(e.target.value)}
           css={[inputStyle, readOnly && readOnlyStyle]}
           placeholder={placeholder}
           readOnly={readOnly}
