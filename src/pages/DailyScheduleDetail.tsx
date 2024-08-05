@@ -112,6 +112,7 @@ const titleStyle = css`
   h1 {
     margin-left: 0.5rem;
     font-size: ${theme.fontSizes.xlarge};
+    flex-shrink: 1;
   }
 `;
 const circleStyle = (schedule: ScheduleModel) => css`
@@ -119,6 +120,7 @@ const circleStyle = (schedule: ScheduleModel) => css`
   height: 20px;
   border-radius: 50%;
   background-color: ${schedule.color};
+  flex-shrink: 0;
 `;
 const contentStyle = css`
   

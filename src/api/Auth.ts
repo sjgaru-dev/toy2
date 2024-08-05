@@ -8,7 +8,7 @@ import {
 import { auth } from './index';
 
 import { SignInProps } from '../types/props';
-import { ApiResponse, AuthResponseType } from '@/types/type';
+import { ApiResponse, AuthResponseType } from '@/types/api';
 
 export const getCurrentUser = () => auth.currentUser;
 
