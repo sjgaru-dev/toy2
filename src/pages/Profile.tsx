@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { css } from '@emotion/react';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
-import { auth } from '@/api';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 
 export const user = {
@@ -32,23 +32,7 @@ const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imgUrl, setImgUrl] = useState(user.pic);
 
-  const [userData, setUserData] = useState(user);
-
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        navigate('/signin');
-      } else if (user && pathname === '/signin') {
-        navigate('/');
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
 
   const handleInputChange = (value: string) => {
     setInputValue(value);
@@ -68,14 +52,11 @@ const ProfilePage = () => {
     setIsModalOpen(true);
   };
 
-  const handleModalLogout = () => {
-    signOut(auth)
-      .then(() => {
-        setUserData({});
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.auth);
+  const handleModalLogout = async () => {
+    await dispatch(fetchSignOut());
+    if (status === 'succeeded') navigate('/signin');
   };
 
   const handleModalCancel = () => {
