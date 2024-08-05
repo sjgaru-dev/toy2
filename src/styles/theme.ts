@@ -1,4 +1,3 @@
-import { scheduleColors } from './../constants/colors';
 const colors = {
   primary: '#2DC384',
   hoverPrimary: '#3BB77D',

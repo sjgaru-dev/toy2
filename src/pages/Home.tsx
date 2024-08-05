@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { HiOutlineBell } from 'react-icons/hi2';
 
 import logoIcon from '@/assets/images/logo_icon.svg';
 import PayrollNotice from '@/components/dashboard/PayrollNotice';

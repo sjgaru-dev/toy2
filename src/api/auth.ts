@@ -5,12 +5,9 @@ import {
   signOut,
 } from 'firebase/auth';
 
-import { auth } from './index';
-
-import { SignInProps } from '../types/props';
+import { auth } from '@/api';
 import { ApiResponse, AuthResponseType } from '@/types/api';
-
-export const getCurrentUser = () => auth.currentUser;
+import { SignInProps } from '@/types/props';
 
 export const doSignIn = async ({
   email,
