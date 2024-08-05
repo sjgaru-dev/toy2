@@ -31,10 +31,10 @@ const router = createBrowserRouter([
   {
     path: PATH.HOME,
     element: <PrivateRoute />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         element: <RootLayout />,
-        errorElement: <NotFoundPage />,
         children: [
           { index: true, element: <HomePage /> },
           {
