@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 
-export const user = {
+const user = {
   name: '홍길동',
   nickname: 'gildong',
   email: 'abd@abc.com',
@@ -26,7 +26,7 @@ export const user = {
   pic: 'https://firebasestorage.googleapis.com/v0/b/tiramisu-31d41.appspot.com/o/1.jpg?alt=media&token=c69fefa1-e36e-4cf6-bcd6-06b075fe8166',
 };
 
-const ProfileEdit = () => {
+const ProfilePage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,7 +64,7 @@ const ProfileEdit = () => {
 
   return (
     <div>
-      {isEditing && <Header />}
+      <Header />
 
       <div css={wrapperStyle}>
         <div css={imgStyle}>
@@ -240,4 +240,4 @@ const editButtonStyle = css`
   margin: 1rem;
 `;
 
-export default ProfileEdit;
+export default ProfilePage;
