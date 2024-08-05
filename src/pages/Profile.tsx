@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { getAuth } from 'firebase/auth';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { MdEdit } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
+import { db } from '@/api';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
@@ -12,48 +15,21 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 
+const formatDate = (timestamp: any) => {
+  const date = timestamp.toDate();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   const defaultImg = '/src/assets/images/user_default.svg';
 
   const navigate = useNavigate();
-  // const auth = getAuth();
-  // const user = auth.currentUser;
-
-  const user = {
-    name: '홍길동',
-    nickname: 'gildong',
-    email: 'abd@abc.com',
-    password: '1234asdf',
-    phone: '010-1234-5678',
-    birthday: '1990-01-01',
-    part: '개발팀',
-    position: '개발자',
-    hireDate: '2021-01-01',
-    pic: 'https://firebasestorage.googleapis.com/v0/b/tiramisu-31d41.appspot.com/o/1.jpg?alt=media&token=c69fefa1-e36e-4cf6-bcd6-06b075fe8166',
-  };
-
-  console.log(user);
-
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     if (user) {
-  //       const db = getFirestore();
-  //       const userDoc = doc(db, 'users', user.uid);
-  //       const userSnap = await getDoc(userDoc);
-
-  //       if (userSnap.exists()) {
-  //         setUserData(userSnap.data());
-  //       } else {
-  //         console.log('No such document!');
-  //       }
-  //     }
-  //   };
-
-  //   fetchUserData();
-  // }, [user]);
-
   const handleEditClick = () => {
     navigate('/profileEdit');
   };
@@ -61,8 +37,6 @@ const ProfilePage = () => {
   const handleLogoutClick = () => {
     setIsModalOpen(true);
   };
-
-  // 로그아웃 버튼 클릭 시 로그아웃 처리
 
   const dispatch = useAppDispatch();
   const { status } = useAppSelector((state) => state.auth);
@@ -76,11 +50,37 @@ const ProfilePage = () => {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+
+        if (user) {
+          const { uid } = user;
+          const fetchResult = await getDocs(query(collection(db, 'User'), where('uid', '==', uid)));
+          if (!fetchResult.empty) {
+            const userData = fetchResult.docs[0].data();
+            setUserData(userData);
+          } else {
+            console.error('No user data found');
+          }
+        } else {
+          console.error('No user is signed in');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <div>
       <div css={wrapperStyle}>
         <div css={imgStyle}>
-          <img src={user.pic || defaultImg} css={imgStyle} />
+          <img src={userData?.img || defaultImg} css={imgStyle} />
         </div>
         <div css={editIconStyle}>
           <IconTextButton Icon={MdEdit} onClick={handleEditClick}>
@@ -92,61 +92,62 @@ const ProfilePage = () => {
       <div css={[formStyle]}>
         <Input
           label='이름'
-          value={user.name}
+          value={userData?.name}
           placeholder='이름을 입력하세요'
           type='text'
           readOnly={true}
         />
         <Input
           label='닉네임'
-          value={user.nickname}
+          value={userData?.nickname}
           placeholder='닉네임을 입력하세요'
           type='text'
           readOnly={true}
         />
         <Input
           label='이메일'
-          value={user.email}
+          value={userData?.email}
           placeholder='이메일을 입력하세요'
           type='text'
           readOnly={true}
         />
         <Input
           label='연락처'
-          value={user.phone}
+          value={userData?.phone}
           placeholder='연락처를 입력하세요'
           type='text'
           readOnly={true}
         />
         <Input
           label='생일'
-          value={user.birthday}
+          value={userData?.birthday ? formatDate(userData.birthday) : ''}
           placeholder='생일을 입력하세요'
-          type='date'
+          type='timestamp'
           readOnly={true}
         />{' '}
         <Input
           label='부서'
-          value={user.part}
+          value={userData?.team}
           placeholder='부서를 입력하세요'
           type='text'
           readOnly={true}
         />
         <Input
           label='직무'
-          value={user.position}
+          value={userData?.position}
           placeholder='직무를 입력하세요'
           type='text'
           readOnly={true}
         />
         <Input
           label='입사일'
-          value={user.hireDate}
+          value={userData?.hireDate ? formatDate(userData.hireDate) : ''}
           placeholder='입사일을 입력하세요'
           type='date'
           readOnly={true}
         />
       </div>
+
       <div css={signOutButtonStyle}>
         <Button styleType='tertiary' onClick={handleLogoutClick}>
           로그아웃
