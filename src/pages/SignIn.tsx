@@ -1,38 +1,53 @@
 import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/images/logo.svg';
 import Button from '@/components/common/buttons/Button';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
-import { ERROR_MSG, LOGIN_ASK, REGEX } from '@/constants/signIn';
+import { PATH } from '@/constants/path';
+import { REGEX, TEXT } from '@/constants/signIn';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchSignIn } from '@/store/reducer/authSlice';
-import { AppDispatch, RootState } from '@/store/store';
+import { RootState } from '@/store/store';
 import theme from '@/styles/theme';
-import { inputValid } from '@/utils/Validators';
+import { checkAuth } from '@/utils/auth';
+import { inputValid } from '@/utils/validators';
 
 const SignIn = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, isAuth } = useSelector((state: RootState) => state.auth);
-  const { status } = useSelector((state: RootState) => state.auth.apiResult);
+  const dispatch = useAppDispatch();
+
+  const { status } = useAppSelector((state: RootState) => state.auth);
+
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isInputError, setInputError] = useState(false);
+  const [isInputErrorPwd, setInputErrorPwd] = useState(false);
+
+  const [ableLogin, setAbleLogin] = useState(false);
 
   useEffect(() => {
-    if (isAuth) navigate('/');
-  }, [isAuth, navigate]);
+    setAbleLogin(false);
+  }, []);
+
+  useEffect(() => {
+    if (checkAuth()) navigate(PATH.HOME);
+  }, [status]);
+
+  useEffect(() => {
+    setAbleLogin(!isInputError && !isInputErrorPwd);
+  }, [isInputError, isInputErrorPwd]);
 
   const onChangeEmail = (value: string) => {
     setInputError(!inputValid({ value, regex: REGEX.email }));
     setEmail(value);
   };
   const onChangePassword = (value: string) => {
+    setInputErrorPwd(!inputValid({ value, regex: REGEX.password }));
     setPassword(value);
   };
 
@@ -48,31 +63,32 @@ const SignIn = () => {
       </div>
       <form onSubmit={onSubmit}>
         <Input
-          label='이메일'
           value={email}
-          placeholder='이메일@studiot.com'
+          name='email'
+          placeholder={TEXT.email.placeholder}
           onChange={onChangeEmail}
           isError={isInputError}
-          errorMessage={ERROR_MSG.regex.email}
+          errorMessage={TEXT.email.regexError}
         />
 
         <Input
-          label='비밀번호'
           type='password'
+          name='password'
           value={password}
-          placeholder='비밀번호'
+          placeholder={TEXT.password.placeholder}
           onChange={onChangePassword}
-          isError={status === 'error'}
-          errorMessage={ERROR_MSG.signIn}
+          isError={isInputErrorPwd}
+          errorMessage={TEXT.password.regexError}
         />
-        <div>
-          <Button>{isLoading === 'pending' ? <Spinner /> : '로그인'}</Button>
-        </div>
+        {status === 'failed' && <span css={errorStyle}>{TEXT.signin.error}</span>}
+        <Button type='submit' styleType={ableLogin ? 'primary' : 'disabled'}>
+          {status === 'loading' ? <Spinner /> : TEXT.signin.label}
+        </Button>
       </form>
       <div css={msgStyle}>
-        {LOGIN_ASK.msg}
+        {TEXT.common.msg}
         <br />
-        {LOGIN_ASK.contact}
+        {TEXT.common.contact}
       </div>
     </div>
   );
@@ -95,6 +111,13 @@ const msgStyle = css`
   margin-top: 1rem;
   color: ${theme.colors.darkGray};
   font-size: ${theme.fontSizes.normal};
+`;
+
+const errorStyle = css`
+  display: block;
+  margin: 0.5rem 0;
+  font-size: ${theme.fontSizes.normal};
+  color: ${theme.colors.alertRed};
 `;
 
 export default SignIn;
