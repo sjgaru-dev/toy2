@@ -3,7 +3,7 @@ import React from 'react';
 import { css } from '@emotion/react';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
-import Button from './buttons/Button';
+import Button from '@/components/common/buttons/Button';
 import theme from '@/styles/theme';
 
 interface ModalProps {

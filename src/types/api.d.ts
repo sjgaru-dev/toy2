@@ -9,7 +9,7 @@ export interface AuthState {
 }
 
 export interface ApiResponse<T> {
-  status: 'idle' | 'success' | 'error';
+  status: status;
   response: T;
 }
 
