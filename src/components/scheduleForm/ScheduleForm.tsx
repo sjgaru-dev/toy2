@@ -2,11 +2,13 @@
 import { FormEvent, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
+import dayjs from 'dayjs';
 
 import Button from '@/components/common/buttons/Button';
 import Select from '@/components/common/Select';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import ColorPicker, { ColorsType } from '@/components/scheduleForm/ColorPicker';
+import TimePicker from '@/components/scheduleForm/TimePicker';
 import theme from '@/styles/theme';
 import { ScheduleFormDataModel } from '@/types/schedule';
 
@@ -16,6 +18,8 @@ interface ScheduleFormProps {
   initEnableAllDay?: boolean;
   initSelectedAlarmOption?: (typeof alarmOptions)[number];
   initSelectedColor?: ColorsType;
+  initStartTime?: string;
+  initEndTime?: string;
   onSubmit: (data: ScheduleFormDataModel) => void;
 }
 
@@ -23,12 +27,16 @@ const ScheduleForm = ({
   initEnableAllDay = false,
   initSelectedAlarmOption = alarmOptions[0],
   initSelectedColor = 'red',
+  initStartTime = dayjs().minute(0).format('HH:mm'),
+  initEndTime = dayjs().minute(0).format('HH:mm'),
   onSubmit,
 }: ScheduleFormProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [enableAllDay, setEnableAllDay] = useState(initEnableAllDay);
   const [selectedAlarmOption, setSelectedAlarmOption] = useState(initSelectedAlarmOption);
   const [selectedColor, setSelectedColor] = useState(initSelectedColor);
+  const [startTime, setStartTime] = useState(initStartTime);
+  const [endTime, setEndTime] = useState(initEndTime);
 
   const onSubmitForm = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,14 +55,14 @@ const ScheduleForm = ({
           <span>시작일</span>
           <div css={datePickerContainerStyle}>
             <button type='button'>7월 25일</button>
-            {!enableAllDay && <button type='button'>오전 10:00</button>}
+            {!enableAllDay && <TimePicker time={startTime} setTime={setStartTime} />}
           </div>
         </div>
         <div css={divContainerStyle}>
           <span>종료일</span>
           <div css={datePickerContainerStyle}>
             <button type='button'>7월 25일</button>
-            {!enableAllDay && <button type='button'>오전 10:00</button>}
+            {!enableAllDay && <TimePicker time={endTime} setTime={setEndTime} />}
           </div>
         </div>
         <div css={divContainerStyle}>
