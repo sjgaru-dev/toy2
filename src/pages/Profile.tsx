@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
+import { auth } from '@/api';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
+import Header from '@/components/layout/Header';
 import theme from '@/styles/theme';
 
 export const user = {
@@ -28,6 +32,24 @@ const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imgUrl, setImgUrl] = useState(user.pic);
 
+  const [userData, setUserData] = useState(user);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate('/signin');
+      } else if (user && pathname === '/signin') {
+        navigate('/');
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   const handleInputChange = (value: string) => {
     setInputValue(value);
   };
@@ -42,25 +64,27 @@ const ProfilePage = () => {
     setImgUrl(defaultImgUrl);
   };
 
-  const handleCancelClick = () => {
-    setIsEditing(false);
+  const handleLogoutClick = () => {
     setIsModalOpen(true);
-    setInputValue('');
   };
 
-  const handleModalConfirm = () => {
-    setIsEditing(false);
-    setIsModalOpen(false);
+  const handleModalLogout = () => {
+    signOut(auth)
+      .then(() => {
+        setUserData({});
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const handleModalCancel = () => {
     setIsModalOpen(false);
-    setInputValue('');
   };
 
   return (
     <div>
-      {/* {isEditing && <Header />} */}
+      {isEditing && <Header />}
 
       <div css={wrapperStyle}>
         <div css={imgStyle}>
@@ -162,14 +186,15 @@ const ProfilePage = () => {
         />
       </div>
       <div css={signOutButtonStyle}>
-        {!isEditing && <Button styleType='tertiary'>로그아웃</Button>}
+        {!isEditing && (
+          <Button styleType='tertiary' onClick={handleLogoutClick}>
+            로그아웃
+          </Button>
+        )}
         {isEditing && (
           <>
             <div css={editButtonStyle}>
               <Button>수정하기</Button>
-              <Button styleType='ghost' onClick={handleCancelClick}>
-                취소
-              </Button>
             </div>
           </>
         )}
@@ -178,11 +203,11 @@ const ProfilePage = () => {
       {isModalOpen && (
         <Modal
           isOpen={true}
-          title='변경사항을 저장하시겠습니까?'
-          confirmText='저장하기'
-          onClose={handleModalCancel}
+          title='정말 로그아웃 하시겠습니까?'
+          confirmText='로그아웃'
+          onConfirm={handleModalLogout}
           cancelText='취소하기'
-          onConfirm={handleModalConfirm}
+          onClose={handleModalCancel}
         />
       )}
     </div>
