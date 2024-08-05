@@ -3,12 +3,10 @@ import { useState } from 'react';
 import { css } from '@emotion/react';
 import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
 
-import { getUserData } from '@/api/User';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
-import Header from '@/components/layout/Header';
 import theme from '@/styles/theme';
 
 export const user = {
@@ -65,7 +63,7 @@ const ProfilePage = () => {
       {/* {isEditing && <Header />} */}
 
       <div css={wrapperStyle}>
-        <div>
+        <div css={imgStyle}>
           <img src={imgUrl} css={imgStyle} />
           {isEditing && (
             <div css={caremaIconStyle}>
