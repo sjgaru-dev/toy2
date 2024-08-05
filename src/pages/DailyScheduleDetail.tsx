@@ -91,7 +91,7 @@ const DailyScheduleDetail = () => {
           onClose={handleCancelDelete}
           onConfirm={() => handleConfirmDelete(schedule.id)}
           title='일정을 삭제하시겠습니까?'
-          confirmText='삭제하기'
+          confirmText='일정 삭제하기'
           cancelText='취소'
           styleType='secondary'
         />
