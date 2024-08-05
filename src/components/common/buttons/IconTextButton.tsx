@@ -43,6 +43,7 @@ const iconButtonStyle = css`
   font-weight: 500;
   background-color: ${theme.colors.white};
   transition: all 300ms ease;
+  flex-shrink: 0;
 
   &.left {
     flex-direction: row-reverse;
