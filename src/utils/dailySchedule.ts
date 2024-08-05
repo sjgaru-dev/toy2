@@ -54,13 +54,26 @@ const formatTimeRange = (date: string, schedule: ScheduleModel) => {
   return getTimeRangeString(dateType, schedule.startTime, schedule.endTime);
 };
 
-// isDailySchedule 함수를 dayjs를 사용하여 구현
+// 1. 모든 날짜를 일(day) 단위로 비교 => 시간차이로 인한 오류를 방지하기 위해 startOf('day') 사용
+// dayjs().startOf('day') => 오늘 날짜 00:00:00
+// dayjs().endOf('day') => 오늘 날짜 23:59:59
+// 2. 당일 일정(시작날짜와 종료날짜가 같은 경우)인지 여부를 판단하는 함수
+// 3. 여러 날에 걸친 일정의 경우, 시작일, 종료일, 그 사이 날짜에 대한 판단을 추가
 const isDailySchedule = (date: string, schedule: ScheduleModel): boolean => {
-  const checkDate = dayjs(date);
+  const checkDate = dayjs(date).startOf('day');
+  const startDate = dayjs(schedule.startDate).startOf('day');
+  const endDate = dayjs(schedule.endDate).startOf('day');
+
+  // 시작 날짜와 종료 날짜가 같은 경우 (당일 일정)
+  if (startDate.isSame(endDate, 'day')) {
+    return checkDate.isSame(startDate, 'day');
+  }
+
+  // 여러 날에 걸친 일정의 경우
   return (
-    checkDate.isSame(schedule.startDate) ||
-    checkDate.isSame(schedule.endDate) ||
-    (checkDate.isAfter(schedule.startDate) && checkDate.isBefore(schedule.endDate))
+    checkDate.isSame(startDate, 'day') ||
+    checkDate.isSame(endDate, 'day') ||
+    (checkDate.isAfter(startDate) && checkDate.isBefore(endDate))
   );
 };
 
