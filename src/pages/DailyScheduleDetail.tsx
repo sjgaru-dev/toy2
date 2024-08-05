@@ -8,6 +8,8 @@ import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';
+import { useAppDispatch } from '@/store/hooks';
+import { deleteSchedule } from '@/store/reducer/scheduleSlice';
 import theme from '@/styles/theme';
 import { ScheduleModel } from '@/types/schedule';
 import { formatTime, formatOnlyDate } from '@/utils/dailySchedule';
@@ -15,6 +17,7 @@ import { formatTime, formatOnlyDate } from '@/utils/dailySchedule';
 const DailyScheduleDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const schedule: ScheduleModel = location.state?.schedule;
   const [text, setText] = useState(schedule.content);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,15 +28,20 @@ const DailyScheduleDetail = () => {
   };
 
   // 일정삭제 모달에서 일정 취소하기 버튼 클릭
-  const handleConfirmDelete = () => {
-    // TODO: 일정 삭제 API 호출
-    // 파이어스토어에 일정 삭제하는 코드 필요
+  const handleConfirmDelete = async (scheduleId: string) => {
+    try {
+      // TODO: 일정 삭제 API 호출
+      await dispatch(deleteSchedule(scheduleId)).unwrap(); // unwrap()은 비동기 함수의 반환값(Promise)을 반환
+      setIsModalOpen(false);
 
-    setIsModalOpen(false);
+      // navigate해주기 전에 삭제되었다고 토스트ui 띄우기 코드 필요
 
-    // navigate해주기 전에 삭제되었다고 토스트ui 띄우기 코드 필요
-    navigate('/schedule');
+      navigate('/schedule');
+    } catch (error) {
+      console.error(error);
+    }
   };
+
   // 일정삭제 모달에서 취소 버튼 클릭
   const handleCancelDelete = () => {
     setIsModalOpen(false);
@@ -81,11 +89,11 @@ const DailyScheduleDetail = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={handleCancelDelete}
-          onConfirm={handleConfirmDelete}
-          styleType='secondary'
+          onConfirm={() => handleConfirmDelete(schedule.id)}
           title='일정을 삭제하시겠습니까?'
-          confirmText='일정 삭제하기'
-          cancelText='취소하기'
+          confirmText='삭제하기'
+          cancelText='취소'
+          styleType='secondary'
         />
       )}
     </div>
