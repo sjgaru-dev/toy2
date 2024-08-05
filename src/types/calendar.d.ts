@@ -1,7 +1,7 @@
 type NavigateType = 'PREV' | 'NEXT' | 'TODAY' | 'DATE';
 
 export interface EventModel {
-  id?: number;
+  id?: string;
   start: Date;
   end: Date;
   title: string;
