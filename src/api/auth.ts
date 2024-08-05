@@ -15,7 +15,7 @@ export const doSignIn = async ({
 }: SignInProps): Promise<ApiResponse<AuthResponseType>> => {
   await setPersistence(auth, browserSessionPersistence);
 
-  return { status: 'success', response: await signInWithEmailAndPassword(auth, email, password) };
+  return { status: 'succeeded', response: await signInWithEmailAndPassword(auth, email, password) };
 };
 
-export const doSignOut = async () => ({ status: 'success', response: await signOut(auth) });
+export const doSignOut = async () => ({ status: 'succeeded', response: await signOut(auth) });
