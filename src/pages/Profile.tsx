@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { getAuth } from 'firebase/auth';
+import { doc, getDoc, getFirestore, DocumentData } from 'firebase/firestore';
 import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,35 +15,46 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 
-export const user = {
-  name: '홍길동',
-  nickname: 'gildong',
-  email: 'abd@abc.com',
-  password: '1234asdf',
-  phone: '010-1234-5678',
-  birth: '1990-01-01',
-  part: '개발팀',
-  position: '개발자',
-  joinDate: '2021-01-01',
-  pic: 'https://firebasestorage.googleapis.com/v0/b/tiramisu-31d41.appspot.com/o/1.jpg?alt=media&token=c69fefa1-e36e-4cf6-bcd6-06b075fe8166',
-};
-
 const ProfilePage = () => {
   const [inputValue, setInputValue] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [imgUrl, setImgUrl] = useState(user.pic);
+  5;
+  const [userData, setUserData] = useState<DocumentData | null>(null);
 
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  console.log(user);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        const db = getFirestore();
+        const userDoc = doc(db, 'users', user.uid);
+        const userSnap = await getDoc(userDoc);
+
+        if (userSnap.exists()) {
+          setUserData(userSnap.data());
+        } else {
+          console.log('No such document!');
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   const handleInputChange = (value: string) => {
     setInputValue(value);
   };
 
   const handleEditClick = () => {
-    setIsEditing(true);
+    navigate('/profileEdit');
   };
 
+  const [imgUrl, setImgUrl] = useState(user.img);
   const defaultImgUrl = '/src/assets/images/user_default.svg';
 
   const handleDeleteImgClick = () => {
@@ -52,8 +65,11 @@ const ProfilePage = () => {
     setIsModalOpen(true);
   };
 
+  // 로그아웃 버튼 클릭 시 로그아웃 처리
+
   const dispatch = useAppDispatch();
   const { status } = useAppSelector((state) => state.auth);
+
   const handleModalLogout = async () => {
     await dispatch(fetchSignOut());
     if (status === 'succeeded') navigate('/signin');
@@ -135,7 +151,7 @@ const ProfilePage = () => {
         />
         <Input
           label='생일'
-          value={user.birth}
+          value={user.birthday}
           placeholder='생일을 입력하세요'
           onChange={handleInputChange}
           type='date'
@@ -159,7 +175,7 @@ const ProfilePage = () => {
         />
         <Input
           label='입사일'
-          value={user.joinDate}
+          value={user.hireDate}
           placeholder='입사일을 입력하세요'
           onChange={handleInputChange}
           type='date'

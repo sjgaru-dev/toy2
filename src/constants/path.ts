@@ -8,6 +8,7 @@ export const PATH = {
   SALARY_DETAIL: 'detail/:year/:month',
   SALARY_CORRECTION_HISTORY: 'correction-history',
   PROFILE: '/profile',
+  PROFILE_EDIT: 'edit',
   SIGNIN: '/signin',
 };
 
