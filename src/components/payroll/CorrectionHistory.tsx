@@ -6,6 +6,7 @@ import { LiaQuestionCircle } from 'react-icons/lia';
 import { useNavigate } from 'react-router-dom';
 
 import Badge from '@/components/common/Badge';
+import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
 interface CorrectionItem {
@@ -46,7 +47,7 @@ const CorrectionHistory: React.FC = () => {
   ];
 
   const handleViewDetails = (id: string) => {
-    navigate(`/correction-details/${id}`);
+    navigate(`${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id)}`);
   };
 
   return (
@@ -82,7 +83,6 @@ const CorrectionHistory: React.FC = () => {
     </div>
   );
 };
-
 const getStatusLabel = (status: string) => {
   switch (status) {
     case 'pending':
@@ -111,7 +111,7 @@ const getStatusColor = (status: string) => {
 
 const containerStyle = css`
   background-color: ${theme.colors.white};
-  height: 745px;
+  padding: 16px;
 `;
 
 const titleStyle = css`

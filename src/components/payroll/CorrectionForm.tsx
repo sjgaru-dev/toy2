@@ -115,7 +115,6 @@ const containerStyle = css`
 
 const formStyle = css`
   background-color: ${theme.colors.white};
-  height: 745px;
 `;
 
 const fieldsetStyle = css`
@@ -159,7 +158,7 @@ const textareaStyle = css`
   resize: none;
 
   &::placeholder {
-    color: ${theme.colors.darkestGray};
+    color: ${theme.colors.darkGray};
   }
 
   &:focus {

@@ -1,15 +1,17 @@
 import { css } from '@emotion/react';
 import html2canvas from 'html2canvas';
 import { HiDownload } from 'react-icons/hi';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Badge from '@/components/common/Badge';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Header from '@/components/layout/Header';
+import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
 const PayrollDetail = () => {
   const { year, month } = useParams<{ year: string; month: string }>();
+  const navigate = useNavigate();
 
   const payrollData = {
     totalAmount: 4570000,
@@ -42,9 +44,13 @@ const PayrollDetail = () => {
     }
   };
 
+  const handleGoBack = () => {
+    navigate(PATH.SALARY, { state: { activeTab: 0 } });
+  };
+
   return (
     <>
-      <Header />
+      <Header onBack={handleGoBack} />
       <div id='payroll-container'>
         <div css={headerStyle}>
           <div css={headerTitleSectionStyle}>

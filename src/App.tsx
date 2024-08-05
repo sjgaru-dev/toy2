@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import CorrectionHistory from '@/components/payroll/CorrectionHistory';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/Root';
+import CorrectionDetail from '@/pages/CorrectionDetail';
 import DailyScheduleDetail from '@/pages/DailyScheduleDetail';
 import HomePage from '@/pages/Home';
 import NotFoundPage from '@/pages/NotFound';
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
           { index: true, element: <SalaryPage /> },
           { path: PATH.SALARY_DETAIL, element: <PayrollDetail /> },
           { path: PATH.SALARY_CORRECTION_HISTORY, element: <CorrectionHistory /> },
+          { path: PATH.SALARY_CORRECTION_DETAIL, element: <CorrectionDetail /> },
         ],
       },
       { path: PATH.PROFILE, element: <ProfilePage /> },
