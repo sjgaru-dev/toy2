@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { getAuth } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { MdDelete, MdOutlineCameraAlt } from 'react-icons/md';
 
 import { db } from '@/api';
 import Button from '@/components/common/buttons/Button';
@@ -13,8 +12,6 @@ import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
 
@@ -26,8 +23,12 @@ const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
   return `${year}-${month}-${day}`;
 };
 
-const ProfileEdit = () => {
+const ProfilePage = () => {
   const [userData, setUserData] = useState<UserType>('');
+  const [inputPwValue, setInputPwValue] = useState('');
+  const [inputNickValue, setInputNickValue] = useState('');
+  const [inputPhoneValue, setInputPhoneValue] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -41,6 +42,8 @@ const ProfileEdit = () => {
           if (!fetchResult.empty) {
             const userData = fetchResult.docs[0].data();
             setUserData(userData);
+            setInputNickValue(userData.nickname);
+            setInputPhoneValue(userData.phone);
           }
         }
       } catch (error) {
@@ -51,14 +54,59 @@ const ProfileEdit = () => {
     fetchUserData();
   }, []);
 
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
+  const handleInputChangePw = (value: string) => {
+    setInputPwValue(value);
   };
 
-  const defaultImg = '/src/assets/images/user_default.svg';
+  const handleInputChangeNick = (value: string) => {
+    setInputNickValue(value);
+  };
+
+  const handleInputChangePhone = (value: string) => {
+    const formattedValue = value
+      .replace(/[^0-9]/g, '')
+      .slice(0, 11)
+      .replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    setInputPhoneValue(formattedValue);
+  };
+
+  const defaultImgUrl = '/src/assets/images/user_default.svg';
 
   const handleDeleteImgClick = () => {
-    setImgUrl(defaultImg);
+    setUserData((defaultImg) => ({ ...defaultImg, img: defaultImgUrl }));
+  };
+
+  const handleUpdateClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      if (user) {
+        const { uid } = user;
+        const userRef = collection(db, 'User');
+        const queryRef = query(userRef, where('uid', '==', uid));
+        const fetchResult = await getDocs(queryRef);
+
+        if (!fetchResult.empty) {
+          const userData = fetchResult.docs[0];
+          const updatedData = {
+            nickname: inputNickValue,
+            phone: inputPhoneValue,
+          };
+          await updateDoc(userData.ref, updatedData);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
+  const handleModalCancel = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -66,7 +114,7 @@ const ProfileEdit = () => {
       <Header />
       <div css={wrapperStyle}>
         <div css={imgStyle}>
-          <img src={userData?.img || defaultImg} css={imgStyle} />
+          <img src={userData.img || defaultImgUrl} css={imgStyle} />
           <div css={caremaIconStyle}>
             <MdOutlineCameraAlt size={24} />
           </div>
@@ -80,50 +128,52 @@ const ProfileEdit = () => {
 
       <div css={[formStyle]}>
         <Input
+          label='닉네임'
+          value={inputNickValue}
+          placeholder='수정하실 닉네임을 입력하세요'
+          onChange={handleInputChangeNick}
+          type='text'
+          readOnly={false}
+        />
+        <Input
+          label='연락처'
+          value={inputPhoneValue}
+          placeholder='수정하실 연락처를 숫자만 입력하세요.'
+          onChange={handleInputChangePhone}
+          type='text'
+          readOnly={false}
+        />
+        <Input
           label='비밀번호'
-          value={inputValue}
+          value={inputPwValue}
           placeholder='수정하실 비밀번호를 입력하세요'
-          onChange={handleInputChange}
+          onChange={handleInputChangePw}
           type='password'
           readOnly={false}
+          isError={inputPwValue.length < 8 && inputPwValue.length > 0}
+          errorMessage='비밀번호는 8자 이상이어야 합니다.'
         />
         <Input
           label='이름'
           value={userData.name}
           placeholder='이름을 입력하세요'
-          onChange={handleInputChange}
+          onChange={() => {}}
           type='text'
           readOnly={true}
-        />
-        <Input
-          label='닉네임'
-          value={userData.nickname}
-          placeholder='닉네임을 입력하세요'
-          onChange={handleInputChange}
-          type='text'
-          readOnly={false}
         />
         <Input
           label='이메일'
           value={userData.email}
           placeholder='이메일을 입력하세요'
-          onChange={handleInputChange}
+          onChange={() => {}}
           type='text'
           readOnly={true}
-        />
-        <Input
-          label='연락처'
-          value={userData.phone}
-          placeholder='연락처를 입력하세요'
-          onChange={handleInputChange}
-          type='text'
-          readOnly={false}
         />
         <Input
           label='생일'
           value={userData.birthday ? formatDate(userData.birthday) : ''}
           placeholder='생일을 입력하세요'
-          onChange={handleInputChange}
+          onChange={() => {}}
           type='date'
           readOnly={true}
         />{' '}
@@ -131,7 +181,7 @@ const ProfileEdit = () => {
           label='부서'
           value={userData.team}
           placeholder='부서를 입력하세요'
-          onChange={handleInputChange}
+          onChange={() => {}}
           type='text'
           readOnly={true}
         />
@@ -139,7 +189,7 @@ const ProfileEdit = () => {
           label='직무'
           value={userData.position}
           placeholder='직무를 입력하세요'
-          onChange={handleInputChange}
+          onChange={() => {}}
           type='text'
           readOnly={true}
         />
@@ -147,16 +197,27 @@ const ProfileEdit = () => {
           label='입사일'
           value={userData.hireDate ? formatDate(userData.hireDate) : ''}
           placeholder='입사일을 입력하세요'
-          onChange={handleInputChange}
+          onChange={() => {}}
           type='date'
           readOnly={true}
         />
       </div>
       <div css={signOutButtonStyle}>
         <div css={editButtonStyle}>
-          <Button>수정하기</Button>
+          <Button onClick={handleUpdateClick}>수정하기</Button>
         </div>
       </div>
+
+      {isModalOpen && (
+        <Modal
+          isOpen={true}
+          title='정말 수정하시겠습니까?'
+          confirmText='수정하기'
+          onConfirm={handleUpdateProfile}
+          cancelText='취소하기'
+          onClose={handleModalCancel}
+        />
+      )}
     </div>
   );
 };
@@ -199,12 +260,12 @@ const formStyle = css`
   background-color: ${theme.colors.white};
 `;
 
-const signOutButtonStyle = css`
-  padding-bottom: 80px;
-`;
-
 const editButtonStyle = css`
   margin: 1rem;
 `;
 
-export default ProfileEdit;
+const signOutButtonStyle = css`
+  padding-bottom: 80px;
+`;
+
+export default ProfilePage;
