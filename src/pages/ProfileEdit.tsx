@@ -14,6 +14,8 @@ import Header from '@/components/layout/Header';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
 
+import userDefaultSvg from '/src/assets/images/user_default.svg';
+
 const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
   const date = timestamp.toDate();
   const year = date.getFullYear();
@@ -30,6 +32,8 @@ const ProfilePage = () => {
   useEffect(() => {
     (async () => {
       setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
+      setInputNickValue(userData?.nickname || '');
+      setInputPhoneValue(userData?.phone || '');
     })();
   }, []);
 
@@ -45,7 +49,7 @@ const ProfilePage = () => {
     setInputPhoneValue(formattedValue);
   };
 
-  const defaultImgUrl = '/src/assets/images/user_default.svg';
+  const defaultImg = userDefaultSvg;
 
   const handleDeleteImgClick = () => {};
 
@@ -77,7 +81,7 @@ const ProfilePage = () => {
       <Header />
       <div css={wrapperStyle}>
         <div css={imgStyle}>
-          <img src={userData?.img || defaultImgUrl} css={imgStyle} />
+          <img src={userData?.img || defaultImg} css={imgStyle} />
           <div css={caremaIconStyle}>
             <MdOutlineCameraAlt size={24} />
           </div>

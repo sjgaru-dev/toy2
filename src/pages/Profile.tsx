@@ -15,6 +15,8 @@ import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
 
+import userDefaultSvg from '/src/assets/images/user_default.svg';
+
 const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
   const date = timestamp.toDate();
   const year = date.getFullYear();
@@ -27,7 +29,7 @@ const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState<UserType>();
 
-  const defaultImg = '/src/assets/images/user_default.svg';
+  const defaultImg = userDefaultSvg;
 
   const navigate = useNavigate();
   const handleEditClick = () => {
