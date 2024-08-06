@@ -5,6 +5,7 @@ import { getAuth } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
 import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { MdDelete, MdOutlineCameraAlt } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 import { db } from '@/api';
 import Button from '@/components/common/buttons/Button';
@@ -23,7 +24,7 @@ const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
   return `${year}-${month}-${day}`;
 };
 
-const ProfilePage = () => {
+const ProfileEdit = () => {
   const [userData, setUserData] = useState<UserType>('');
   const [inputPwValue, setInputPwValue] = useState('');
   const [inputNickValue, setInputNickValue] = useState('');
@@ -72,6 +73,15 @@ const ProfilePage = () => {
 
   const defaultImgUrl = '/src/assets/images/user_default.svg';
 
+  const handleChangeImg = async () => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleDeleteImgClick = () => {
     setUserData((defaultImg) => ({ ...defaultImg, img: defaultImgUrl }));
   };
@@ -80,6 +90,7 @@ const ProfilePage = () => {
     setIsModalOpen(true);
   };
 
+  const navigate = useNavigate();
   const handleUpdateProfile = async () => {
     try {
       const auth = getAuth();
@@ -98,6 +109,8 @@ const ProfilePage = () => {
             phone: inputPhoneValue,
           };
           await updateDoc(userData.ref, updatedData);
+          setIsModalOpen(false);
+          navigate(`/profile`);
         }
       }
     } catch (error) {
@@ -116,7 +129,7 @@ const ProfilePage = () => {
         <div css={imgStyle}>
           <img src={userData.img || defaultImgUrl} css={imgStyle} />
           <div css={caremaIconStyle}>
-            <MdOutlineCameraAlt size={24} />
+            <MdOutlineCameraAlt size={24} onClick={handleChangeImg} />
           </div>
         </div>
         <div css={editIconStyle}>
@@ -268,4 +281,4 @@ const signOutButtonStyle = css`
   padding-bottom: 80px;
 `;
 
-export default ProfilePage;
+export default ProfileEdit;
