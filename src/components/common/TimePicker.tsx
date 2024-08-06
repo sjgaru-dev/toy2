@@ -136,7 +136,7 @@ const dropdownStyle = css`
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
-  width: 108px;
+  width: 132px;
   padding: 4px 0;
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
@@ -158,7 +158,7 @@ const sectionStyle = css`
 `;
 
 const optionStyle = css`
-  padding: 5px 8px;
+  padding: 8px 12px;
   cursor: pointer;
 
   &.active {
