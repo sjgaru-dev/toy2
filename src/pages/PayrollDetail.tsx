@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import { css } from '@emotion/react';
 import html2canvas from 'html2canvas';
 import { HiDownload } from 'react-icons/hi';
@@ -12,6 +14,7 @@ import theme from '@/styles/theme';
 const PayrollDetail = () => {
   const { year, month } = useParams<{ year: string; month: string }>();
   const navigate = useNavigate();
+  const payrollContainerRef = useRef<HTMLDivElement>(null);
 
   const payrollData = {
     totalAmount: 4570000,
@@ -27,7 +30,7 @@ const PayrollDetail = () => {
   };
 
   const handleDownload = async () => {
-    const element = document.getElementById('payroll-container');
+    const element = payrollContainerRef.current;
     if (element) {
       const canvas = await html2canvas(element, {
         scrollY: -window.scrollY,
@@ -51,7 +54,7 @@ const PayrollDetail = () => {
   return (
     <>
       <Header onBack={handleGoBack} />
-      <div id='payroll-container'>
+      <div ref={payrollContainerRef}>
         <div css={headerStyle}>
           <div css={headerTitleSectionStyle}>
             <span css={headerTitleStyle}>
