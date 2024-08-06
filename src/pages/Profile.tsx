@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-import { getAuth } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
-import { collection, getDocs, query, where } from 'firebase/firestore';
 import { MdEdit } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
-import { db } from '@/api';
+import { getUserData } from '@/api/User';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
@@ -27,7 +25,7 @@ const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
 
 const ProfilePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userData, setUserData] = useState<UserType>('');
+  const [userData, setUserData] = useState<UserType>();
 
   const defaultImg = '/src/assets/images/user_default.svg';
 
@@ -53,25 +51,9 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (user) {
-          const { uid } = user;
-          const fetchResult = await getDocs(query(collection(db, 'User'), where('uid', '==', uid)));
-          if (!fetchResult.empty) {
-            const userData = fetchResult.docs[0].data();
-            setUserData(userData);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
+    (async () => {
+      setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
+    })();
   }, []);
 
   return (
@@ -90,7 +72,7 @@ const ProfilePage = () => {
       <div css={[formStyle]}>
         <Input
           label='이름'
-          value={userData.name}
+          value={userData ? userData.name : ''}
           placeholder='이름을 입력하세요'
           type='text'
           onChange={() => {}}
@@ -98,7 +80,7 @@ const ProfilePage = () => {
         />
         <Input
           label='닉네임'
-          value={userData.nickname}
+          value={userData ? userData.nickname : ''}
           placeholder='닉네임을 입력하세요'
           type='text'
           onChange={() => {}}
@@ -106,7 +88,7 @@ const ProfilePage = () => {
         />
         <Input
           label='이메일'
-          value={userData.email}
+          value={userData ? userData.email : ''}
           placeholder='이메일을 입력하세요'
           type='text'
           onChange={() => {}}
@@ -114,7 +96,7 @@ const ProfilePage = () => {
         />
         <Input
           label='연락처'
-          value={userData.phone}
+          value={userData ? userData.phone : ''}
           placeholder='연락처를 입력하세요'
           type='text'
           onChange={() => {}}
@@ -122,7 +104,7 @@ const ProfilePage = () => {
         />
         <Input
           label='생일'
-          value={userData.birthday ? formatDate(userData.birthday) : ''}
+          value={userData?.birthday ? formatDate(userData.birthday) : ''}
           placeholder='생일을 입력하세요'
           type='timestamp'
           onChange={() => {}}
@@ -130,7 +112,7 @@ const ProfilePage = () => {
         />{' '}
         <Input
           label='부서'
-          value={userData.team}
+          value={userData ? userData.team : ''}
           placeholder='부서를 입력하세요'
           type='text'
           onChange={() => {}}
@@ -138,7 +120,7 @@ const ProfilePage = () => {
         />
         <Input
           label='직무'
-          value={userData.position}
+          value={userData ? userData.position : ''}
           placeholder='직무를 입력하세요'
           type='text'
           onChange={() => {}}
@@ -146,7 +128,7 @@ const ProfilePage = () => {
         />
         <Input
           label='입사일'
-          value={userData.hireDate ? formatDate(userData.hireDate) : ''}
+          value={userData?.hireDate ? formatDate(userData.hireDate) : ''}
           placeholder='입사일을 입력하세요'
           type='date'
           onChange={() => {}}
