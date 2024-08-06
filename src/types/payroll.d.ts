@@ -4,6 +4,7 @@ export interface CorrectionProps {
   userNo: string | undefined;
   requestDate: string;
   status: string;
+  type: string;
   subject: string;
   content: string;
   attach?: string;

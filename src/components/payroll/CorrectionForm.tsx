@@ -17,13 +17,13 @@ import { fetchAddCorrection } from '@/store/reducer/payrollSlice';
 import theme from '@/styles/theme';
 import { CorrectionProps } from '@/types/payroll';
 import { checkAuth, getUID } from '@/utils/auth';
+import { convertDateWithFormat } from '@/utils/dailySchedule';
 
 const CorrectionForm: React.FC = () => {
   const [title, setTitle] = useState('');
-  const [applicationDate, setApplicationDate] = useState('');
   const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('');
-  const [file, setFile] = useState<File | undefined>(undefined);
+  const [file, setFile] = useState<File>();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,10 +32,6 @@ const CorrectionForm: React.FC = () => {
   const [isActive, setActive] = useState(false);
 
   useEffect(() => {
-    const today = new Date();
-    const formattedDate = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')} (${['일', '월', '화', '수', '목', '금', '토'][today.getDay()]})`;
-    setApplicationDate(formattedDate);
-
     setActive(false);
   }, []);
 
@@ -52,13 +48,13 @@ const CorrectionForm: React.FC = () => {
   const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
     if (!checkAuth() || !getUID()) return;
-    // 여기에 제출 로직 구현
     const props: CorrectionProps = {
       id: 0,
       salaryId: 0,
       userNo: '',
-      requestDate: applicationDate,
-      status: category,
+      requestDate: convertDateWithFormat(new Date()),
+      type: category,
+      status: '대기',
       subject: title,
       content: reason,
       attachFile: file,
@@ -92,7 +88,7 @@ const CorrectionForm: React.FC = () => {
 
           <div css={rowStyle}>
             <span css={labelStyle}>신청일</span>
-            <span css={dateStyle}>{applicationDate}</span>
+            <span css={dateStyle}>{convertDateWithFormat(new Date(), 'YYYY-MM-DD (ddd)')}</span>
           </div>
 
           <div css={rowStyle}>

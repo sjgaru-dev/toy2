@@ -25,6 +25,7 @@ export const addCorrection = async (
     status: props.status,
     subject: props.subject,
     content: props.content,
+    type: props.type,
   };
   const doc = await addDoc(collection(db, FIRESTORE_COLLECTION.salaryRequest), data);
   if (props.attachFile) {
@@ -36,7 +37,7 @@ export const addCorrection = async (
 };
 
 export const addAttach = async ({ file, docId, data }: AttachProps): Promise<string> => {
-  const path = `${STORAGE_FOLDER.correction}/${data.userNo}/${data.id}/${docId}/${file.name}`;
+  const path = `${STORAGE_FOLDER.correction}/${data.userNo}/${docId}/${file.name}`;
   const locationRef = ref(storage, path);
 
   const result = await uploadBytes(locationRef, file);

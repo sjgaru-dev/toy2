@@ -16,6 +16,9 @@ const formatTime = (time: string) => {
 
 // 날짜 포맷팅
 
+export const convertDateWithFormat = (date: Date, format: string = 'YYYY-MM-DD'): string =>
+  dayjs(date).format(format);
+
 const formatOnlyDate = (date: string) => dayjs(date).format('M월 D일');
 
 // DateType 정의
