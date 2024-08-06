@@ -19,11 +19,12 @@ dayjs.locale('ko');
 const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 
 interface DatePicker {
+  inputName?: string;
   selected: Date;
   setSelected: (value: Date) => void;
 }
 
-const DatePicker = ({ selected, setSelected }: DatePicker) => {
+const DatePicker = ({ inputName = 'datepicker', selected, setSelected }: DatePicker) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(dayjs(selected).startOf('month'));
 
@@ -47,9 +48,12 @@ const DatePicker = ({ selected, setSelected }: DatePicker) => {
 
   return (
     <div css={datePickerStyle} ref={datePickerRef}>
-      <button type='button' className='date-button' onClick={onClickDateButton}>
-        {formatYearMonthDay(selected)}
-      </button>
+      <input
+        type='button'
+        value={formatYearMonthDay(selected)}
+        className='date-input'
+        onClick={onClickDateButton}
+      />
       <div className={`${isOpen ? 'open ' : ''}calendar-container`}>
         <div className='calendar-header'>
           <span>{currentMonth.format('YYYY년 MM월')}</span>
@@ -98,9 +102,19 @@ const DatePicker = ({ selected, setSelected }: DatePicker) => {
 const datePickerStyle = css`
   position: relative;
 
-  .date-button {
+  .date-input {
     width: 90px;
-    padding: 0 4px;
+    height: 32px;
+    border: 0;
+    border-radius: 4px;
+    outline: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: ${theme.colors.darkestGray};
+    background-color: ${theme.colors.bgGray};
+    text-align: center;
+    caret-color: transparent;
+    cursor: pointer;
   }
 
   .calendar-container {

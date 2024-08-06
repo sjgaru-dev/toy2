@@ -14,11 +14,12 @@ const minutes = [...Array(60).keys()].map((minute) => formatTimeString(minute));
 const ampm = ['오전', '오후'];
 
 interface TimePickerProps {
+  inputName?: string;
   time: string;
   setTime: (time: string) => void;
 }
 
-const TimePicker = ({ time, setTime }: TimePickerProps) => {
+const TimePicker = ({ inputName = 'timepicker', time, setTime }: TimePickerProps) => {
   const formattedTime = formatTo12HourTime(time);
   const [initAmpm, initTime] = formattedTime.split(' ');
   const [initHour, initMinute] = initTime.split(':').map(Number);
@@ -60,13 +61,15 @@ const TimePicker = ({ time, setTime }: TimePickerProps) => {
 
   return (
     <div css={containerStyle} ref={timePickerRef}>
-      <button
+      <input
+        type='button'
+        value={`${selectedAmpm} ${selectedHour}:${selectedMinute}`}
         onClick={() => setIsOpen(!isOpen)}
-      >{`${selectedAmpm} ${selectedHour}:${selectedMinute}`}</button>
+      />
 
       {isOpen && (
         <div css={dropdownStyle}>
-          <Combobox as='div' onChange={() => {}}>
+          <Combobox as='div'>
             <div css={sectionStyle}>
               {ampm.map((option) => (
                 <div
@@ -113,6 +116,20 @@ const TimePicker = ({ time, setTime }: TimePickerProps) => {
 const containerStyle = css`
   position: relative;
   display: inline-block;
+
+  input {
+    width: 80px;
+    height: 32px;
+    border: 0;
+    border-radius: 4px;
+    outline: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: ${theme.colors.darkestGray};
+    background-color: ${theme.colors.bgGray};
+    text-align: center;
+    cursor: pointer;
+  }
 `;
 
 const dropdownStyle = css`
