@@ -57,7 +57,7 @@ const CorrectionEdit: React.FC = () => {
             <span css={dateStyle}>2024/07/23 (화)</span>
           </div>
 
-          <div css={correctionStyle}>
+          <div css={correctionEditStyle}>
             <Label css={labelStyle}>정정항목</Label>
             <div css={selectWrapperStyle}>
               <Select options={categoryOptions} selected={category} onChange={setCategory} />
@@ -128,14 +128,14 @@ const titleContainerStyle = css`
 const rowStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 36px;
+  margin-bottom: 30px;
   justify-content: space-between;
 `;
 
-const correctionStyle = css`
+const correctionEditStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   justify-content: space-between;
 `;
 

@@ -117,7 +117,7 @@ const containerStyle = css`
 const titleStyle = css`
   font-size: ${theme.fontSizes.xlarge};
   font-weight: bold;
-  padding-top: 32px;
+  padding-top: 16px;
   margin-bottom: 32px;
   color: ${theme.colors.black};
   display: flex;
@@ -179,7 +179,7 @@ const contentWrapper = css`
 `;
 
 const dateStyle = css`
-  font-size: ${theme.fontSizes.large};
+  font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.darkGray};
   margin-bottom: 8px;
 `;

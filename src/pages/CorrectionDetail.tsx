@@ -17,6 +17,7 @@ const CorrectionDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isPending, setIsPending] = useState(true);
   const [title, setTitle] = useState('무급 휴가 안 썼어요');
   const [applicationDate] = useState('2024/07/23 (화)');
   const [category, setCategory] = useState('연장 근무');
@@ -59,7 +60,7 @@ const CorrectionDetail: React.FC = () => {
             ) : (
               <h1 css={titleStyle}>{title}</h1>
             )}
-            {!isEditing && (
+            {isPending && !isEditing && (
               <IconTextButton Icon={HiPencil} onClick={handleEdit}>
                 수정
               </IconTextButton>
@@ -85,7 +86,11 @@ const CorrectionDetail: React.FC = () => {
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
-              {file && <span css={fileNameStyle}>{file.name}</span>}
+              {file && (
+                <span css={fileNameStyle} style={{ cursor: 'pointer' }}>
+                  {file.name}
+                </span>
+              )}
               {isEditing && (
                 <>
                   <input
@@ -104,7 +109,11 @@ const CorrectionDetail: React.FC = () => {
                   </IconTextButton>
                 </>
               )}
-              {!isEditing && !file && <span css={dateStyle}>근무 내역.jpg</span>}
+              {!isEditing && !file && (
+                <span css={dateStyle} style={{ cursor: 'pointer' }}>
+                  근무 내역.jpg
+                </span>
+              )}
             </div>
           </div>
 
@@ -127,9 +136,11 @@ const CorrectionDetail: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div css={buttonStyle}>
-              <button css={cancelButtonStyle}>삭제하기</button>
-            </div>
+            isPending && (
+              <div css={buttonStyle}>
+                <button css={cancelButtonStyle}>삭제하기</button>
+              </div>
+            )
           )}
         </Fieldset>
       </div>
@@ -165,7 +176,7 @@ const titleStyle = css`
 const correctionStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 36px;
   justify-content: space-between;
 `;
 
