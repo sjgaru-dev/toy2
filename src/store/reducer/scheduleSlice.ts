@@ -9,12 +9,14 @@ export interface ScheduleState {
   schedule: ScheduleModel[];
   status: status;
   error: string | null;
+  isFetched: boolean;
 }
 
 const initialState: ScheduleState = {
   schedule: [],
   status: 'idle',
   error: null,
+  isFetched: false,
 };
 
 export const scheduleSlice = createSlice({
@@ -29,6 +31,7 @@ export const scheduleSlice = createSlice({
       .addCase(fetchSchedule.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.schedule = action.payload;
+        state.isFetched = true;
       })
       .addCase(fetchSchedule.rejected, (state, action) => {
         state.status = 'failed';
