@@ -1,62 +1,31 @@
-import { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { HiOutlinePencil } from 'react-icons/hi2';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';
-import { useAppDispatch } from '@/store/hooks';
-import { deleteSchedule } from '@/store/reducer/scheduleSlice';
+import useScheduleDelete from '@/hooks/useScheduleDelete';
 import theme from '@/styles/theme';
 import { ScheduleModel } from '@/types/schedule';
 import { formatTime, formatOnlyDate } from '@/utils/dailySchedule';
 
-const DailyScheduleDetail = () => {
+const DailyScheduleDetail: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const schedule: ScheduleModel = location.state?.schedule;
+  const schedule: ScheduleModel = useMemo(() => location.state?.schedule, [location.state]);
+
   const [text, setText] = useState(schedule.content);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isModalOpen, handleDeleteClick, handleConfirmDelete, handleCancelDelete } =
+    useScheduleDelete(schedule);
 
-  // 일정 삭제 버튼 클릭
-  const handleDeleteClick = () => {
-    setIsModalOpen(true);
-  };
-
-  // 일정삭제 모달에서 일정 취소하기 버튼 클릭
-  const handleConfirmDelete = async () => {
-    try {
-      // TODO: 일정 삭제 API 호출
-      const result = await dispatch(
-        deleteSchedule({
-          userNo: schedule.userNo,
-          startDate: schedule.startDate,
-          endDate: schedule.endDate,
-        })
-      ).unwrap(); // unwrap()은 비동기 함수의 반환값(Promise)을 반환
-      console.log('Delete result', result);
-      setIsModalOpen(false);
-
-      // navigate해주기 전에 삭제되었다고 토스트ui 띄우기 코드 필요
-
-      navigate('/schedule');
-    } catch (error) {
-      console.error('Delete error:', error);
-      if (error instanceof Error) {
-        console.log('Error message: ', error.message);
-        console.log('Error stack: ', error.stack);
-      }
+  useEffect(() => {
+    if (schedule) {
+      setText(schedule.content);
     }
-  };
-
-  // 일정삭제 모달에서 취소 버튼 클릭
-  const handleCancelDelete = () => {
-    setIsModalOpen(false);
-  };
+  }, [schedule]);
 
   return (
     <div css={wrapper}>
