@@ -64,17 +64,13 @@ const isDailySchedule = (date: string, schedule: ScheduleModel): boolean => {
   const startDate = dayjs(schedule.startDate).startOf('day');
   const endDate = dayjs(schedule.endDate).startOf('day');
 
-  // 시작 날짜와 종료 날짜가 같은 경우 (당일 일정)
-  if (startDate.isSame(endDate, 'day')) {
-    return checkDate.isSame(startDate, 'day');
+  // 체크 날짜가 시작일 또는 종료일과 같은 경우(당일 일정인 경우)
+  if (checkDate.isSame(startDate, 'day') || checkDate.isSame(endDate, 'day')) {
+    return true;
   }
 
-  // 여러 날에 걸친 일정의 경우
-  return (
-    checkDate.isSame(startDate, 'day') ||
-    checkDate.isSame(endDate, 'day') ||
-    (checkDate.isAfter(startDate) && checkDate.isBefore(endDate))
-  );
+  // 여러 날에 걸친 일정의 경우, 시작일과 종료일 사이에 있는지 여부를 판단
+  return checkDate.isAfter(startDate) && checkDate.isBefore(endDate);
 };
 
 export { formatDate, formatOnlyDate, formatTime, formatTimeRange, isDailySchedule };
