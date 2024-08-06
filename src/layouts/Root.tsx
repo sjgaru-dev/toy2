@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { Outlet } from 'react-router-dom';
 
+import Toast from '@/components/common/Toast';
 import Navbar from '@/components/layout/Navbar';
 
 const RootLayout = () => (
@@ -9,6 +10,8 @@ const RootLayout = () => (
     <main>
       <Outlet />
     </main>
+
+    <Toast />
   </div>
 );
 

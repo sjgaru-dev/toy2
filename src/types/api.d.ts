@@ -14,3 +14,8 @@ export interface ApiResponse<T> {
 }
 
 export type AuthResponseType = UserCredential;
+
+export interface ToastState {
+  isToastOn: boolean;
+  toastMsg: string;
+}
