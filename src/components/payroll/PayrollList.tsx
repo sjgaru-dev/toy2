@@ -17,13 +17,13 @@ const PayrollList: React.FC = () => {
   const navigate = useNavigate();
   const payrollItems: PayrollItem[] = [
     { year: 2024, month: 7, amount: 4570000, date: '8/1 지급' },
-    { year: 2024, month: 6, amount: 4000000, date: '7/1 지급' },
-    { year: 2024, month: 5, amount: 4000000, date: '6/1 지급' },
-    { year: 2024, month: 4, amount: 4000000, date: '5/1 지급' },
-    { year: 2024, month: 3, amount: 4000000, date: '4/1 지급' },
-    { year: 2024, month: 2, amount: 4000000, date: '3/1 지급' },
-    { year: 2024, month: 1, amount: 4000000, date: '2/1 지급' },
-    { year: 2023, month: 12, amount: 4000000, date: '1/1 지급' },
+    { year: 2024, month: 6, amount: 4570000, date: '7/1 지급' },
+    { year: 2024, month: 5, amount: 4570000, date: '6/1 지급' },
+    { year: 2024, month: 4, amount: 4570000, date: '5/1 지급' },
+    { year: 2024, month: 3, amount: 4570000, date: '4/1 지급' },
+    { year: 2024, month: 2, amount: 4570000, date: '3/1 지급' },
+    { year: 2024, month: 1, amount: 4570000, date: '2/1 지급' },
+    { year: 2023, month: 12, amount: 4570000, date: '1/1 지급' },
   ];
 
   const handleItemClick = (year: number, month: number) => {
