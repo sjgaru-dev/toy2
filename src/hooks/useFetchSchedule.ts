@@ -9,13 +9,15 @@ const useFetchSchedule = () => {
   const [events, setEvents] = useState<EventModel[]>([]);
 
   const dispatch = useAppDispatch();
-  const { schedule, status, error } = useAppSelector(
+  const { schedule, status, error, isFetched } = useAppSelector(
     (state: { schedule: ScheduleState }) => state.schedule
   );
 
   useEffect(() => {
-    dispatch(fetchSchedule());
-  }, [dispatch]);
+    if (!isFetched) {
+      dispatch(fetchSchedule());
+    }
+  }, [isFetched, dispatch]);
 
   useEffect(() => {
     if (schedule.length > 0) {
