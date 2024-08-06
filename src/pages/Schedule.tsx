@@ -5,8 +5,8 @@ import { HiPlus } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 import CalendarComponent from '@/components/calendar/Calendar';
-import { PATH } from '@/constants/path';
 import DailySchedule from '@/components/dailySchedule/DailySchedule';
+import { PATH } from '@/constants/path';
 import useFetchSchedule from '@/hooks/useFetchSchedule';
 import theme from '@/styles/theme';
 

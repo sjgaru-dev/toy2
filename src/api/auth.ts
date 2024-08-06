@@ -5,12 +5,9 @@ import {
   signOut,
 } from 'firebase/auth';
 
-import { auth } from './index';
-
-import { SignInProps } from '../types/props';
+import { auth } from '@/api';
 import { ApiResponse, AuthResponseType } from '@/types/api';
-
-export const getCurrentUser = () => auth.currentUser;
+import { SignInProps } from '@/types/props';
 
 export const doSignIn = async ({
   email,
@@ -18,7 +15,7 @@ export const doSignIn = async ({
 }: SignInProps): Promise<ApiResponse<AuthResponseType>> => {
   await setPersistence(auth, browserSessionPersistence);
 
-  return { status: 'success', response: await signInWithEmailAndPassword(auth, email, password) };
+  return { status: 'succeeded', response: await signInWithEmailAndPassword(auth, email, password) };
 };
 
-export const doSignOut = async () => ({ status: 'success', response: await signOut(auth) });
+export const doSignOut = async () => ({ status: 'succeeded', response: await signOut(auth) });
