@@ -3,37 +3,73 @@ import React, { useState, useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 import { Fieldset } from '@headlessui/react';
 import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
+import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Select from '@/components/common/Select';
+import Spinner from '@/components/common/Spinner';
+import { PATH } from '@/constants/path';
+import useToast from '@/hooks/useToast';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchAddCorrection } from '@/store/reducer/payrollSlice';
 import theme from '@/styles/theme';
+import { CorrectionProps } from '@/types/payroll';
+import { checkAuth, getUID } from '@/utils/auth';
 
 const CorrectionForm: React.FC = () => {
   const [title, setTitle] = useState('');
   const [applicationDate, setApplicationDate] = useState('');
   const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | undefined>(undefined);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
-  const isSubmitDisabled = !title.trim() || !reason.trim();
+  const [isActive, setActive] = useState(false);
 
   useEffect(() => {
     const today = new Date();
     const formattedDate = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')} (${['일', '월', '화', '수', '목', '금', '토'][today.getDay()]})`;
     setApplicationDate(formattedDate);
+
+    setActive(false);
   }, []);
 
-  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    setActive(!title.trim() || !reason.trim());
+  }, [title, reason]);
+
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.payroll);
+
+  const { toastTrigger } = useToast();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
-    if (!isSubmitDisabled) {
-      // 여기에 제출 로직 구현
-    }
+    if (!checkAuth() || !getUID()) return;
+    // 여기에 제출 로직 구현
+    const props: CorrectionProps = {
+      id: 0,
+      salaryId: 0,
+      userNo: '',
+      requestDate: applicationDate,
+      status: category,
+      subject: title,
+      content: reason,
+      attachFile: file,
+    };
+
+    dispatch(fetchAddCorrection(props)).then((status) => {
+      if (status.meta.requestStatus === 'fulfilled') {
+        toastTrigger('정정신청이 등록되었습니다');
+        navigate(PATH.SALARY_CORRECTION_HISTORY);
+      }
+    });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,6 +110,7 @@ const CorrectionForm: React.FC = () => {
                 onClick={handleFileButtonClick}
                 iconPosition='left'
                 backgroundButton={true}
+                type='button'
               >
                 파일 추가
               </IconTextButton>
@@ -96,11 +133,8 @@ const CorrectionForm: React.FC = () => {
             />
           </div>
           <div>
-            <Button
-              onClick={() => handleSubmit()}
-              styleType={isSubmitDisabled ? 'disabled' : 'primary'}
-            >
-              정정 신청하기
+            <Button onClick={handleSubmit} styleType={isActive ? 'disabled' : 'primary'}>
+              {status === 'loading' ? <Spinner /> : '정정 신청하기'}
             </Button>
           </div>
         </Fieldset>
