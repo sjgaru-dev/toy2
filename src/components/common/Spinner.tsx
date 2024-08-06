@@ -13,8 +13,8 @@ const spinnerStyle = css`
   border: 4px solid ${theme.colors.lightGray};
   border-top: 4px solid ${theme.colors.primary};
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   animation: ${spin} 1s linear infinite;
 `;
 

@@ -16,6 +16,7 @@ import HomePage from '@/pages/Home';
 import NotFoundPage from '@/pages/NotFound';
 import PayrollDetail from '@/pages/PayrollDetail';
 import ProfilePage from '@/pages/Profile';
+import ProfileEdit from '@/pages/ProfileEdit';
 import SalaryPage from '@/pages/Salary';
 import SchedulePage from '@/pages/Schedule';
 import ScheduleAddPage from '@/pages/ScheduleAdd';
@@ -58,7 +59,13 @@ const router = createBrowserRouter([
               { path: PATH.SALARY_CORRECTION_EDIT, element: <CorrectionEdit /> },
             ],
           },
-          { path: PATH.PROFILE, element: <ProfilePage /> },
+          {
+            path: PATH.PROFILE,
+            children: [
+              { index: true, element: <ProfilePage /> },
+              { path: PATH.PROFILE_EDIT, element: <ProfileEdit /> },
+            ],
+          },
         ],
       },
     ],

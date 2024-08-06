@@ -10,6 +10,7 @@ export const PATH = {
   SALARY_CORRECTION_DETAIL: 'correction-history/correction-detail/:id',
   SALARY_CORRECTION_EDIT: 'correction-history/correction-edit/:id',
   PROFILE: '/profile',
+  PROFILE_EDIT: 'edit',
   SIGNIN: '/signin',
 };
 

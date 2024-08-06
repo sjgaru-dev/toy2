@@ -9,12 +9,14 @@ export interface ScheduleState {
   schedule: ScheduleModel[];
   status: status;
   error: string | null;
+  isFetched: boolean;
 }
 
 const initialState: ScheduleState = {
   schedule: [],
   status: 'idle',
   error: null,
+  isFetched: false,
 };
 
 export const scheduleSlice = createSlice({
@@ -29,6 +31,7 @@ export const scheduleSlice = createSlice({
       .addCase(fetchSchedule.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.schedule = action.payload;
+        state.isFetched = true;
       })
       .addCase(fetchSchedule.rejected, (state, action) => {
         state.status = 'failed';
@@ -40,7 +43,7 @@ export const scheduleSlice = createSlice({
       .addCase(deleteSchedule.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.schedule = state.schedule = state.schedule.filter(
-          (item) => item.id !== action.payload
+          (item) => item.userNo !== action.payload
         );
       })
       .addCase(deleteSchedule.rejected, (state, action) => {
@@ -71,10 +74,10 @@ export const fetchSchedule = createAsyncThunk('schedule/fetchSchedule', async ()
 
 export const deleteSchedule = createAsyncThunk(
   'schedule/deleteSchedule',
-  async (scheduleId: string, { rejectWithValue }) => {
+  async (userNo: string, { rejectWithValue }) => {
     try {
-      await deleteDoc(doc(db, 'Schedule', scheduleId));
-      return scheduleId;
+      await deleteDoc(doc(db, 'Schedule', userNo));
+      return userNo;
     } catch (error) {
       return rejectWithValue('일정을 삭제할 수 없습니다.');
     }
