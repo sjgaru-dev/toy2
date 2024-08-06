@@ -7,7 +7,7 @@ export const PATH = {
   SALARY: '/salary',
   SALARY_DETAIL: 'detail/:year/:month',
   SALARY_CORRECTION_HISTORY: 'correction-history',
-  SALARY_CORRECTION_DETAIL: 'correction-history/:id',
+  SALARY_CORRECTION_DETAIL: 'correction-history/correction-detail/:id',
   PROFILE: '/profile',
   SIGNIN: '/signin',
 };
