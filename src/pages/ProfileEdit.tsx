@@ -30,16 +30,16 @@ const ProfilePage = () => {
   const [inputNickValue, setInputNickValue] = useState('');
   const [inputPhoneValue, setInputPhoneValue] = useState('');
   const [inputImgValue, setInputImgValue] = useState('');
-  const defaultImg = userDefaultSvg;
 
   useEffect(() => {
-    (async () => {
-      setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
-      setInputNickValue(userData?.nickname || '');
-      setInputPhoneValue(userData?.phone || '');
-      setInputImgValue;
-    })();
-  }, [userData?.nickname, userData?.phone, userData?.img]);
+    const fetchData = async () => {
+      const data = await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1');
+      setUserData(data);
+      setInputNickValue(data.nickname || '');
+      setInputPhoneValue(data.phone || '');
+    };
+    fetchData();
+  }, []);
 
   const handleChangeImg = async () => {
     try {
@@ -67,7 +67,7 @@ const ProfilePage = () => {
   };
 
   const handleDeleteImg = () => {
-    setUserData({ ...userData, img: userDefaultSvg });
+    setUserData(Object.assign({}, userData, { img: userDefaultSvg }));
     setInputImgValue(userDefaultSvg);
   };
 
@@ -114,7 +114,7 @@ const ProfilePage = () => {
       <Header />
       <div css={wrapperStyle}>
         <div css={imgStyle}>
-          <img src={userData?.img || defaultImg} css={imgStyle} />
+          <img src={userData?.img} css={imgStyle} />
           <div css={caremaIconStyle}>
             <MdOutlineCameraAlt size={24} onClick={handleChangeImg} />
           </div>
