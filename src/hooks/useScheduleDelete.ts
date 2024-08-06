@@ -26,8 +26,7 @@ const useScheduleDelete = (schedule: ScheduleModel) => {
           startDate: schedule.startDate,
           endDate: schedule.endDate,
         })
-      ).unwrap(); // unwrap()은 비동기 함수의 반환값(Promise)을 반환
-      console.log('Delete result', result);
+      ).unwrap(); // unwrap()은 비동기 함수의 반환값(Promise)을 반환a
       setIsModalOpen(false);
 
       // navigate해주기 전에 삭제되었다고 토스트ui 띄우기 코드 필요
@@ -35,10 +34,6 @@ const useScheduleDelete = (schedule: ScheduleModel) => {
       navigate('/schedule');
     } catch (error) {
       console.error('Delete error:', error);
-      if (error instanceof Error) {
-        console.log('Error message: ', error.message);
-        console.log('Error stack: ', error.stack);
-      }
     }
   }, [dispatch, navigate, schedule]);
 
