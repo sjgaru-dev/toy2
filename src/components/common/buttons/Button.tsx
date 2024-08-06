@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { css, SerializedStyles } from '@emotion/react';
 

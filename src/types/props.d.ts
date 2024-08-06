@@ -1,15 +1,15 @@
 import { UpcomingType } from '@/types/type';
 
-export type ValidProps = {
+export interface ValidProps {
   value: string;
   regex: RegExp;
-};
+}
 
-export type SignInProps = {
+export interface SignInProps {
   email: string;
   password: string;
-};
+}
 
-export type UpcomingProps = {
+export interface UpcomingProps {
   upcomingData: UpcomingType[];
-};
+}
