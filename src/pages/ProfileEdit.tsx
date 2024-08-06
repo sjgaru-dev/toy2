@@ -2,16 +2,15 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import firebase from 'firebase/compat/app';
-import { MdEdit } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { MdDelete, MdOutlineCameraAlt } from 'react-icons/md';
 
+import { db } from '@/api';
 import { getUserData } from '@/api/User';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
-import Modal from '@/components/common/Modal';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchSignOut } from '@/store/reducer/authSlice';
+import Header from '@/components/layout/Header';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
 
@@ -26,134 +25,145 @@ const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
 };
 
 const ProfilePage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState<UserType>();
-
-  const defaultImg = userDefaultSvg;
-
-  const navigate = useNavigate();
-  const handleEditClick = () => {
-    navigate(`/profile/edit`);
-  };
-
-  const handleLogoutClick = () => {
-    setIsModalOpen(true);
-  };
-
-  const dispatch = useAppDispatch();
-  const { status } = useAppSelector((state) => state.auth);
-
-  const handleModalLogout = async () => {
-    await dispatch(fetchSignOut());
-    if (status === 'succeeded') navigate('/signin');
-  };
-
-  const handleModalCancel = () => {
-    setIsModalOpen(false);
-  };
+  const [inputNickValue, setInputNickValue] = useState('');
+  const [inputPhoneValue, setInputPhoneValue] = useState('');
 
   useEffect(() => {
     (async () => {
       setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
+      setInputNickValue(userData?.nickname || '');
+      setInputPhoneValue(userData?.phone || '');
     })();
   }, []);
 
+  const handleInputChangeNick = (value: string) => {
+    setInputNickValue(value);
+  };
+
+  const handleInputChangePhone = (value: string) => {
+    const formattedValue = value
+      .replace(/[^0-9]/g, '')
+      .slice(0, 11)
+      .replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+    setInputPhoneValue(formattedValue);
+  };
+
+  const defaultImg = userDefaultSvg;
+
+  const handleDeleteImgClick = () => {};
+
+  const handleUpdateClick = async () => {
+    try {
+      const user = firebase.auth().currentUser;
+      const uid = user?.uid;
+      if (user) {
+        const userRef = collection(db, 'User');
+        const queryRef = query(userRef, where('uid', '==', uid));
+        const fetchResult = await getDocs(queryRef);
+
+        if (!fetchResult.empty) {
+          const userData = fetchResult.docs[0];
+          const updatedData = {
+            nickname: inputNickValue,
+            phone: inputPhoneValue,
+          };
+          await updateDoc(userData.ref, updatedData);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
   return (
     <div>
+      <Header />
       <div css={wrapperStyle}>
         <div css={imgStyle}>
           <img src={userData?.img || defaultImg} css={imgStyle} />
+          <div css={caremaIconStyle}>
+            <MdOutlineCameraAlt size={24} />
+          </div>
         </div>
         <div css={editIconStyle}>
-          <IconTextButton Icon={MdEdit} onClick={handleEditClick}>
-            프로필 수정
+          <IconTextButton Icon={MdDelete} onClick={handleDeleteImgClick}>
+            이미지 삭제
           </IconTextButton>
         </div>
       </div>
 
       <div css={[formStyle]}>
         <Input
+          label='닉네임'
+          value={inputNickValue}
+          placeholder='수정하실 닉네임을 입력하세요'
+          onChange={handleInputChangeNick}
+          type='text'
+          readOnly={false}
+        />
+        <Input
+          label='연락처'
+          value={inputPhoneValue}
+          placeholder='수정하실 연락처를 숫자만 입력하세요.'
+          onChange={handleInputChangePhone}
+          type='text'
+          readOnly={false}
+        />
+        <Input
           label='이름'
           value={userData ? userData.name : ''}
           placeholder='이름을 입력하세요'
-          type='text'
           onChange={() => {}}
-          readOnly={true}
-        />
-        <Input
-          label='닉네임'
-          value={userData ? userData.nickname : ''}
-          placeholder='닉네임을 입력하세요'
           type='text'
-          onChange={() => {}}
           readOnly={true}
         />
         <Input
           label='이메일'
           value={userData ? userData.email : ''}
           placeholder='이메일을 입력하세요'
-          type='text'
           onChange={() => {}}
-          readOnly={true}
-        />
-        <Input
-          label='연락처'
-          value={userData ? userData.phone : ''}
-          placeholder='연락처를 입력하세요'
           type='text'
-          onChange={() => {}}
           readOnly={true}
         />
         <Input
           label='생일'
           value={userData?.birthday ? formatDate(userData.birthday) : ''}
           placeholder='생일을 입력하세요'
-          type='timestamp'
           onChange={() => {}}
+          type='date'
           readOnly={true}
         />{' '}
         <Input
           label='부서'
           value={userData ? userData.team : ''}
           placeholder='부서를 입력하세요'
-          type='text'
           onChange={() => {}}
+          type='text'
           readOnly={true}
         />
         <Input
           label='직무'
           value={userData ? userData.position : ''}
           placeholder='직무를 입력하세요'
-          type='text'
           onChange={() => {}}
+          type='text'
           readOnly={true}
         />
         <Input
           label='입사일'
           value={userData?.hireDate ? formatDate(userData.hireDate) : ''}
           placeholder='입사일을 입력하세요'
-          type='date'
           onChange={() => {}}
+          type='date'
           readOnly={true}
         />
       </div>
-
       <div css={signOutButtonStyle}>
-        <Button styleType='tertiary' onClick={handleLogoutClick}>
-          로그아웃
-        </Button>
+        <div css={editButtonStyle}>
+          <Button onClick={handleUpdateClick}>수정하기</Button>
+        </div>
       </div>
-
-      {isModalOpen && (
-        <Modal
-          isOpen={true}
-          title='정말 로그아웃 하시겠습니까?'
-          confirmText='로그아웃'
-          onConfirm={handleModalLogout}
-          cancelText='취소하기'
-          onClose={handleModalCancel}
-        />
-      )}
     </div>
   );
 };
@@ -172,6 +182,17 @@ const imgStyle = css`
   border-radius: 50%;
 `;
 
+const caremaIconStyle = css`
+  position: absolute;
+  bottom: 10px;
+  right: -10px;
+  background-color: ${theme.colors.toastGray};
+  color: white;
+  border-radius: 50%;
+  border: 2px solid white;
+  padding: 8px 8px 4px 8px;
+`;
+
 const editIconStyle = css`
   display: flex;
   text-align: center;
@@ -183,6 +204,10 @@ const formStyle = css`
   margin-top: 12px;
   padding: 20px 25px;
   background-color: ${theme.colors.white};
+`;
+
+const editButtonStyle = css`
+  margin: 1rem;
 `;
 
 const signOutButtonStyle = css`
