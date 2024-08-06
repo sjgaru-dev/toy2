@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { css } from '@emotion/react';
 import { Fieldset, Label } from '@headlessui/react';
 import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
@@ -15,12 +15,13 @@ import theme from '@/styles/theme';
 const CorrectionEdit: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState('무급 휴가 안 썼어요');
   const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('진짜로 무급 휴가 안 썼어요 정정해주세요');
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>(location.state?.files || []);
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
@@ -29,8 +30,9 @@ const CorrectionEdit: React.FC = () => {
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files);
+      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     }
   };
 
@@ -67,18 +69,20 @@ const CorrectionEdit: React.FC = () => {
           <div css={rowStyle}>
             <Label css={labelStyle}>첨부파일</Label>
             <div css={fileUploadStyle}>
-              {file && <span css={fileNameStyle}>{file.name}</span>}
+              {files.length === 1 && <span css={fileNameStyle}>{files[0].name}</span>}
+              {files.length > 1 && <span css={fileNameStyle}>파일 {files.length}개</span>}
               <input
                 type='file'
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 style={{ display: 'none' }}
+                multiple
               />
               <IconTextButton
                 Icon={HiOutlineDocumentArrowUp}
                 onClick={handleFileUpload}
                 iconPosition='left'
-                backgroundButton={false}
+                backgroundButton={true}
               >
                 파일 추가
               </IconTextButton>

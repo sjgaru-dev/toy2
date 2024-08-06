@@ -2,12 +2,10 @@ import React, { useState, useRef } from 'react';
 
 import { css } from '@emotion/react';
 import { Fieldset } from '@headlessui/react';
-import { HiOutlineDocumentArrowUp, HiPencil } from 'react-icons/hi2';
+import { HiPencil } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import IconTextButton from '@/components/common/buttons/IconTextButton';
-import Input from '@/components/common/Input';
-import Select from '@/components/common/Select';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
@@ -15,52 +13,53 @@ import theme from '@/styles/theme';
 const CorrectionDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [isPending, setIsPending] = useState(true);
-  const [title, setTitle] = useState('무급 휴가 안 썼어요');
+  const correctionContainerRef = useRef<HTMLDivElement>(null);
+  const [title] = useState('무급 휴가 안 썼어요');
   const [applicationDate] = useState('2024/07/23 (화)');
-  const [category, setCategory] = useState('연장 근무');
-  const [reason, setReason] = useState('진짜로 무급 휴가 안 썼어요 정정해주세요');
-  const [file, setFile] = useState<File | null>(null);
-
-  const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
+  const [category] = useState('연장 근무');
+  const [reason] = useState('진짜로 무급 휴가 안 썼어요 정정해주세요');
+  const [file] = useState<File | null>(new File([''], '근무 내역.jpg'));
+  const [isPending] = useState(true);
 
   const handleGoBack = () => {
     navigate(PATH.SALARY, { state: { activeTab: 1 } });
   };
 
   const handleEdit = () => {
-    navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_EDIT.replace(':id', id || '')}`);
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
+    if (isPending) {
+      navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_EDIT.replace(':id', id || '')}`, {
+        state: { file },
+      });
     }
   };
 
-  const handleFileUpload = () => {
-    fileInputRef.current?.click();
+  const handleFileDownload = () => {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   };
 
-  const handleSave = () => {
-    // 저장 로직 구현
-    setIsEditing(false);
+  const handleDelete = () => {
+    if (isPending) {
+      // 삭제 로직 구현
+    }
   };
 
   return (
     <div css={containerStyle}>
       <Header onBack={handleGoBack} />
-      <div css={formStyle} className='wrapper'>
+      <div css={formStyle} className='wrapper' ref={correctionContainerRef}>
         <Fieldset css={fieldsetStyle}>
           <div css={titleContainerStyle}>
-            {isEditing ? (
-              <Input value={title} onChange={setTitle} placeholder='제목을 입력해주세요.' />
-            ) : (
-              <h1 css={titleStyle}>{title}</h1>
-            )}
-            {isPending && !isEditing && (
+            <h1 css={titleStyle}>{title}</h1>
+            {isPending && (
               <IconTextButton Icon={HiPencil} onClick={handleEdit}>
                 수정
               </IconTextButton>
@@ -74,42 +73,21 @@ const CorrectionDetail: React.FC = () => {
 
           <div css={correctionStyle}>
             <span css={labelStyle}>정정항목</span>
-            {isEditing ? (
-              <div css={selectWrapperStyle}>
-                <Select options={categoryOptions} selected={category} onChange={setCategory} />
-              </div>
-            ) : (
-              <span css={dateStyle}>{category}</span>
-            )}
+            <span css={dateStyle}>{category}</span>
           </div>
 
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
-              {file && (
-                <span css={fileNameStyle} style={{ cursor: 'pointer' }}>
+              {file ? (
+                <span
+                  css={fileNameStyle}
+                  onClick={handleFileDownload}
+                  style={{ cursor: 'pointer' }}
+                >
                   {file.name}
                 </span>
-              )}
-              {isEditing && (
-                <>
-                  <input
-                    type='file'
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
-                  />
-                  <IconTextButton
-                    Icon={HiOutlineDocumentArrowUp}
-                    onClick={handleFileUpload}
-                    iconPosition='left'
-                    backgroundButton={false}
-                  >
-                    파일 추가
-                  </IconTextButton>
-                </>
-              )}
-              {!isEditing && !file && (
+              ) : (
                 <span css={dateStyle} style={{ cursor: 'pointer' }}>
                   근무 내역.jpg
                 </span>
@@ -120,27 +98,17 @@ const CorrectionDetail: React.FC = () => {
           <div css={reasonStyle}>
             <textarea
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              readOnly
               placeholder='정정 사유를 입력해주세요.'
               css={textareaStyle}
-              readOnly={!isEditing}
             />
           </div>
-          {isEditing ? (
+          {isPending && (
             <div css={buttonStyle}>
-              <button css={primaryButtonStyle} onClick={handleSave}>
-                수정하기
-              </button>
-              <button css={secondaryButtonStyle} onClick={() => setIsEditing(false)}>
-                취소하기
+              <button css={cancelButtonStyle} onClick={handleDelete}>
+                삭제하기
               </button>
             </div>
-          ) : (
-            isPending && (
-              <div css={buttonStyle}>
-                <button css={cancelButtonStyle}>삭제하기</button>
-              </div>
-            )
           )}
         </Fieldset>
       </div>
@@ -176,7 +144,7 @@ const titleStyle = css`
 const correctionStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 36px;
+  margin-bottom: 30px;
   justify-content: space-between;
 `;
 
@@ -221,21 +189,6 @@ const textareaStyle = css`
   }
 `;
 
-const selectWrapperStyle = css`
-  position: relative;
-  z-index: 1;
-
-  & > div > div:last-child {
-    position: absolute;
-    background-color: ${theme.colors.white};
-    width: 100%;
-  }
-`;
-
-const buttonStyle = css`
-  margin-bottom: 36px;
-`;
-
 const fileUploadStyle = css`
   display: flex;
   align-items: center;
@@ -247,6 +200,10 @@ const fileNameStyle = css`
   color: ${theme.colors.darkGray};
 `;
 
+const buttonStyle = css`
+  margin-bottom: 36px;
+`;
+
 const buttonBaseStyle = css`
   width: 100%;
   padding: 16px;
@@ -255,19 +212,6 @@ const buttonBaseStyle = css`
   font-weight: bold;
   text-align: center;
   cursor: pointer;
-`;
-
-const primaryButtonStyle = css`
-  ${buttonBaseStyle}
-  background-color: ${theme.colors.primary};
-  color: ${theme.colors.white};
-  margin-bottom: 16px;
-`;
-
-const secondaryButtonStyle = css`
-  ${buttonBaseStyle}
-  background-color: transparent;
-  color: ${theme.colors.darkGray};
 `;
 
 const cancelButtonStyle = css`

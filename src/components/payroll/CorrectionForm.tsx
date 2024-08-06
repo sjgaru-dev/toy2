@@ -15,7 +15,7 @@ const CorrectionForm: React.FC = () => {
   const [applicationDate, setApplicationDate] = useState('');
   const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,8 +37,9 @@ const CorrectionForm: React.FC = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     }
   };
 
@@ -69,18 +70,20 @@ const CorrectionForm: React.FC = () => {
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
-              {file && <span css={fileNameStyle}>{file.name}</span>}
+              {files.length === 1 && <span css={fileNameStyle}>{files[0].name}</span>}
+              {files.length > 1 && <span css={fileNameStyle}>파일 {files.length}개</span>}
               <input
                 type='file'
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 style={{ display: 'none' }}
+                multiple
               />
               <IconTextButton
                 Icon={HiOutlineDocumentArrowUp}
                 onClick={handleFileButtonClick}
                 iconPosition='left'
-                backgroundButton={false}
+                backgroundButton={true}
               >
                 파일 추가
               </IconTextButton>
@@ -129,13 +132,13 @@ const titleStyle = css`
 const correctionStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   justify-content: space-between;
 `;
 const rowStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 36px;
+  margin-bottom: 30px;
   justify-content: space-between;
 `;
 
@@ -150,7 +153,7 @@ const dateStyle = css`
 `;
 
 const reasonStyle = css`
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 `;
 
 const textareaStyle = css`
@@ -191,7 +194,7 @@ const buttonStyle = css`
 const fileUploadStyle = css`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const fileNameStyle = css`
