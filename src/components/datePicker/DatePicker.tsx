@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi2';
 
+import useOnClickOutside from '@/hooks/useOnClickOutside';
 import theme from '@/styles/theme';
 import {
   formatYearMonthDay,
@@ -26,6 +27,9 @@ const DatePicker = ({ selected, setSelected }: DatePicker) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(dayjs(selected).startOf('month'));
 
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(datePickerRef, () => setIsOpen(false));
+
   const prevMonthDays = getPreviousMonthDays(currentMonth);
   const currentMonthDays = getCurrentMonthDays(currentMonth);
   const nextMonthDays = getNextMonthDays(currentMonth);
@@ -42,7 +46,7 @@ const DatePicker = ({ selected, setSelected }: DatePicker) => {
   const onNextMonth = () => setCurrentMonth(currentMonth.add(1, 'month'));
 
   return (
-    <div css={datePickerStyle}>
+    <div css={datePickerStyle} ref={datePickerRef}>
       <button type='button' className='date-button' onClick={onClickDateButton}>
         {formatYearMonthDay(selected)}
       </button>

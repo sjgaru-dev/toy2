@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { Combobox } from '@headlessui/react';
 import dayjs from 'dayjs';
 
+import useOnClickOutside from '@/hooks/useOnClickOutside';
 import theme from '@/styles/theme';
 import { formatTimeString, formatTo12HourTime } from '@/utils/time';
 
@@ -25,6 +26,9 @@ const TimePicker = ({ time, setTime }: TimePickerProps) => {
   const [selectedHour, setSelectedHour] = useState(formatTimeString(initHour));
   const [selectedMinute, setSelectedMinute] = useState(formatTimeString(initMinute));
   const [selectedAmpm, setSelectedAmpm] = useState(initAmpm);
+
+  const timePickerRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(timePickerRef, () => setIsOpen(false));
 
   const onHour = (hour: string) => {
     setSelectedHour(hour);
@@ -55,7 +59,7 @@ const TimePicker = ({ time, setTime }: TimePickerProps) => {
   };
 
   return (
-    <div css={containerStyle}>
+    <div css={containerStyle} ref={timePickerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
       >{`${selectedAmpm} ${selectedHour}:${selectedMinute}`}</button>
