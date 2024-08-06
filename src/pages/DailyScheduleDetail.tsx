@@ -28,17 +28,28 @@ const DailyScheduleDetail = () => {
   };
 
   // 일정삭제 모달에서 일정 취소하기 버튼 클릭
-  const handleConfirmDelete = async (userNo: string) => {
+  const handleConfirmDelete = async () => {
     try {
       // TODO: 일정 삭제 API 호출
-      await dispatch(deleteSchedule(userNo)).unwrap(); // unwrap()은 비동기 함수의 반환값(Promise)을 반환
+      const result = await dispatch(
+        deleteSchedule({
+          userNo: schedule.userNo,
+          startDate: schedule.startDate,
+          endDate: schedule.endDate,
+        })
+      ).unwrap(); // unwrap()은 비동기 함수의 반환값(Promise)을 반환
+      console.log('Delete result', result);
       setIsModalOpen(false);
 
       // navigate해주기 전에 삭제되었다고 토스트ui 띄우기 코드 필요
 
       navigate('/schedule');
     } catch (error) {
-      console.error(error);
+      console.error('Delete error:', error);
+      if (error instanceof Error) {
+        console.log('Error message: ', error.message);
+        console.log('Error stack: ', error.stack);
+      }
     }
   };
 
@@ -89,7 +100,7 @@ const DailyScheduleDetail = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={handleCancelDelete}
-          onConfirm={() => handleConfirmDelete(schedule.userNo)}
+          onConfirm={() => handleConfirmDelete()}
           title='일정을 삭제하시겠습니까?'
           confirmText='일정 삭제하기'
           cancelText='취소'

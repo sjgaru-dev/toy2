@@ -20,15 +20,18 @@ const DailySchedule = ({ date, schedules }: DailyScheduleProps) => {
   const navigate = useNavigate();
   const [filteredSchedules, setFilteredSchedules] = useState<ScheduleModel[]>([]);
 
+  console.log('schedules', schedules);
   // useCallback을 사용하여 필터링 함수 메모이제이션
   const filterSchedules = useCallback(() => {
     const filtered = schedules.filter((schedule) => isDailySchedule(date, schedule));
     setFilteredSchedules(filtered);
+    console.log('filtered', filtered);
   }, [date, schedules]);
 
   // 컴포넌트가 마운트 되거나 date, schedules가 변경될 때 필터링 실행
   useEffect(() => {
     filterSchedules();
+    console.log(filterSchedules());
   }, [filterSchedules]);
 
   const handleClick = (schedule: ScheduleModel) => {
