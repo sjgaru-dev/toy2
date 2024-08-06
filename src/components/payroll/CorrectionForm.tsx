@@ -59,6 +59,13 @@ const CorrectionForm: React.FC = () => {
             <span css={dateStyle}>{applicationDate}</span>
           </div>
 
+          <div css={correctionStyle}>
+            <span css={labelStyle}>정정항목</span>
+            <div css={selectWrapperStyle}>
+              <Select options={categoryOptions} selected={category} onChange={setCategory} />
+            </div>
+          </div>
+
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
@@ -73,17 +80,10 @@ const CorrectionForm: React.FC = () => {
                 Icon={HiOutlineDocumentArrowUp}
                 onClick={handleFileButtonClick}
                 iconPosition='left'
-                backgroundButton={true}
+                backgroundButton={false}
               >
                 파일 추가
               </IconTextButton>
-            </div>
-          </div>
-
-          <div css={rowStyle}>
-            <span css={labelStyle}>정정 항목</span>
-            <div css={selectWrapperStyle}>
-              <Select options={categoryOptions} selected={category} onChange={setCategory} />
             </div>
           </div>
 
@@ -123,13 +123,19 @@ const fieldsetStyle = css`
 `;
 
 const titleStyle = css`
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 `;
 
+const correctionStyle = css`
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  justify-content: space-between;
+`;
 const rowStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
   justify-content: space-between;
 `;
 
@@ -144,7 +150,7 @@ const dateStyle = css`
 `;
 
 const reasonStyle = css`
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 `;
 
 const textareaStyle = css`
@@ -179,7 +185,7 @@ const selectWrapperStyle = css`
 `;
 
 const buttonStyle = css`
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 `;
 
 const fileUploadStyle = css`

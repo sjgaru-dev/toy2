@@ -5,6 +5,7 @@ import { HiOutlineDocumentArrowUp, HiPencil } from 'react-icons/hi2';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import Select from '@/components/common/Select';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
@@ -15,6 +16,8 @@ const CorrectionDetail: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [title] = useState('무급 휴가 안 썼어요');
   const [reason, setReason] = useState('진짜로 무급 휴가 안 썼어요 정정해주세요');
+  const [correctionOptions] = useState(['연장 근무', '휴일 근무', '무급 휴가', '기타']);
+  const [selectedCorrection, setSelectedCorrection] = useState('연장 근무');
 
   const handleGoBack = () => {
     navigate(PATH.SALARY, { state: { activeTab: 1 } });
@@ -42,21 +45,32 @@ const CorrectionDetail: React.FC = () => {
           <span css={labelStyle}>신청일</span>
           <span>2024/07/23 (화)</span>
         </div>
+        <div css={requestStyle}>
+          <span css={labelStyle}>정정항목</span>
+          {isEditing ? (
+            <Select
+              options={correctionOptions}
+              selected={selectedCorrection}
+              onChange={setSelectedCorrection}
+            />
+          ) : (
+            <span>{selectedCorrection}</span>
+          )}
+        </div>
         <div css={fileStyle}>
           <span css={labelStyle}>첨부파일</span>
           {isEditing ? (
-            <IconTextButton Icon={HiOutlineDocumentArrowUp} iconPosition='left' backgroundButton>
+            <IconTextButton
+              Icon={HiOutlineDocumentArrowUp}
+              iconPosition='left'
+              backgroundButton={false}
+            >
               파일 추가
             </IconTextButton>
           ) : (
             <span>근무 내역.jpg</span>
           )}
         </div>
-        <div css={requestStyle}>
-          <span css={labelStyle}>정정 항목</span>
-          <span>연장 근무</span>
-        </div>
-
         <textarea
           css={textareaStyle}
           value={reason}
@@ -68,14 +82,14 @@ const CorrectionDetail: React.FC = () => {
         {isEditing ? (
           <>
             <button css={primaryButtonStyle} onClick={() => setIsEditing(false)}>
-              정정 수정하기
+              수정하기
             </button>
             <button css={secondaryButtonStyle} onClick={() => setIsEditing(false)}>
               취소하기
             </button>
           </>
         ) : (
-          <button css={cancelButtonStyle}>정정 취소하기</button>
+          <button css={cancelButtonStyle}>삭제하기</button>
         )}
       </main>
     </div>
@@ -110,13 +124,12 @@ const dateStyle = css`
   margin-top: 24px;
 `;
 
-const fileStyle = css`
+const requestStyle = css`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 36px;
+  margin-bottom: 30px;
 `;
-
-const requestStyle = css`
+const fileStyle = css`
   display: flex;
   justify-content: space-between;
   margin-bottom: 36px;
@@ -124,6 +137,7 @@ const requestStyle = css`
 
 const labelStyle = css`
   color: ${theme.colors.darkGray};
+  vertical-align: middle;
 `;
 
 const textareaStyle = css`
@@ -160,7 +174,7 @@ const primaryButtonStyle = css`
   ${buttonBaseStyle}
   background-color: ${theme.colors.primary};
   color: ${theme.colors.white};
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 `;
 
 const secondaryButtonStyle = css`
