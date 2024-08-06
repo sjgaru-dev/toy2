@@ -95,7 +95,7 @@ const CorrectionForm: React.FC = () => {
               css={textareaStyle}
             />
           </div>
-          <div css={buttonStyle}>
+          <div>
             <Button
               onClick={() => handleSubmit()}
               styleType={isSubmitDisabled ? 'disabled' : 'primary'}
@@ -120,23 +120,30 @@ const formStyle = css`
 
 const fieldsetStyle = css`
   border: none;
-  padding-top: 32px;
+  padding-top: 20px;
 `;
 
 const titleStyle = css`
-  margin-bottom: 40px;
+  margin-bottom: 0.5rem;
+
+  input {
+    height: ${theme.heights.medium};
+    padding: 0 12px;
+    font-size: ${theme.fontSizes.large};
+  }
 `;
 
 const rowStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
 
 const labelStyle = css`
   font-size: ${theme.fontSizes.large};
-  color: ${theme.colors.darkGray};
+  color: ${theme.colors.darkestGray};
 `;
 
 const dateStyle = css`
@@ -145,7 +152,7 @@ const dateStyle = css`
 `;
 
 const reasonStyle = css`
-  margin-bottom: 40px;
+  margin: 8px 0 24px;
 `;
 
 const textareaStyle = css`
@@ -159,12 +166,12 @@ const textareaStyle = css`
   resize: none;
 
   &::placeholder {
-    color: ${theme.colors.darkestGray};
+    color: ${theme.colors.darkGray};
   }
 
   &:focus {
     outline: none;
-    border-color: ${theme.colors.primary};
+    border-color: ${theme.colors.darkGray};
   }
 `;
 
@@ -177,10 +184,6 @@ const selectWrapperStyle = css`
     background-color: ${theme.colors.white};
     width: 100%;
   }
-`;
-
-const buttonStyle = css`
-  margin-bottom: 32px;
 `;
 
 const fileUploadStyle = css`
