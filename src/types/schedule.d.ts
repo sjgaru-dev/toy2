@@ -11,6 +11,6 @@ export interface ScheduleFormDataModel {
 }
 
 export interface ScheduleModel extends ScheduleFormDataModel {
-  id: string;
-  userNo: number;
+  id: number;
+  userNo: string;
 }
