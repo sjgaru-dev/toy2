@@ -5,11 +5,11 @@ import { css } from '@emotion/react';
 import dayjs from 'dayjs';
 
 import Button from '@/components/common/buttons/Button';
+import DatePicker from '@/components/common/DatePicker';
 import Select from '@/components/common/Select';
+import TimePicker from '@/components/common/TimePicker';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
-import DatePicker from '@/components/datePicker/DatePicker';
 import ColorPicker, { ColorsType } from '@/components/scheduleForm/ColorPicker';
-import TimePicker from '@/components/scheduleForm/TimePicker';
 import theme from '@/styles/theme';
 import { ScheduleFormDataModel } from '@/types/schedule';
 
@@ -69,7 +69,6 @@ const ScheduleForm = ({
     event.preventDefault();
 
     const formData = new FormData(event.target as HTMLFormElement);
-
     const { subject, content } = Object.fromEntries(formData.entries()) as Record<string, string>;
     const data: ScheduleFormDataModel = {
       color: selectedColor,
@@ -105,19 +104,15 @@ const ScheduleForm = ({
         <div css={divContainerStyle}>
           <span>시작일</span>
           <div css={datePickerContainerStyle}>
-            <DatePicker selected={startDate} setSelected={setStartDate} inputName='startDate' />
-            {!enableAllDay && (
-              <TimePicker time={startTime} setTime={setStartTime} inputName='startTime' />
-            )}
+            <DatePicker selected={startDate} setSelected={setStartDate} />
+            {!enableAllDay && <TimePicker time={startTime} setTime={setStartTime} />}
           </div>
         </div>
         <div css={divContainerStyle}>
           <span>종료일</span>
           <div css={datePickerContainerStyle}>
-            <DatePicker selected={endDate} setSelected={setEndDate} inputName='endDate' />
-            {!enableAllDay && (
-              <TimePicker time={endTime} setTime={setEndTime} inputName='endTime' />
-            )}
+            <DatePicker selected={endDate} setSelected={setEndDate} />
+            {!enableAllDay && <TimePicker time={endTime} setTime={setEndTime} />}
           </div>
         </div>
         <div css={divContainerStyle}>

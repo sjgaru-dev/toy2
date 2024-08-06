@@ -14,12 +14,11 @@ const minutes = [...Array(60).keys()].map((minute) => formatTimeString(minute));
 const ampm = ['오전', '오후'];
 
 interface TimePickerProps {
-  inputName?: string;
   time: string;
   setTime: (time: string) => void;
 }
 
-const TimePicker = ({ inputName = 'timepicker', time, setTime }: TimePickerProps) => {
+const TimePicker = ({ time, setTime }: TimePickerProps) => {
   const formattedTime = formatTo12HourTime(time);
   const [initAmpm, initTime] = formattedTime.split(' ');
   const [initHour, initMinute] = initTime.split(':').map(Number);

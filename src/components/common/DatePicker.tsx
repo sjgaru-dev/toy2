@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
@@ -19,12 +20,11 @@ dayjs.locale('ko');
 const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 
 interface DatePicker {
-  inputName?: string;
   selected: Date;
   setSelected: (value: Date) => void;
 }
 
-const DatePicker = ({ inputName = 'datepicker', selected, setSelected }: DatePicker) => {
+const DatePicker = ({ selected, setSelected }: DatePicker) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(dayjs(selected).startOf('month'));
 
