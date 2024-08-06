@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 type NavigateType = 'PREV' | 'NEXT' | 'TODAY' | 'DATE';
 
 export interface EventModel {

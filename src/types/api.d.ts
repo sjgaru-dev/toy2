@@ -9,8 +9,13 @@ export interface AuthState {
 }
 
 export interface ApiResponse<T> {
-  status: 'idle' | 'success' | 'error';
+  status: status;
   response: T;
 }
 
 export type AuthResponseType = UserCredential;
+
+export interface ToastState {
+  isToastOn: boolean;
+  toastMsg: string;
+}

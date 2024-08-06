@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { doSignIn, doSignOut } from '@/api/Auth';
+import { doSignIn, doSignOut } from '@/api/auth';
 import { ApiResponse, AuthResponseType } from '@/types/api';
 import { AuthState } from '@/types/api';
 import { SignInProps } from '@/types/props';
