@@ -10,6 +10,7 @@ import CorrectionHistory from '@/components/payroll/CorrectionHistory';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/Root';
 import CorrectionDetail from '@/pages/CorrectionDetail';
+import CorrectionEdit from '@/pages/CorrectionEdit';
 import DailyScheduleDetail from '@/pages/DailyScheduleDetail';
 import HomePage from '@/pages/Home';
 import NotFoundPage from '@/pages/NotFound';
@@ -54,6 +55,7 @@ const router = createBrowserRouter([
               { path: PATH.SALARY_DETAIL, element: <PayrollDetail /> },
               { path: PATH.SALARY_CORRECTION_HISTORY, element: <CorrectionHistory /> },
               { path: PATH.SALARY_CORRECTION_DETAIL, element: <CorrectionDetail /> },
+              { path: PATH.SALARY_CORRECTION_EDIT, element: <CorrectionEdit /> },
             ],
           },
           { path: PATH.PROFILE, element: <ProfilePage /> },

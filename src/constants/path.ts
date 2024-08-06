@@ -8,6 +8,7 @@ export const PATH = {
   SALARY_DETAIL: 'detail/:year/:month',
   SALARY_CORRECTION_HISTORY: 'correction-history',
   SALARY_CORRECTION_DETAIL: 'correction-history/correction-detail/:id',
+  SALARY_CORRECTION_EDIT: 'correction-history/correction-edit/:id',
   PROFILE: '/profile',
   SIGNIN: '/signin',
 };
@@ -18,5 +19,6 @@ export const PATH_TITLE = {
   SALARY: '급여',
   SALARY_CORRECTION_HISTORY: '정정 내역',
   SALARY_CORRECTION_DETAIL: '정정 상세',
+  SALARY_CORRECTION_EDIT: '정정 수정',
   PROFILE: '프로필',
 };

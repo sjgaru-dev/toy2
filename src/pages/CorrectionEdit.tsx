@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 
 import { css } from '@emotion/react';
-import { Fieldset } from '@headlessui/react';
-import { HiOutlineDocumentArrowUp, HiPencil } from 'react-icons/hi2';
+import { Fieldset, Label } from '@headlessui/react';
+import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import IconTextButton from '@/components/common/buttons/IconTextButton';
@@ -12,13 +12,12 @@ import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
-const CorrectionDetail: React.FC = () => {
+const CorrectionEdit: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
+
   const [title, setTitle] = useState('무급 휴가 안 썼어요');
-  const [applicationDate] = useState('2024/07/23 (화)');
   const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('진짜로 무급 휴가 안 썼어요 정정해주세요');
   const [file, setFile] = useState<File | null>(null);
@@ -26,11 +25,7 @@ const CorrectionDetail: React.FC = () => {
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
   const handleGoBack = () => {
-    navigate(PATH.SALARY, { state: { activeTab: 1 } });
-  };
-
-  const handleEdit = () => {
-    navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_EDIT.replace(':id', id || '')}`);
+    navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id || '')}`);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +40,7 @@ const CorrectionDetail: React.FC = () => {
 
   const handleSave = () => {
     // 저장 로직 구현
-    setIsEditing(false);
+    navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id || '')}`);
   };
 
   return (
@@ -54,57 +49,39 @@ const CorrectionDetail: React.FC = () => {
       <div css={formStyle} className='wrapper'>
         <Fieldset css={fieldsetStyle}>
           <div css={titleContainerStyle}>
-            {isEditing ? (
-              <Input value={title} onChange={setTitle} placeholder='제목을 입력해주세요.' />
-            ) : (
-              <h1 css={titleStyle}>{title}</h1>
-            )}
-            {!isEditing && (
-              <IconTextButton Icon={HiPencil} onClick={handleEdit}>
-                수정
-              </IconTextButton>
-            )}
+            <Input value={title} onChange={setTitle} placeholder='제목을 입력해주세요.' />
           </div>
 
           <div css={rowStyle}>
-            <span css={labelStyle}>신청일</span>
-            <span css={dateStyle}>{applicationDate}</span>
+            <Label css={labelStyle}>신청일</Label>
+            <span css={dateStyle}>2024/07/23 (화)</span>
           </div>
 
           <div css={correctionStyle}>
-            <span css={labelStyle}>정정항목</span>
-            {isEditing ? (
-              <div css={selectWrapperStyle}>
-                <Select options={categoryOptions} selected={category} onChange={setCategory} />
-              </div>
-            ) : (
-              <span css={dateStyle}>{category}</span>
-            )}
+            <Label css={labelStyle}>정정항목</Label>
+            <div css={selectWrapperStyle}>
+              <Select options={categoryOptions} selected={category} onChange={setCategory} />
+            </div>
           </div>
 
           <div css={rowStyle}>
-            <span css={labelStyle}>첨부파일</span>
+            <Label css={labelStyle}>첨부파일</Label>
             <div css={fileUploadStyle}>
               {file && <span css={fileNameStyle}>{file.name}</span>}
-              {isEditing && (
-                <>
-                  <input
-                    type='file'
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
-                  />
-                  <IconTextButton
-                    Icon={HiOutlineDocumentArrowUp}
-                    onClick={handleFileUpload}
-                    iconPosition='left'
-                    backgroundButton={false}
-                  >
-                    파일 추가
-                  </IconTextButton>
-                </>
-              )}
-              {!isEditing && !file && <span css={dateStyle}>근무 내역.jpg</span>}
+              <input
+                type='file'
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+              />
+              <IconTextButton
+                Icon={HiOutlineDocumentArrowUp}
+                onClick={handleFileUpload}
+                iconPosition='left'
+                backgroundButton={false}
+              >
+                파일 추가
+              </IconTextButton>
             </div>
           </div>
 
@@ -114,23 +91,17 @@ const CorrectionDetail: React.FC = () => {
               onChange={(e) => setReason(e.target.value)}
               placeholder='정정 사유를 입력해주세요.'
               css={textareaStyle}
-              readOnly={!isEditing}
             />
           </div>
-          {isEditing ? (
-            <div css={buttonStyle}>
-              <button css={primaryButtonStyle} onClick={handleSave}>
-                수정하기
-              </button>
-              <button css={secondaryButtonStyle} onClick={() => setIsEditing(false)}>
-                취소하기
-              </button>
-            </div>
-          ) : (
-            <div css={buttonStyle}>
-              <button css={cancelButtonStyle}>삭제하기</button>
-            </div>
-          )}
+
+          <div css={buttonStyle}>
+            <button css={primaryButtonStyle} onClick={handleSave}>
+              수정하기
+            </button>
+            <button css={secondaryButtonStyle} onClick={handleGoBack}>
+              취소하기
+            </button>
+          </div>
         </Fieldset>
       </div>
     </div>
@@ -151,28 +122,20 @@ const fieldsetStyle = css`
 `;
 
 const titleContainerStyle = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 36px;
-`;
-
-const titleStyle = css`
-  font-size: ${theme.fontSizes.xxlarge};
-  font-weight: bold;
-`;
-
-const correctionStyle = css`
-  display: flex;
-  align-items: center;
-  margin-bottom: 30px;
-  justify-content: space-between;
 `;
 
 const rowStyle = css`
   display: flex;
   align-items: center;
   margin-bottom: 36px;
+  justify-content: space-between;
+`;
+
+const correctionStyle = css`
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
   justify-content: space-between;
 `;
 
@@ -184,6 +147,28 @@ const labelStyle = css`
 const dateStyle = css`
   font-size: ${theme.fontSizes.large};
   color: ${theme.colors.darkestGray};
+`;
+
+const selectWrapperStyle = css`
+  position: relative;
+  z-index: 1;
+
+  & > div > div:last-child {
+    position: absolute;
+    background-color: ${theme.colors.white};
+    width: 100%;
+  }
+`;
+
+const fileUploadStyle = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const fileNameStyle = css`
+  font-size: ${theme.fontSizes.normal};
+  color: ${theme.colors.darkGray};
 `;
 
 const reasonStyle = css`
@@ -210,30 +195,8 @@ const textareaStyle = css`
   }
 `;
 
-const selectWrapperStyle = css`
-  position: relative;
-  z-index: 1;
-
-  & > div > div:last-child {
-    position: absolute;
-    background-color: ${theme.colors.white};
-    width: 100%;
-  }
-`;
-
 const buttonStyle = css`
   margin-bottom: 36px;
-`;
-
-const fileUploadStyle = css`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const fileNameStyle = css`
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.darkGray};
 `;
 
 const buttonBaseStyle = css`
@@ -259,10 +222,4 @@ const secondaryButtonStyle = css`
   color: ${theme.colors.darkGray};
 `;
 
-const cancelButtonStyle = css`
-  ${buttonBaseStyle}
-  background-color: ${theme.colors.lightestGray};
-  color: ${theme.colors.darkGray};
-`;
-
-export default CorrectionDetail;
+export default CorrectionEdit;
