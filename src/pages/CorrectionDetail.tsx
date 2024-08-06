@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
+import { Fieldset } from '@headlessui/react';
 import { HiOutlineDocumentArrowUp, HiPencil } from 'react-icons/hi2';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import Input from '@/components/common/Input';
 import Select from '@/components/common/Select';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
@@ -13,11 +15,15 @@ import theme from '@/styles/theme';
 const CorrectionDetail: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [title] = useState('무급 휴가 안 썼어요');
+  const [title, setTitle] = useState('무급 휴가 안 썼어요');
+  const [applicationDate] = useState('2024/07/23 (화)');
+  const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('진짜로 무급 휴가 안 썼어요 정정해주세요');
-  const [correctionOptions] = useState(['연장 근무', '휴일 근무', '무급 휴가', '기타']);
-  const [selectedCorrection, setSelectedCorrection] = useState('연장 근무');
+  const [file, setFile] = useState<File | null>(null);
+
+  const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
   const handleGoBack = () => {
     navigate(PATH.SALARY, { state: { activeTab: 1 } });
@@ -28,88 +34,128 @@ const CorrectionDetail: React.FC = () => {
     window.history.replaceState(state, '');
   }, [location.pathname]);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  const handleFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleSave = () => {
+    // 저장 로직 구현
+    setIsEditing(false);
+  };
+
   return (
-    <div css={pageStyle}>
+    <div css={containerStyle}>
       <Header onBack={handleGoBack} />
-      <main css={mainStyle}>
-        <div css={titleContainerStyle}>
-          <h1 css={titleStyle}>{title}</h1>
-          {!isEditing && (
-            <IconTextButton Icon={HiPencil} onClick={() => setIsEditing(true)}>
-              수정
-            </IconTextButton>
-          )}
-        </div>
+      <div css={formStyle} className='wrapper'>
+        <Fieldset css={fieldsetStyle}>
+          <div css={titleContainerStyle}>
+            {isEditing ? (
+              <Input value={title} onChange={setTitle} placeholder='제목을 입력해주세요.' />
+            ) : (
+              <h1 css={titleStyle}>{title}</h1>
+            )}
+            {!isEditing && (
+              <IconTextButton Icon={HiPencil} onClick={() => setIsEditing(true)}>
+                수정
+              </IconTextButton>
+            )}
+          </div>
 
-        <div css={dateStyle}>
-          <span css={labelStyle}>신청일</span>
-          <span>2024/07/23 (화)</span>
-        </div>
-        <div css={requestStyle}>
-          <span css={labelStyle}>정정항목</span>
-          {isEditing ? (
-            <Select
-              options={correctionOptions}
-              selected={selectedCorrection}
-              onChange={setSelectedCorrection}
+          <div css={rowStyle}>
+            <span css={labelStyle}>신청일</span>
+            <span css={dateStyle}>{applicationDate}</span>
+          </div>
+
+          <div css={correctionStyle}>
+            <span css={labelStyle}>정정항목</span>
+            {isEditing ? (
+              <div css={selectWrapperStyle}>
+                <Select options={categoryOptions} selected={category} onChange={setCategory} />
+              </div>
+            ) : (
+              <span css={dateStyle}>{category}</span>
+            )}
+          </div>
+
+          <div css={rowStyle}>
+            <span css={labelStyle}>첨부파일</span>
+            <div css={fileUploadStyle}>
+              {file && <span css={fileNameStyle}>{file.name}</span>}
+              {isEditing && (
+                <>
+                  <input
+                    type='file'
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    style={{ display: 'none' }}
+                  />
+                  <IconTextButton
+                    Icon={HiOutlineDocumentArrowUp}
+                    onClick={handleFileUpload}
+                    iconPosition='left'
+                    backgroundButton={false}
+                  >
+                    파일 추가
+                  </IconTextButton>
+                </>
+              )}
+              {!isEditing && !file && <span css={dateStyle}>근무 내역.jpg</span>}
+            </div>
+          </div>
+
+          <div css={reasonStyle}>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder='정정 사유를 입력해주세요.'
+              css={textareaStyle}
+              readOnly={!isEditing}
             />
-          ) : (
-            <span>{selectedCorrection}</span>
-          )}
-        </div>
-        <div css={fileStyle}>
-          <span css={labelStyle}>첨부파일</span>
+          </div>
           {isEditing ? (
-            <IconTextButton
-              Icon={HiOutlineDocumentArrowUp}
-              iconPosition='left'
-              backgroundButton={false}
-            >
-              파일 추가
-            </IconTextButton>
+            <div css={buttonStyle}>
+              <button css={primaryButtonStyle} onClick={handleSave}>
+                수정하기
+              </button>
+              <button css={secondaryButtonStyle} onClick={() => setIsEditing(false)}>
+                취소하기
+              </button>
+            </div>
           ) : (
-            <span>근무 내역.jpg</span>
+            <div css={buttonStyle}>
+              <button css={cancelButtonStyle}>삭제하기</button>
+            </div>
           )}
-        </div>
-        <textarea
-          css={textareaStyle}
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          readOnly={!isEditing}
-          className='textarea'
-        />
-
-        {isEditing ? (
-          <>
-            <button css={primaryButtonStyle} onClick={() => setIsEditing(false)}>
-              수정하기
-            </button>
-            <button css={secondaryButtonStyle} onClick={() => setIsEditing(false)}>
-              취소하기
-            </button>
-          </>
-        ) : (
-          <button css={cancelButtonStyle}>삭제하기</button>
-        )}
-      </main>
+        </Fieldset>
+      </div>
     </div>
   );
 };
 
-const pageStyle = css`
-  background-color: ${theme.colors.bgGray};
+const containerStyle = css`
+  background-color: ${theme.colors.white};
 `;
 
-const mainStyle = css`
-  padding: 16px;
+const formStyle = css`
   background-color: ${theme.colors.white};
+`;
+
+const fieldsetStyle = css`
+  border: none;
+  padding-top: 32px;
 `;
 
 const titleContainerStyle = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 36px;
 `;
 
 const titleStyle = css`
@@ -117,27 +163,32 @@ const titleStyle = css`
   font-weight: bold;
 `;
 
-const dateStyle = css`
+const correctionStyle = css`
   display: flex;
+  align-items: center;
+  margin-bottom: 30px;
   justify-content: space-between;
-  margin-bottom: 36px;
-  margin-top: 24px;
 `;
 
-const requestStyle = css`
+const rowStyle = css`
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
-`;
-const fileStyle = css`
-  display: flex;
-  justify-content: space-between;
+  align-items: center;
   margin-bottom: 36px;
+  justify-content: space-between;
 `;
 
 const labelStyle = css`
+  font-size: ${theme.fontSizes.large};
   color: ${theme.colors.darkGray};
-  vertical-align: middle;
+`;
+
+const dateStyle = css`
+  font-size: ${theme.fontSizes.large};
+  color: ${theme.colors.darkestGray};
+`;
+
+const reasonStyle = css`
+  margin-bottom: 36px;
 `;
 
 const textareaStyle = css`
@@ -147,8 +198,8 @@ const textareaStyle = css`
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
   font-size: ${theme.fontSizes.large};
+  color: ${theme.colors.darkestGray};
   resize: none;
-  margin-bottom: 16px;
 
   &::placeholder {
     color: ${theme.colors.darkGray};
@@ -158,6 +209,32 @@ const textareaStyle = css`
     outline: none;
     border-color: ${theme.colors.primary};
   }
+`;
+
+const selectWrapperStyle = css`
+  position: relative;
+  z-index: 1;
+
+  & > div > div:last-child {
+    position: absolute;
+    background-color: ${theme.colors.white};
+    width: 100%;
+  }
+`;
+
+const buttonStyle = css`
+  margin-bottom: 36px;
+`;
+
+const fileUploadStyle = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const fileNameStyle = css`
+  font-size: ${theme.fontSizes.normal};
+  color: ${theme.colors.darkGray};
 `;
 
 const buttonBaseStyle = css`
