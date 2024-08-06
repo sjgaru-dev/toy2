@@ -138,6 +138,7 @@ const datePickerStyle = css`
     display: flex;
     align-items: center;
     gap: 4px;
+    padding-left: 8px;
     margin-bottom: 8px;
 
     > span {
