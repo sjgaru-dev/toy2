@@ -13,6 +13,7 @@ import userDefaultSvg from '@/assets/images/user_default.svg';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
+import Spinner from '@/components/common/Spinner';
 import Header from '@/components/layout/Header';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
@@ -30,6 +31,7 @@ const ProfilePage = () => {
   const [inputNickValue, setInputNickValue] = useState('');
   const [inputPhoneValue, setInputPhoneValue] = useState('');
   const [inputImgValue, setInputImgValue] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +53,7 @@ const ProfilePage = () => {
         fileInput.accept = 'image/*';
         fileInput.onchange = async (e) => {
           const file = (e.target as HTMLInputElement).files?.[0];
+          setLoading(true);
           if (file) {
             const fileRef = ref(storageRef, file.name);
             await uploadBytes(fileRef, file);
@@ -58,11 +61,13 @@ const ProfilePage = () => {
             setUserData({ ...userData, img: downloadURL });
             setInputImgValue(downloadURL);
           }
+          setLoading(false);
         };
         fileInput.click();
       }
     } catch (error) {
       console.error('Error uploading image:', error);
+      setLoading(false);
     }
   };
 
@@ -105,13 +110,17 @@ const ProfilePage = () => {
     } catch (error) {
       console.error('Error updating profile:', error);
     }
-
     navigate(`/profile`);
   };
 
   return (
     <div>
       <Header />
+      {loading && (
+        <div css={spinnerWrapperStyle}>
+          <Spinner />
+        </div>
+      )}
       <div css={wrapperStyle}>
         <div css={imgStyle}>
           <img src={userData?.img} css={imgStyle} />
@@ -206,6 +215,19 @@ const wrapperStyle = css`
   text-align: center;
   justify-content: center;
   background-color: ${theme.colors.white};
+`;
+
+const spinnerWrapperStyle = css`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 1000;
 `;
 
 const imgStyle = css`
