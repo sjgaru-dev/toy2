@@ -53,6 +53,7 @@ const router = createBrowserRouter([
               { index: true, element: <SalaryPage /> },
               { path: PATH.SALARY_DETAIL, element: <PayrollDetail /> },
               { path: PATH.SALARY_CORRECTION_HISTORY, element: <CorrectionHistory /> },
+              { path: PATH.SALARY_CORRECTION_DETAIL, element: <CorrectionDetail /> },
             ],
           },
           { path: PATH.PROFILE, element: <ProfilePage /> },
