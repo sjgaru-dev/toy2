@@ -16,3 +16,30 @@ export interface AttachProps {
   docId: string;
   data: CorrectionProps;
 }
+
+export interface SalaryType {
+  id: number;
+  userNo: string;
+  type: string;
+  paycheck: number;
+  payday: string;
+  isCheck: boolean;
+}
+
+export interface PayrollData {
+  receive: number;
+  salary: {
+    total: number;
+    base: number;
+    overtime: number;
+  };
+  tax: {
+    nationalPension: number;
+    healthInsurance: number;
+    longTermCare: number;
+    employmentInsurance: number;
+    incomeTax: number;
+    localIncomeTax: number;
+    total: number;
+  };
+}
