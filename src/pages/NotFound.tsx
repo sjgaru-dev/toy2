@@ -11,7 +11,7 @@ const NotFoundPage = () => {
   };
 
   return (
-    <div css={bodyStyle}>
+    <div css={constainerStyle}>
       <img css={logo} src={Logo} alt='logo' />
 
       <div css={h1Style}>4 0 4 에러 </div>
@@ -21,7 +21,7 @@ const NotFoundPage = () => {
   );
 };
 
-const bodyStyle = css`
+const constainerStyle = css`
   max-width: 500px;
   min-height: 100vh;
   margin: 0 auto;
@@ -33,19 +33,20 @@ const bodyStyle = css`
 `;
 
 const logo = css`
-  width: 60vw;
+  max-width: 500px;
+  width: 70vw;
 `;
 
 const h1Style = css`
-  font-size: 10vw;
-  margin-top: 50px;
-
+  font-size: 6vh;
+  margin-top: 2vh;
   color: #2dc384;
 `;
 
 const pStyle = css`
-  font-size: 7vw;
-  margin: 30px 0 50px 0;
+  font-size: 4vh;
+  margin: 2vh 0 3vh 0;
+
   color: #17583d;
 `;
 
