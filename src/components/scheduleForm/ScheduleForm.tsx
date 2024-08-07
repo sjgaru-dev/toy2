@@ -14,7 +14,7 @@ import theme from '@/styles/theme';
 import { ScheduleFormDataModel } from '@/types/schedule';
 import { convertDateWithFormat } from '@/utils/dailySchedule';
 
-const ALARM_OPTIONS = {
+export const ALARM_OPTIONS = {
   NONE: '없음',
   TEN_MINUTES: '10분 전',
   THIRTY_MINUTES: '30분 전',
@@ -36,6 +36,9 @@ interface ScheduleFormProps {
   initEndDate?: Date;
   initStartTime?: string;
   initEndTime?: string;
+  initTitleValue?: string;
+  initContentValue?: string;
+  submitButtonText?: string;
   onSubmit: (data: ScheduleFormDataModel) => void;
 }
 
@@ -47,11 +50,14 @@ const ScheduleForm = ({
   initEndDate = new Date(),
   initStartTime = dayjs().minute(0).format('HH:mm'),
   initEndTime = dayjs().minute(0).format('HH:mm'),
+  initTitleValue = '',
+  initContentValue = '',
+  submitButtonText = '일정 추가하기',
   onSubmit,
 }: ScheduleFormProps) => {
   const formRef = useRef<HTMLFormElement>(null);
   const titleInputRef = useRef<HTMLInputElement>(null);
-  const [titleValue, setTitleValue] = useState('');
+  const [titleValue, setTitleValue] = useState(initTitleValue);
   const [enableAllDay, setEnableAllDay] = useState(initEnableAllDay);
   const [selectedAlarmOption, setSelectedAlarmOption] = useState(initSelectedAlarmOption);
   const [selectedColor, setSelectedColor] = useState(initSelectedColor);
@@ -61,9 +67,17 @@ const ScheduleForm = ({
   const [startTime, setStartTime] = useState(initStartTime);
   const [endTime, setEndTime] = useState(initEndTime);
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
   useEffect(() => {
     titleInputRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    if (textAreaRef.current && initContentValue) {
+      textAreaRef.current.value = initContentValue;
+    }
+  }, [initContentValue]);
 
   const onTitle = (event: ChangeEvent<HTMLInputElement>) => setTitleValue(event.target.value);
   const onSubmitForm = (event: FormEvent<HTMLFormElement>) => {
@@ -128,10 +142,15 @@ const ScheduleForm = ({
           <span>색상</span>
           <ColorPicker selected={selectedColor} setSelected={setSelectedColor} />
         </div>
-        <textarea name='content' css={textareaStyle} placeholder='메모를 입력하세요.' />
+        <textarea
+          name='content'
+          css={textareaStyle}
+          placeholder='메모를 입력하세요.'
+          ref={textAreaRef}
+        />
         <div css={buttonContainerStyle}>
           <Button type='submit' styleType={`${!titleValue.trim() ? 'disabled' : 'primary'}`}>
-            일정 추가하기
+            {submitButtonText}
           </Button>
         </div>
       </form>

@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 
-import { auth, db } from '@/api';
-import { addSchedule } from '@/api/schedule';
+import { db } from '@/api';
+import { addSchedule, editSchedule } from '@/api/schedule';
 import { status } from '@/types/api';
 import { ScheduleFormDataModel, ScheduleModel } from '@/types/schedule';
-import { checkAuth, getUID } from '@/utils/auth';
+import { getUID } from '@/utils/auth';
 
 export interface ScheduleState {
   schedule: ScheduleModel[];
@@ -62,6 +62,17 @@ export const scheduleSlice = createSlice({
       .addCase(fetchAddSchedule.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || '일정을 추가할 수 없습니다.';
+      })
+      .addCase(fetchEditSchedule.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchEditSchedule.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.isFetched = false;
+      })
+      .addCase(fetchEditSchedule.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || '일정을 수정할 수 없습니다.';
       });
   },
 });
@@ -76,6 +87,7 @@ export const fetchSchedule = createAsyncThunk('schedule/fetchSchedule', async ()
       (doc) =>
         ({
           ...doc.data(),
+          docId: doc.id,
         }) as ScheduleModel
     );
 
@@ -103,7 +115,18 @@ export const fetchAddSchedule = createAsyncThunk(
     try {
       return await addSchedule(data);
     } catch (error) {
-      return rejectWithValue('일정을 삭제할 수 없습니다.');
+      return rejectWithValue('일정을 추가할 수 없습니다.');
+    }
+  }
+);
+
+export const fetchEditSchedule = createAsyncThunk(
+  'schedule/fetchEditSchedule',
+  async (data: ScheduleModel, { rejectWithValue }) => {
+    try {
+      return await editSchedule(data);
+    } catch (error) {
+      return rejectWithValue('일정을 수정할 수 없습니다.');
     }
   }
 );

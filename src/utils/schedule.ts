@@ -14,3 +14,12 @@ export const getEventList = (schedules: ScheduleModel[]): EventModel[] =>
       color: scheduleColors[color],
     };
   });
+
+export const getScheduleData = (schedules: ScheduleModel[], id: string): ScheduleModel => {
+  const schedule = schedules.find((schedule) => schedule.id === +id);
+
+  if (!schedule) {
+    throw new Error(`${id}번 일정을 찾을 수 없습니다.`);
+  }
+  return schedule;
+};
