@@ -29,8 +29,10 @@ export const addCorrection = async (
   };
   const doc = await addDoc(collection(db, FIRESTORE_COLLECTION.salaryRequest), data);
   if (props.attachFile) {
-    const url = await addAttach({ file: props.attachFile, docId: doc.id, data });
-    await updateDoc(doc, { attach: url });
+    props.attachFile.map(async (item) => {
+      const url = await addAttach({ file: item, docId: doc.id, data });
+      await updateDoc(doc, { attach: url });
+    });
   }
 
   return { status: 'succeeded', response: true };
