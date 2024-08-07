@@ -2,7 +2,14 @@ import { UserCredential } from 'firebase/auth';
 
 export type status = 'idle' | 'loading' | 'succeeded' | 'failed';
 
+// AuthState InitState로 대체 필요
 export interface AuthState {
+  isLoading: boolean;
+  status: status;
+  error: string | null;
+}
+
+export interface InitState {
   isLoading: boolean;
   status: status;
   error: string | null;
@@ -14,6 +21,7 @@ export interface ApiResponse<T> {
 }
 
 export type AuthResponseType = UserCredential;
+export type PayrollResponseType = boolean;
 
 export interface ToastState {
   isToastOn: boolean;
