@@ -18,7 +18,7 @@ export const addSchedule = async (
       collectionName: FIRESTORE_COLLECTION.schedule,
       selectValue: 'next',
     }),
-    userNo: getUID(),
+    userNo: await getUID(),
   };
 
   await addDoc(collection(db, FIRESTORE_COLLECTION.schedule), scheduleData);

@@ -16,6 +16,7 @@ import { useAppDispatch } from '@/store/hooks';
 import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
+import { getUID } from '@/utils/auth';
 
 const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
   const date = timestamp.toDate();
@@ -56,7 +57,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     (async () => {
-      setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
+      setUserData(await getUserData(await getUID()));
     })();
   }, []);
 
