@@ -1,7 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 
 export interface UserType {
-  uid: string;
   userNo: number;
   name: string;
   nickname: string;

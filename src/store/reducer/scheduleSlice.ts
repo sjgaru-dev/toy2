@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 
-import { db } from '@/api';
+import { auth, db } from '@/api';
 import { addSchedule } from '@/api/schedule';
 import { status } from '@/types/api';
 import { ScheduleFormDataModel, ScheduleModel } from '@/types/schedule';
-import { getUID } from '@/utils/auth';
+import { checkAuth, getUID } from '@/utils/auth';
 
 export interface ScheduleState {
   schedule: ScheduleModel[];
@@ -69,6 +69,9 @@ export const scheduleSlice = createSlice({
 export const fetchSchedule = createAsyncThunk('schedule/fetchSchedule', async () => {
   try {
     const scheduleRef = collection(db, 'Schedule');
+    console.log(getUID());
+    console.log(auth.currentUser);
+    console.log(checkAuth());
     const scheduleQuery = query(scheduleRef, where('userNo', '==', getUID()));
     const querySnapshot = await getDocs(scheduleQuery);
 

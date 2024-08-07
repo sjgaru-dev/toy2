@@ -58,10 +58,10 @@ const DatePicker = ({ selected, setSelected }: DatePicker) => {
         <div className='calendar-header'>
           <span>{currentMonth.format('YYYY년 MM월')}</span>
           <div className='button-container'>
-            <button onClick={onPreviousMonth}>
+            <button type='button' onClick={onPreviousMonth}>
               <HiChevronLeft />
             </button>
-            <button onClick={onNextMonth}>
+            <button type='button' onClick={onNextMonth}>
               <HiChevronRight />
             </button>
           </div>
