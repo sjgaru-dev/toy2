@@ -12,6 +12,7 @@ import ToggleSwitch from '@/components/common/ToggleSwitch';
 import ColorPicker, { ColorsType } from '@/components/scheduleForm/ColorPicker';
 import theme from '@/styles/theme';
 import { ScheduleFormDataModel } from '@/types/schedule';
+import { convertDateWithFormat } from '@/utils/dailySchedule';
 
 const ALARM_OPTIONS = {
   NONE: '없음',
@@ -74,10 +75,10 @@ const ScheduleForm = ({
       color: selectedColor,
       subject,
       content,
-      startDate: startDate.toISOString(),
-      startTime,
-      endDate: endDate.toISOString(),
-      endTime,
+      startDate: convertDateWithFormat(startDate, 'YYYY-MM-DD'),
+      startTime: enableAllDay ? '00:00' : startTime,
+      endDate: convertDateWithFormat(endDate, 'YYYY-MM-DD'),
+      endTime: enableAllDay ? '23:59' : endTime,
       isAlarm: selectedAlarmOption !== ALARM_OPTIONS.NONE,
       alarmTime: ALARM_TIME[selectedAlarmOption],
     };

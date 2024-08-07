@@ -11,7 +11,8 @@ import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { PATH } from '@/constants/path';
+import { useAppDispatch } from '@/store/hooks';
 import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
@@ -40,11 +41,13 @@ const ProfilePage = () => {
   };
 
   const dispatch = useAppDispatch();
-  const { status } = useAppSelector((state) => state.auth);
 
   const handleModalLogout = async () => {
-    await dispatch(fetchSignOut());
-    if (status === 'succeeded') navigate('/signin');
+    await dispatch(fetchSignOut()).then((state) => {
+      if (state.meta.requestStatus === 'fulfilled') {
+        navigate(PATH.SIGNIN);
+      }
+    });
   };
 
   const handleModalCancel = () => {

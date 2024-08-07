@@ -6,4 +6,4 @@ export const checkAuth = (): boolean => {
   return !!sessionStorage.getItem(sessionKey);
 };
 
-export const getUID = (): string | undefined => (checkAuth() ? auth.currentUser?.uid : '');
+export const getUID = (): string => (auth.currentUser ? auth.currentUser.uid : '');

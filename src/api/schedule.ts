@@ -1,6 +1,8 @@
 import { addDoc, collection } from 'firebase/firestore';
 
 import { db } from '@/api';
+import { getCollectionId } from '@/api/common';
+import { FIRESTORE_COLLECTION } from '@/constants/api';
 import { ApiResponse, ScheduleResponseType } from '@/types/api';
 import { ScheduleFormDataModel, ScheduleModel } from '@/types/schedule';
 import { getUID } from '@/utils/auth';
@@ -12,12 +14,14 @@ export const addSchedule = async (
 
   const scheduleData: ScheduleModel = {
     ...data,
-    id: 1,
+    id: await getCollectionId({
+      collectionName: FIRESTORE_COLLECTION.schedule,
+      selectValue: 'next',
+    }),
     userNo: getUID(),
   };
 
-  // const doc = await addDoc(collection(db, FIRESTORE_COLLECTION.schedule), data);
-  await addDoc(collection(db, 'Schedule'), scheduleData);
+  await addDoc(collection(db, FIRESTORE_COLLECTION.schedule), scheduleData);
 
   return { status: 'succeeded', response: true };
 };
