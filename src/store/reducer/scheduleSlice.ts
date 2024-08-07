@@ -69,7 +69,7 @@ export const scheduleSlice = createSlice({
 export const fetchSchedule = createAsyncThunk('schedule/fetchSchedule', async () => {
   try {
     const scheduleRef = collection(db, 'Schedule');
-    const scheduleQuery = query(scheduleRef, where('userNo', '==', getUID()));
+    const scheduleQuery = query(scheduleRef, where('userNo', '==', await getUID()));
     const querySnapshot = await getDocs(scheduleQuery);
 
     const schedules: ScheduleModel[] = querySnapshot.docs.map(
