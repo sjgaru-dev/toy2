@@ -20,7 +20,7 @@ export const addCorrection = async (
       collectionName: FIRESTORE_COLLECTION.salary,
       selectValue: 'now',
     }),
-    userNo: getUID(),
+    userNo: await getUID(),
     requestDate: props.requestDate,
     status: props.status,
     subject: props.subject,
