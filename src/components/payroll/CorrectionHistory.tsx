@@ -71,6 +71,7 @@ const CorrectionHistory: React.FC = () => {
     </div>
   );
 };
+
 const getStatusLabel = (status: string) => {
   switch (status) {
     case 'pending':
@@ -128,18 +129,11 @@ const listStyle = css`
     gap: 0.5rem;
   }
 
-
-const dateStyle = css`
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.darkGray};
-  margin-bottom: 8px;
-
   .contents-title {
     font-weight: bold;
     margin: 2px 0 0.5rem;
     color: ${theme.colors.darkestGray};
   }
-
 
   .contents-date {
     font-size: ${theme.fontSizes.normal};

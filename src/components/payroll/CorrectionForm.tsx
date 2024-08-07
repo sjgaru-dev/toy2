@@ -98,7 +98,7 @@ const CorrectionForm: React.FC = () => {
               css={textareaStyle}
             />
           </div>
-          <div>
+          <div css={buttonStyle}>
             <Button
               onClick={() => handleSubmit()}
               styleType={isSubmitDisabled ? 'disabled' : 'primary'}
@@ -193,9 +193,8 @@ const selectWrapperStyle = css`
   }
 `;
 
-
 const buttonStyle = css`
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 `;
 
 const fileUploadStyle = css`
