@@ -4,25 +4,28 @@ import { css } from '@emotion/react';
 import { Fieldset, Label } from '@headlessui/react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { db } from '@/api';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
+import Modal from '@/components/common/Modal';
 import Select from '@/components/common/Select';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
+import useToast from '@/hooks/useToast';
 import theme from '@/styles/theme';
 import { CorrectionProps } from '@/types/payroll';
 
 const CorrectionEdit: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toastTrigger } = useToast();
 
   const [correction, setCorrection] = useState<Partial<CorrectionProps> | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
@@ -55,8 +58,22 @@ const CorrectionEdit: React.FC = () => {
 
   const handleSave = async () => {
     if (!correction || !id) return;
-    await updateDoc(doc(db, 'SalaryRequest', id), correction);
-    navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id)}`);
+    try {
+      await updateDoc(doc(db, 'SalaryRequest', id), correction);
+      toastTrigger('정정내역이 수정되었습니다');
+      navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id)}`);
+    } catch (error) {
+      toastTrigger('정정내역 수정에 실패했습니다');
+    }
+    setIsModalOpen(false);
+  };
+
+  const handleEdit = () => {
+    setIsModalOpen(true);
+  };
+
+  const confirmEdit = () => {
+    handleSave();
   };
 
   return (
@@ -121,7 +138,7 @@ const CorrectionEdit: React.FC = () => {
           </div>
 
           <div css={buttonStyle}>
-            <button css={primaryButtonStyle} onClick={handleSave}>
+            <button css={primaryButtonStyle} onClick={handleEdit}>
               수정하기
             </button>
             <button css={secondaryButtonStyle} onClick={handleGoBack}>
@@ -130,6 +147,16 @@ const CorrectionEdit: React.FC = () => {
           </div>
         </Fieldset>
       </div>
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={confirmEdit}
+          styleType='primary'
+          title='변경사항을 저장하시겠습니까?'
+          confirmText={'저장하기'}
+        />
+      )}
     </div>
   );
 };

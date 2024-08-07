@@ -48,7 +48,7 @@ const Toast: React.FC<ToastProps> = ({ duration = 2000, status = 'success' }) =>
 };
 
 const toastStyle = css`
-  width: 464px;
+  width: 468px;
   position: fixed;
   bottom: 96px;
   left: 50%;
