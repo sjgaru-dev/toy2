@@ -1,22 +1,33 @@
 import { css } from '@emotion/react';
 
 import logoIcon from '@/assets/images/logo_icon.svg';
+import DailySchedule from '@/components/dailySchedule/DailySchedule';
 import PayrollNotice from '@/components/dashboard/PayrollNotice';
 import UpcomingSchedules from '@/components/dashboard/UpcomingSchedules';
+import useFetchSchedule from '@/hooks/useFetchSchedule';
 import theme from '@/styles/theme';
 import { UpcomingType } from '@/types/type';
 
-const HomePage = () => (
-  <>
-    <header css={headerStyle}>
-      <h1 css={titleStyle} className='wrapper'>
-        <img src={logoIcon} alt='공룡 로고' />
-      </h1>
-    </header>
-    <PayrollNotice />
-    <UpcomingSchedules upcomingData={mockData} />
-  </>
-);
+const HomePage = () => {
+  const { schedule } = useFetchSchedule();
+
+  return (
+    <>
+      <header css={headerStyle}>
+        <h1 css={titleStyle} className='wrapper'>
+          <img src={logoIcon} alt='공룡 로고' />
+        </h1>
+      </header>
+      <div css={payrollContainerStyle}>
+        <PayrollNotice />
+      </div>
+      <div css={scheduleContainerStyle} className='wrapper'>
+        <DailySchedule date={new Date().toISOString()} schedules={schedule} />
+      </div>
+      <UpcomingSchedules upcomingData={mockData} />
+    </>
+  );
+};
 
 const headerStyle = css`
   height: 60px;
@@ -30,6 +41,22 @@ const titleStyle = css`
 
   img {
     width: 50px;
+  }
+`;
+
+const payrollContainerStyle = css`
+  > div {
+    margin-top: 0;
+  }
+`;
+
+const scheduleContainerStyle = css`
+  margin-bottom: 12px;
+
+  > div {
+    padding: 1.5rem 1rem;
+    border-radius: 8px;
+    margin: 0;
   }
 `;
 
