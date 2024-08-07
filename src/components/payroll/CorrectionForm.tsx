@@ -3,42 +3,75 @@ import React, { useState, useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 import { Fieldset } from '@headlessui/react';
 import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
+import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Select from '@/components/common/Select';
+import Spinner from '@/components/common/Spinner';
+import { PATH } from '@/constants/path';
+import useToast from '@/hooks/useToast';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchAddCorrection } from '@/store/reducer/payrollSlice';
 import theme from '@/styles/theme';
+import { CorrectionProps } from '@/types/payroll';
+import { checkAuth, getUID } from '@/utils/auth';
+import { convertDateWithFormat } from '@/utils/dailySchedule';
 
 const CorrectionForm: React.FC = () => {
   const [title, setTitle] = useState('');
-  const [applicationDate, setApplicationDate] = useState('');
   const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
-  const isSubmitDisabled = !title.trim() || !reason.trim();
+  const [isActive, setActive] = useState(false);
 
   useEffect(() => {
-    const today = new Date();
-    const formattedDate = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')} (${['일', '월', '화', '수', '목', '금', '토'][today.getDay()]})`;
-    setApplicationDate(formattedDate);
+    setActive(false);
   }, []);
 
-  const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    setActive(!title.trim() || !reason.trim());
+  }, [title, reason]);
+
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.payroll);
+
+  const { toastTrigger } = useToast();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
-    if (!isSubmitDisabled) {
-      // 여기에 제출 로직 구현
-    }
+    if (!checkAuth() || !getUID()) return;
+    const props: CorrectionProps = {
+      id: 0,
+      salaryId: 0,
+      userNo: '',
+      requestDate: convertDateWithFormat(new Date()),
+      type: category,
+      status: '대기',
+      subject: title,
+      content: reason,
+      attachFile: files,
+    };
+
+    dispatch(fetchAddCorrection(props)).then((status) => {
+      if (status.meta.requestStatus === 'fulfilled') {
+        toastTrigger('정정신청이 등록되었습니다');
+        navigate(PATH.SALARY_CORRECTION_HISTORY);
+      }
+    });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     }
   };
 
@@ -56,34 +89,37 @@ const CorrectionForm: React.FC = () => {
 
           <div css={rowStyle}>
             <span css={labelStyle}>신청일</span>
-            <span css={dateStyle}>{applicationDate}</span>
+            <span css={dateStyle}>{convertDateWithFormat(new Date(), 'YYYY-MM-DD (ddd)')}</span>
+          </div>
+
+          <div css={correctionStyle}>
+            <span css={labelStyle}>정정항목</span>
+            <div css={selectWrapperStyle}>
+              <Select options={categoryOptions} selected={category} onChange={setCategory} />
+            </div>
           </div>
 
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
-              {file && <span css={fileNameStyle}>{file.name}</span>}
+              {files.length === 1 && <span css={fileNameStyle}>{files[0].name}</span>}
+              {files.length > 1 && <span css={fileNameStyle}>파일 {files.length}개</span>}
               <input
                 type='file'
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 style={{ display: 'none' }}
+                multiple
               />
               <IconTextButton
                 Icon={HiOutlineDocumentArrowUp}
                 onClick={handleFileButtonClick}
                 iconPosition='left'
                 backgroundButton={true}
+                type='button'
               >
                 파일 추가
               </IconTextButton>
-            </div>
-          </div>
-
-          <div css={rowStyle}>
-            <span css={labelStyle}>정정 항목</span>
-            <div css={selectWrapperStyle}>
-              <Select options={categoryOptions} selected={category} onChange={setCategory} />
             </div>
           </div>
 
@@ -96,11 +132,8 @@ const CorrectionForm: React.FC = () => {
             />
           </div>
           <div css={buttonStyle}>
-            <Button
-              onClick={() => handleSubmit()}
-              styleType={isSubmitDisabled ? 'disabled' : 'primary'}
-            >
-              정정 신청하기
+            <Button onClick={handleSubmit} styleType={isActive ? 'disabled' : 'primary'}>
+              {status === 'loading' ? <Spinner /> : '정정 신청하기'}
             </Button>
           </div>
         </Fieldset>
@@ -115,28 +148,39 @@ const containerStyle = css`
 
 const formStyle = css`
   background-color: ${theme.colors.white};
-  height: 745px;
 `;
 
 const fieldsetStyle = css`
   border: none;
-  padding-top: 32px;
+  padding-top: 20px;
 `;
 
 const titleStyle = css`
-  margin-bottom: 40px;
+  margin-bottom: 0.5rem;
+  input {
+    height: ${theme.heights.medium};
+    padding: 0 12px;
+    font-size: ${theme.fontSizes.large};
+  }
 `;
 
+const correctionStyle = css`
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  justify-content: space-between;
+`;
 const rowStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
 
 const labelStyle = css`
   font-size: ${theme.fontSizes.large};
-  color: ${theme.colors.darkGray};
+  color: ${theme.colors.darkestGray};
 `;
 
 const dateStyle = css`
@@ -145,7 +189,7 @@ const dateStyle = css`
 `;
 
 const reasonStyle = css`
-  margin-bottom: 40px;
+  margin: 8px 0 24px;
 `;
 
 const textareaStyle = css`
@@ -159,12 +203,12 @@ const textareaStyle = css`
   resize: none;
 
   &::placeholder {
-    color: ${theme.colors.darkestGray};
+    color: ${theme.colors.darkGray};
   }
 
   &:focus {
     outline: none;
-    border-color: ${theme.colors.primary};
+    border-color: ${theme.colors.darkGray};
   }
 `;
 
@@ -180,13 +224,13 @@ const selectWrapperStyle = css`
 `;
 
 const buttonStyle = css`
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 `;
 
 const fileUploadStyle = css`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const fileNameStyle = css`

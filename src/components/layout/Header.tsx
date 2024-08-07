@@ -4,14 +4,24 @@ import { useNavigate } from 'react-router-dom';
 
 import theme from '@/styles/theme';
 
-const Header = () => {
+interface HeaderProps {
+  onBack?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onBack }) => {
   const navigate = useNavigate();
 
-  const onBack = () => navigate(-1);
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <header css={headerStyle}>
-      <button css={buttonStyle} onClick={onBack}>
+      <button css={buttonStyle} onClick={handleBack}>
         <HiChevronLeft />
       </button>
     </header>

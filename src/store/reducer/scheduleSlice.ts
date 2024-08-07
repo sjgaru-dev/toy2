@@ -1,10 +1,12 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
 import { collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 
-import { db } from '@/api';
+import { auth, db } from '@/api';
+import { addSchedule } from '@/api/schedule';
 import { status } from '@/types/api';
-import { ScheduleModel } from '@/types/schedule';
+import { ScheduleFormDataModel, ScheduleModel } from '@/types/schedule';
+import { checkAuth, getUID } from '@/utils/auth';
 
 export interface ScheduleState {
   schedule: ScheduleModel[];
@@ -63,6 +65,17 @@ export const scheduleSlice = createSlice({
       .addCase(getScheduleById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || '일정을 삭제할 수 없습니다.';
+      })
+      .addCase(fetchAddSchedule.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchAddSchedule.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.isFetched = false;
+      })
+      .addCase(fetchAddSchedule.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || '일정을 추가할 수 없습니다.';
       });
   },
 });
@@ -70,7 +83,7 @@ export const scheduleSlice = createSlice({
 export const fetchSchedule = createAsyncThunk('schedule/fetchSchedule', async () => {
   try {
     const scheduleRef = collection(db, 'Schedule');
-    const scheduleQuery = query(scheduleRef); // 나중에 where 쿼리 추가를 위한 코드
+    const scheduleQuery = query(scheduleRef, where('userNo', '==', await getUID()));
     const querySnapshot = await getDocs(scheduleQuery);
 
     const schedules: ScheduleModel[] = querySnapshot.docs.map(
@@ -145,6 +158,17 @@ export const getScheduleById = createAsyncThunk<ScheduleModel, number, { rejectV
       return scheduleData;
     } catch (error) {
       return rejectWithValue('일정을 불러오는데 실패했습니다.');
+    }
+  }
+);
+
+export const fetchAddSchedule = createAsyncThunk(
+  'schedule/fetchAddSchedule',
+  async (data: ScheduleFormDataModel, { rejectWithValue }) => {
+    try {
+      return await addSchedule(data);
+    } catch (error) {
+      return rejectWithValue('일정을 삭제할 수 없습니다.');
     }
   }
 );

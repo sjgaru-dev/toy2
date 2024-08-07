@@ -8,6 +8,7 @@ interface iconTextButtonProps {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
   iconPosition?: 'left' | 'right';
   backgroundButton?: boolean;
+  type?: string;
   onClick?: () => void;
   children: ReactNode;
 }
@@ -16,6 +17,7 @@ const IconTextButton: React.FC<iconTextButtonProps> = ({
   Icon,
   iconPosition = 'right',
   backgroundButton = false,
+  type = 'submit',
   onClick,
   children,
 }: iconTextButtonProps) => (
@@ -23,6 +25,7 @@ const IconTextButton: React.FC<iconTextButtonProps> = ({
     css={iconButtonStyle}
     className={`${iconPosition} ${backgroundButton ? 'background-button' : undefined}`}
     onClick={onClick}
+    type='button'
   >
     <span>{children}</span>
     <Icon />

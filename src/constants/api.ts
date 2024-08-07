@@ -21,3 +21,14 @@ export const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
+
+export const FIRESTORE_COLLECTION = {
+  user: 'User',
+  schedule: 'Schedule',
+  salary: 'Salary',
+  salaryRequest: 'SalaryRequest',
+};
+
+export const STORAGE_FOLDER = {
+  correction: 'correction',
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { HiChevronRight } from 'react-icons/hi2';
+import { HiChevronRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 import theme from '@/styles/theme';
@@ -17,13 +17,13 @@ const PayrollList: React.FC = () => {
   const navigate = useNavigate();
   const payrollItems: PayrollItem[] = [
     { year: 2024, month: 7, amount: 4570000, date: '8/1 지급' },
-    { year: 2024, month: 6, amount: 4000000, date: '7/1 지급' },
-    { year: 2024, month: 5, amount: 4000000, date: '6/1 지급' },
-    { year: 2024, month: 4, amount: 4000000, date: '5/1 지급' },
-    { year: 2024, month: 3, amount: 4000000, date: '4/1 지급' },
-    { year: 2024, month: 2, amount: 4000000, date: '3/1 지급' },
-    { year: 2024, month: 1, amount: 4000000, date: '2/1 지급' },
-    { year: 2023, month: 12, amount: 4000000, date: '1/1 지급' },
+    { year: 2024, month: 6, amount: 4570000, date: '7/1 지급' },
+    { year: 2024, month: 5, amount: 4570000, date: '6/1 지급' },
+    { year: 2024, month: 4, amount: 4570000, date: '5/1 지급' },
+    { year: 2024, month: 3, amount: 4570000, date: '4/1 지급' },
+    { year: 2024, month: 2, amount: 4570000, date: '3/1 지급' },
+    { year: 2024, month: 1, amount: 4570000, date: '2/1 지급' },
+    { year: 2023, month: 12, amount: 4570000, date: '1/1 지급' },
   ];
 
   const handleItemClick = (year: number, month: number) => {
@@ -102,12 +102,13 @@ const amountStyle = css`
   font-size: ${theme.fontSizes.large};
   font-weight: 600;
   color: ${theme.colors.primary};
-  margin-right: 0.5rem;
+  margin-right: 4px;
 `;
 
 const arrowStyle = css`
   margin-bottom: 2px;
   color: ${theme.colors.darkGray};
+  font-size: ${theme.fontSizes.xxlarge};
 `;
 
 export default PayrollList;

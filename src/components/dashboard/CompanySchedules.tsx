@@ -1,29 +1,33 @@
 import { css } from '@emotion/react';
 
-import UserDefaultImage from '@/assets/images/user_default.svg';
+import LogoDefaultImage from '@/assets/images/logo_icon.svg';
 import Badge from '@/components/common/Badge';
 import theme from '@/styles/theme';
-import { UpcomingProps } from '@/types/props';
+import { CompanyType } from '@/types/type';
 
 const COMPONENT_INFO = {
-  title: '동료 이벤트',
-  noEvent: '이벤트가 없습니다.',
+  title: '회사 일정',
+  noEvent: '회사일정이 없습니다.',
 };
 
-const UpcomingSchedules = ({ upcomingData }: UpcomingProps) => (
+export interface companyProps {
+  companyData: CompanyType[];
+}
+
+const CompanySchedules = ({ companyData }: companyProps) => (
   <section css={sectionStyle}>
     <h2 css={titleStyle}>{COMPONENT_INFO.title}</h2>
-    <ul css={upcomingStyle}>
-      {upcomingData && upcomingData.length > 0 ? (
+    <ul css={companyStyle}>
+      {companyData && companyData.length > 0 ? (
         <>
-          {upcomingData.map((item, index) => (
-            <li key={index} css={upcomingItemStyle}>
-              <div css={upcomingDataStyle}>
+          {companyData.map((item, index) => (
+            <li key={index} css={companyItemStyle}>
+              <div css={companyDataStyle}>
                 <div css={imgDivStyle}>
-                  <img src={item.img ? item.img : UserDefaultImage} css={imgStyle} />
+                  <img src={item.img ? item.img : LogoDefaultImage} css={imgStyle} />
                 </div>
                 <div css={[textWrapStyle, nameStyle]}>{item.name}</div>
-                <div css={[textWrapStyle, eventStyle]}>{item.event}</div>
+                <div css={[textWrapStyle, eventStyle]}>{item.date}</div>
               </div>
               <Badge label={item.badge.text} color={item.badge.color} />
             </li>
@@ -49,7 +53,7 @@ const titleStyle = css`
   color: ${theme.colors.darkestGray};
 `;
 
-const upcomingStyle = css`
+const companyStyle = css`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -57,13 +61,13 @@ const upcomingStyle = css`
   font-size: ${theme.fontSizes.normal};
 `;
 
-const upcomingItemStyle = css`
+const companyItemStyle = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const upcomingDataStyle = css`
+const companyDataStyle = css`
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -80,12 +84,14 @@ const imgDivStyle = css`
 
 const imgStyle = css`
   width: 100%;
+  height: 100%;
 `;
 
 const textWrapStyle = css`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  max-width: 7rem;
 `;
 
 const nameStyle = css`
@@ -96,4 +102,4 @@ const eventStyle = css`
   color: ${theme.colors.darkGray};
 `;
 
-export default UpcomingSchedules;
+export default CompanySchedules;
