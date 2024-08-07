@@ -29,14 +29,10 @@ const CorrectionForm: React.FC = () => {
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
-  const [isActive, setActive] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    setActive(false);
-  }, []);
-
-  useEffect(() => {
-    setActive(!title.trim() || !reason.trim());
+    setIsFormValid(title.trim() !== '' && reason.trim() !== '');
   }, [title, reason]);
 
   const dispatch = useAppDispatch();
@@ -45,13 +41,14 @@ const CorrectionForm: React.FC = () => {
   const { toastTrigger } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
-    if (e) e.preventDefault();
-    if (!checkAuth() || !getUID()) return;
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isFormValid || !checkAuth() || !getUID()) return;
+
     const props: CorrectionProps = {
       id: 0,
       salaryId: 0,
-      userNo: '',
+      userNo: getUID() || '',
       requestDate: convertDateWithFormat(new Date()),
       type: category,
       status: '대기',
@@ -60,12 +57,15 @@ const CorrectionForm: React.FC = () => {
       attachFile: files,
     };
 
-    dispatch(fetchAddCorrection(props)).then((status) => {
-      if (status.meta.requestStatus === 'fulfilled') {
+    try {
+      const result = await dispatch(fetchAddCorrection(props)).unwrap();
+      if (result) {
         toastTrigger('정정신청이 등록되었습니다');
-        navigate(PATH.SALARY_CORRECTION_HISTORY);
+        navigate(`${PATH.SALARY}`, { state: { activeTab: 1 } }); // 정정 신청 내역 탭으로 이동
       }
-    });
+    } catch (error) {
+      toastTrigger('정정신청 등록에 실패했습니다');
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +84,11 @@ const CorrectionForm: React.FC = () => {
       <form onSubmit={handleSubmit} css={formStyle} className='wrapper'>
         <Fieldset css={fieldsetStyle}>
           <div css={titleStyle}>
-            <Input value={title} onChange={setTitle} placeholder='제목을 입력해주세요.' />
+            <Input
+              value={title}
+              onChange={(value) => setTitle(value)}
+              placeholder='제목을 입력해주세요.'
+            />
           </div>
 
           <div css={rowStyle}>
@@ -126,13 +130,13 @@ const CorrectionForm: React.FC = () => {
           <div css={reasonStyle}>
             <textarea
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setReason(e.target.value)}
               placeholder='정정 사유를 입력해주세요.'
               css={textareaStyle}
             />
           </div>
           <div css={buttonStyle}>
-            <Button onClick={handleSubmit} styleType={isActive ? 'disabled' : 'primary'}>
+            <Button type='submit' styleType={isFormValid ? 'primary' : 'disabled'}>
               {status === 'loading' ? <Spinner /> : '정정 신청하기'}
             </Button>
           </div>
