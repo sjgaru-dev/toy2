@@ -8,8 +8,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { db } from '@/api';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
+import useToast from '@/hooks/useToast';
 import theme from '@/styles/theme';
 import { CorrectionProps } from '@/types/payroll';
 
@@ -19,6 +21,8 @@ const CorrectionDetail: React.FC = () => {
   const correctionContainerRef = useRef<HTMLDivElement>(null);
   const [correction, setCorrection] = useState<CorrectionProps | null>(null);
   const [isPending, setIsPending] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { toastTrigger } = useToast();
 
   useEffect(() => {
     const fetchCorrectionDetail = async () => {
@@ -52,11 +56,21 @@ const CorrectionDetail: React.FC = () => {
     window.open(fileUrl, '_blank');
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
     if (!isPending && id) {
-      await deleteDoc(doc(db, 'SalaryRequest', id));
-      navigate(PATH.SALARY, { state: { activeTab: 1 } });
+      try {
+        await deleteDoc(doc(db, 'SalaryRequest', id));
+        toastTrigger('정정내역이 삭제되었습니다');
+        navigate(PATH.SALARY, { state: { activeTab: 1 } });
+      } catch (error) {
+        toastTrigger('정정내역 삭제에 실패했습니다');
+      }
     }
+    setIsModalOpen(false);
   };
 
   const getFileName = (fileUrl: string) => {
@@ -105,10 +119,10 @@ const CorrectionDetail: React.FC = () => {
               ) : correction && correction.attach ? (
                 <span
                   css={fileNameStyle}
-                  onClick={() => correction.attach && handleFileDownload(correction.attach)}
+                  onClick={() => handleFileDownload(correction.attach ?? '')}
                   style={{ cursor: 'pointer' }}
                 >
-                  {getFileName(correction.attach)}
+                  {getFileName(correction.attach ?? '')}
                 </span>
               ) : (
                 <span css={dateStyle}>없음</span>
@@ -132,6 +146,16 @@ const CorrectionDetail: React.FC = () => {
             </div>
           )}
         </Fieldset>
+        {isModalOpen && (
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onConfirm={confirmDelete}
+            styleType='secondary'
+            title='삭제하시겠습니까?'
+            confirmText={'삭제하기'}
+          />
+        )}
       </div>
     </div>
   );

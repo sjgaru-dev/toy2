@@ -48,10 +48,11 @@ const Toast: React.FC<ToastProps> = ({ duration = 2000, status = 'success' }) =>
 };
 
 const toastStyle = css`
+  width: 464px;
   position: fixed;
-  left: 16px;
-  right: 16px;
   bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
