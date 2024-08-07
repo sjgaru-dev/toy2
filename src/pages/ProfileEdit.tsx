@@ -39,7 +39,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getUserData(getUID());
+      const data = await getUserData(await getUID());
       setUserData(data);
       setInputNickValue(data.nickname || '');
       setInputPhoneValue(data.phone || '');
@@ -49,7 +49,7 @@ const ProfilePage = () => {
 
   const handleChangeImg = async () => {
     try {
-      setUserData(await getUserData(getUID()));
+      setUserData(await getUserData(await getUID()));
       if (userData) {
         const storageRef = ref(storage, `profile/${userData.userNo}`);
         const fileInput = document.createElement('input');

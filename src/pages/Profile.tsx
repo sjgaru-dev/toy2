@@ -57,7 +57,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     (async () => {
-      setUserData(await getUserData(getUID()));
+      setUserData(await getUserData(await getUID()));
     })();
   }, []);
 
