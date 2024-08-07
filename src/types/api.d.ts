@@ -22,6 +22,7 @@ export interface ApiResponse<T> {
 
 export type AuthResponseType = UserCredential;
 export type PayrollResponseType = boolean;
+export type ScheduleResponseType = boolean;
 
 export interface ToastState {
   isToastOn: boolean;

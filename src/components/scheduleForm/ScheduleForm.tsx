@@ -75,9 +75,9 @@ const ScheduleForm = ({
       subject,
       content,
       startDate: startDate.toISOString(),
-      startTime,
+      startTime: enableAllDay ? '00:00' : startTime,
       endDate: endDate.toISOString(),
-      endTime,
+      endTime: enableAllDay ? '23:59' : endTime,
       isAlarm: selectedAlarmOption !== ALARM_OPTIONS.NONE,
       alarmTime: ALARM_TIME[selectedAlarmOption],
     };
