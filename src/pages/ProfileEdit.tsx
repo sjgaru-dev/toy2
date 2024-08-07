@@ -19,6 +19,7 @@ import { PATH } from '@/constants/path';
 import useToast from '@/hooks/useToast';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
+import { getUID } from '@/utils/auth';
 
 const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
   const date = timestamp.toDate();
@@ -38,7 +39,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1');
+      const data = await getUserData(getUID());
       setUserData(data);
       setInputNickValue(data.nickname || '');
       setInputPhoneValue(data.phone || '');
@@ -48,9 +49,9 @@ const ProfilePage = () => {
 
   const handleChangeImg = async () => {
     try {
-      setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
+      setUserData(await getUserData(getUID()));
       if (userData) {
-        const storageRef = ref(storage, `profile/EZRXBDo8fCXJj0obnYRhWPF92cy1`);
+        const storageRef = ref(storage, `profile/${userData.userNo}`);
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
