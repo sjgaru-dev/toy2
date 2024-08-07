@@ -48,7 +48,7 @@ const CorrectionForm: React.FC = () => {
     const props: CorrectionProps = {
       id: 0,
       salaryId: 0,
-      userNo: getUID() || '',
+      userNo: (await getUID()) || '',
       requestDate: convertDateWithFormat(new Date()),
       type: category,
       status: '대기',
@@ -165,15 +165,21 @@ const titleStyle = css`
     height: ${theme.heights.medium};
     padding: 0 12px;
     font-size: ${theme.fontSizes.large};
+    &:focus {
+      outline: none;
+      border-color: ${theme.colors.primary};
+    }
   }
 `;
 
 const correctionStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
+
 const rowStyle = css`
   display: flex;
   align-items: center;
@@ -212,7 +218,7 @@ const textareaStyle = css`
 
   &:focus {
     outline: none;
-    border-color: ${theme.colors.darkGray};
+    border-color: ${theme.colors.primary};
   }
 `;
 
