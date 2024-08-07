@@ -25,7 +25,11 @@ const CorrectionHistory: React.FC = () => {
 
   useEffect(() => {
     const fetchCorrectionHistory = async () => {
-      const q = query(collection(db, FIRESTORE_COLLECTION.salaryRequest), orderBy('id', 'desc'));
+      const q = query(
+        collection(db, FIRESTORE_COLLECTION.salaryRequest),
+        orderBy('requestDate', 'desc'),
+        orderBy('id', 'desc')
+      );
       const querySnapshot = await getDocs(q);
       const history = querySnapshot.docs.map((doc) => {
         const data = doc.data();

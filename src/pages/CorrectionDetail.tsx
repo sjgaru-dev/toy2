@@ -85,7 +85,7 @@ const CorrectionDetail: React.FC = () => {
         <Fieldset css={fieldsetStyle}>
           <div css={titleContainerStyle}>
             {correction && <h1 css={titleStyle}>{correction.subject}</h1>}
-            {!isPending && (
+            {!isPending && correction?.status === '대기' && (
               <IconTextButton Icon={HiPencil} onClick={handleEdit}>
                 수정
               </IconTextButton>
@@ -138,7 +138,7 @@ const CorrectionDetail: React.FC = () => {
               css={textareaStyle}
             />
           </div>
-          {!isPending && (
+          {!isPending && correction?.status === '대기' && (
             <div css={buttonStyle}>
               <button css={cancelButtonStyle} onClick={handleDelete}>
                 삭제하기
