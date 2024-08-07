@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { Fieldset, Label } from '@headlessui/react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
+import { HiOutlineDocumentArrowUp, HiOutlineTrash } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { db } from '@/api';
@@ -25,6 +25,7 @@ const CorrectionEdit: React.FC = () => {
 
   const [correction, setCorrection] = useState<Partial<CorrectionProps> | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+  const [existingFiles, setExistingFiles] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
@@ -35,7 +36,13 @@ const CorrectionEdit: React.FC = () => {
       const docRef = doc(db, 'SalaryRequest', id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setCorrection({ id: docSnap.id, ...docSnap.data() } as unknown as CorrectionProps);
+        const correctionData = docSnap.data() as CorrectionProps;
+        setCorrection({ ...correctionData });
+        if (correctionData.attach) {
+          setExistingFiles(
+            Array.isArray(correctionData.attach) ? correctionData.attach : [correctionData.attach]
+          );
+        }
       }
     };
     fetchCorrection();
@@ -56,14 +63,25 @@ const CorrectionEdit: React.FC = () => {
     fileInputRef.current?.click();
   };
 
+  const handleFileDelete = (index: number) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const handleExistingFileDelete = (index: number) => {
+    setExistingFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
   const handleSave = async () => {
     if (!correction || !id) return;
     try {
-      await updateDoc(doc(db, 'SalaryRequest', id), correction);
-      toastTrigger('정정내역이 수정되었습니다');
+      await updateDoc(doc(db, 'SalaryRequest', id), {
+        ...correction,
+        attach: [...existingFiles, ...files.map((file) => file.name)],
+      });
+      toastTrigger('정정 신청이 수정되었습니다');
       navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id)}`);
     } catch (error) {
-      toastTrigger('정정내역 수정에 실패했습니다');
+      toastTrigger('정정 신청 수정에 실패했습니다');
     }
     setIsModalOpen(false);
   };
@@ -108,8 +126,6 @@ const CorrectionEdit: React.FC = () => {
           <div css={rowStyle}>
             <Label css={labelStyle}>첨부파일</Label>
             <div css={fileUploadStyle}>
-              {files.length === 1 && <span css={fileNameStyle}>{files[0].name}</span>}
-              {files.length > 1 && <span css={fileNameStyle}>파일 {files.length}개</span>}
               <input
                 type='file'
                 ref={fileInputRef}
@@ -127,6 +143,40 @@ const CorrectionEdit: React.FC = () => {
               </IconTextButton>
             </div>
           </div>
+
+          {(existingFiles.length > 0 || files.length > 0) && (
+            <div css={fileListStyle}>
+              {existingFiles.map((file, index) => {
+                const fileName = decodeURIComponent(file).split('/').pop()?.split('?')[0];
+                return (
+                  <div key={`existing-${index}`} css={fileItemStyle}>
+                    <span css={fileNameStyle}>{fileName}</span>
+                    <IconTextButton
+                      Icon={HiOutlineTrash}
+                      onClick={() => handleExistingFileDelete(index)}
+                      iconPosition='left'
+                      backgroundButton={false}
+                    >
+                      삭제
+                    </IconTextButton>
+                  </div>
+                );
+              })}
+              {files.map((file, index) => (
+                <div key={`new-${index}`} css={fileItemStyle}>
+                  <span css={fileNameStyle}>{file.name}</span>
+                  <IconTextButton
+                    Icon={HiOutlineTrash}
+                    onClick={() => handleFileDelete(index)}
+                    iconPosition='left'
+                    backgroundButton={false}
+                  >
+                    삭제
+                  </IconTextButton>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div css={reasonStyle}>
             <textarea
@@ -230,9 +280,32 @@ const fileUploadStyle = css`
   gap: 12px;
 `;
 
+const fileListStyle = css`
+  margin-top: 12px;
+  padding: 0 12px;
+`;
+
+const fileItemStyle = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid ${theme.colors.lightGray};
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
 const fileNameStyle = css`
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.darkGray};
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  line-height: 1.5;
 `;
 
 const reasonStyle = css`

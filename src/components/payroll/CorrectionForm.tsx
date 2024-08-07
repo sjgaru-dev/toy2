@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
 import { Fieldset } from '@headlessui/react';
-import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
+import { HiOutlineDocumentArrowUp, HiOutlineTrash } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
@@ -61,7 +61,7 @@ const CorrectionForm: React.FC = () => {
       const result = await dispatch(fetchAddCorrection(props)).unwrap();
       if (result) {
         toastTrigger('정정신청이 등록되었습니다');
-        navigate(`${PATH.SALARY}`, { state: { activeTab: 1 } }); // 정정 신청 내역 탭으로 이동
+        navigate(`${PATH.SALARY}`, { state: { activeTab: 1 } });
       }
     } catch (error) {
       toastTrigger('정정신청 등록에 실패했습니다');
@@ -77,6 +77,10 @@ const CorrectionForm: React.FC = () => {
 
   const handleFileButtonClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleFileDelete = (index: number) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   return (
@@ -106,8 +110,6 @@ const CorrectionForm: React.FC = () => {
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
-              {files.length === 1 && <span css={fileNameStyle}>{files[0].name}</span>}
-              {files.length > 1 && <span css={fileNameStyle}>파일 {files.length}개</span>}
               <input
                 type='file'
                 ref={fileInputRef}
@@ -126,6 +128,25 @@ const CorrectionForm: React.FC = () => {
               </IconTextButton>
             </div>
           </div>
+
+          {files.length > 0 && (
+            <div css={fileListStyle}>
+              {files.map((file, index) => (
+                <div key={index} css={fileItemStyle}>
+                  <span>{file.name}</span>
+                  <IconTextButton
+                    Icon={HiOutlineTrash}
+                    onClick={() => handleFileDelete(index)}
+                    iconPosition='left'
+                    backgroundButton={false}
+                    type='button'
+                  >
+                    삭제
+                  </IconTextButton>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div css={reasonStyle}>
             <textarea
@@ -148,6 +169,7 @@ const CorrectionForm: React.FC = () => {
 
 const containerStyle = css`
   background-color: ${theme.colors.white};
+  padding-bottom: 80px;
 `;
 
 const formStyle = css`
@@ -243,9 +265,26 @@ const fileUploadStyle = css`
   gap: 12px;
 `;
 
-const fileNameStyle = css`
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.darkGray};
+const fileListStyle = css`
+  margin-top: 12px;
+  padding: 0 12px;
+`;
+
+const fileItemStyle = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid ${theme.colors.lightGray};
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  span {
+    font-size: ${theme.fontSizes.normal};
+    color: ${theme.colors.darkGray};
+  }
 `;
 
 export default CorrectionForm;

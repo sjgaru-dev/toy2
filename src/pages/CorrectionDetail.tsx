@@ -104,30 +104,30 @@ const CorrectionDetail: React.FC = () => {
 
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
-            <div css={fileUploadStyle}>
-              {correction && Array.isArray(correction.attach) ? (
-                correction.attach.map((fileUrl, index) => (
-                  <span
-                    key={index}
-                    css={fileNameStyle}
-                    onClick={() => handleFileDownload(fileUrl)}
-                    style={{ cursor: 'pointer' }}
-                  >
+          </div>
+          <div css={fileListStyle}>
+            {correction && Array.isArray(correction.attach) && correction.attach.length > 0 ? (
+              correction.attach.map((fileUrl, index) => (
+                <div key={index} css={fileItemStyle}>
+                  <span css={fileNameStyle} onClick={() => handleFileDownload(fileUrl)}>
                     {getFileName(fileUrl)}
                   </span>
-                ))
-              ) : correction && correction.attach ? (
+                </div>
+              ))
+            ) : correction && correction.attach ? (
+              <div css={fileItemStyle}>
                 <span
                   css={fileNameStyle}
                   onClick={() => handleFileDownload(correction.attach ?? '')}
-                  style={{ cursor: 'pointer' }}
                 >
                   {getFileName(correction.attach ?? '')}
                 </span>
-              ) : (
-                <span css={dateStyle}>없음</span>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div css={fileItemStyle}>
+                <span css={fileNameStyle}>없음</span>
+              </div>
+            )}
           </div>
 
           <div css={reasonStyle}>
@@ -163,6 +163,7 @@ const CorrectionDetail: React.FC = () => {
 
 const containerStyle = css`
   background-color: ${theme.colors.white};
+  padding-bottom: 80px;
 `;
 
 const formStyle = css`
@@ -237,15 +238,31 @@ const textareaStyle = css`
   }
 `;
 
-const fileUploadStyle = css`
+const fileListStyle = css`
+  padding: 0 12px;
+  margin-bottom: 16px;
+`;
+
+const fileItemStyle = css`
   display: flex;
   align-items: center;
-  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid ${theme.colors.lightGray};
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
 const fileNameStyle = css`
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.darkGray};
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  line-height: 1.5;
 `;
 
 const buttonStyle = css`

@@ -110,8 +110,7 @@ const getStatusColor = (status: string) => {
 
 const containerStyle = css`
   background-color: ${theme.colors.white};
-  padding: 16px;
-  min-height: 100%;
+  padding-bottom: 80px;
 `;
 
 const titleStyle = css`
