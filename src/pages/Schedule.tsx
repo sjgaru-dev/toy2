@@ -46,11 +46,12 @@ const addButtonContainerStyle = css`
   bottom: 96px;
   width: 100vw;
   max-width: 500px;
-  height: 48px;
+  height: 1px;
   transform: translateX(-50%);
 
   button {
     position: absolute;
+    bottom: 0;
     right: 16px;
     display: flex;
     align-items: center;
