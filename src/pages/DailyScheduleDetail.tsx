@@ -67,6 +67,23 @@ const DailyScheduleDetail: React.FC = () => {
   if (!currentSchedule) {
     return null; // 또는 일정을 찾을 수 없다는 메시지를 표시할 수 있습니다.
   }
+  const handleConfirmDelete = async () => {
+    try {
+      await dispatch(
+        deleteScheduleById({
+          id: currentSchedule.id,
+          startDate: currentSchedule.startDate,
+          endDate: currentSchedule.endDate,
+        })
+      ).unwrap();
+      setIsModalOpen(false);
+      toastTrigger('일정이 삭제되었습니다.');
+      navigate(PATH.SCHEDULE);
+    } catch (error) {
+      console.error('Failed to delete schedule:', error);
+      toastTrigger('일정 삭제에 실패했습니다.');
+    }
+  };
 
   const handleCancelDelete = () => {
     setIsModalOpen(false);
