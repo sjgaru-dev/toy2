@@ -100,7 +100,7 @@ const ProfilePage = () => {
       setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
       if (userData) {
         const userRef = collection(db, 'User');
-        const queryRef = query(userRef, where('uid', '==', userData.userNo));
+        const queryRef = query(userRef, where('userNo', '==', userData.userNo));
         const fetchResult = await getDocs(queryRef);
 
         if (!fetchResult.empty) {

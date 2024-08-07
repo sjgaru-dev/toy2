@@ -68,8 +68,13 @@ const dialogStyle = css`
 
 const overlayStyle = css`
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  max-width: 500px;
   background-color: rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
 `;
 
 const containerStyle = css`

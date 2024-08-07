@@ -8,6 +8,7 @@ import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';
+import { schedulePickerColors } from '@/constants/colors';
 import { useAppDispatch } from '@/store/hooks';
 import { deleteSchedule } from '@/store/reducer/scheduleSlice';
 import theme from '@/styles/theme';
@@ -64,14 +65,14 @@ const DailyScheduleDetail = () => {
         </header>
         <section css={contentStyle}>
           <div>
-            <span>시작일</span>
+            <span className='subtitle'>시작일</span>
             <p>
               <span>{formatOnlyDate(schedule.startDate)}</span>
               <span>{formatTime(schedule.startTime)}</span>
             </p>
           </div>
           <div>
-            <span>종료일</span>
+            <span className='subtitle'>종료일</span>
             <p>
               <span>{formatOnlyDate(schedule.endDate)}</span>
               <span>{formatTime(schedule.endTime)}</span>
@@ -111,32 +112,41 @@ const headerStyle = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-left: 12px;
   margin-bottom: 1rem;
 `;
 const titleStyle = css`
   display: flex;
-  justsify-content: flex-start;
+  justify-content: flex-start;
   align-items: center;
   h1 {
     margin-left: 0.5rem;
     font-size: ${theme.fontSizes.xlarge};
+    font-weight: bold;
+    color: ${theme.colors.darkestGray};
     flex-shrink: 1;
   }
 `;
+
 const circleStyle = (schedule: ScheduleModel) => css`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background-color: ${schedule.color};
+  background-color: ${schedulePickerColors[schedule.color]};
   flex-shrink: 0;
 `;
+
 const contentStyle = css`
-  
+  > div {
+    height: ${theme.heights.tall};
+    padding: 0 12px;
+  }
+
   div {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+
     p {
       display: flex;
       gap: 1rem;
@@ -146,11 +156,16 @@ const contentStyle = css`
         align-items: center;
         width: 80px;
         height: ${theme.heights.short};
-        font-size: ${theme.fontSizes.normal};
         border-radius: 4px;
+      }
     }
   }
+
+  .subtitle {
+    color: ${theme.colors.darkestGray};
+  }
 `;
+
 const textareaStyle = css`
   appearance: none;
   -webkit-appearance: none;
@@ -162,13 +177,13 @@ const textareaStyle = css`
   height: 140px;
   resize: none;
   color: ${theme.colors.darkestGray};
-  font-size: ${theme.fontSizes.normal};
+  font-size: ${theme.fontSizes.large};
   -webkit-letter-spacing: -1px;
   letter-spacing: 0px;
   line-height: 1.5;
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
-  margin-bottom: 24px;
+  margin: 8px 0 24px;
   padding: 12px;
   outline: none;
 `;
