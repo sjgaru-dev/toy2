@@ -168,7 +168,10 @@ const imgStyle = css`
   position: relative;
   display: inline-block;
   width: 120px;
+  height: auto;
   border-radius: 50%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
 `;
 
 const editIconStyle = css`

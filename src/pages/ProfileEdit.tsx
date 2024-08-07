@@ -15,6 +15,8 @@ import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Spinner from '@/components/common/Spinner';
 import Header from '@/components/layout/Header';
+import { PATH } from '@/constants/path';
+import useToast from '@/hooks/useToast';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
 
@@ -32,6 +34,7 @@ const ProfilePage = () => {
   const [inputPhoneValue, setInputPhoneValue] = useState('');
   const [inputImgValue, setInputImgValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const { toastTrigger } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,13 +56,16 @@ const ProfilePage = () => {
         fileInput.accept = 'image/*';
         fileInput.onchange = async (e) => {
           const file = (e.target as HTMLInputElement).files?.[0];
-          setLoading(true);
-          if (file) {
-            const fileRef = ref(storageRef, file.name);
+          if (file && file.size <= 2 * 1024 * 1024) {
+            setLoading(true);
+            const fileRef = ref(storageRef, 'profile.jpg');
             await uploadBytes(fileRef, file);
             const downloadURL = await getDownloadURL(fileRef);
             setUserData({ ...userData, img: downloadURL });
             setInputImgValue(downloadURL);
+          } else {
+            toastTrigger('파일 크기가 제한을 초과했습니다. (최대 2MB)');
+            console.error('File size exceeds the limit');
           }
           setLoading(false);
         };
@@ -94,7 +100,7 @@ const ProfilePage = () => {
       setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
       if (userData) {
         const userRef = collection(db, 'User');
-        const queryRef = query(userRef, where('uid', '==', 'EZRXBDo8fCXJj0obnYRhWPF92cy1'));
+        const queryRef = query(userRef, where('uid', '==', userData.userNo));
         const fetchResult = await getDocs(queryRef);
 
         if (!fetchResult.empty) {
@@ -110,7 +116,7 @@ const ProfilePage = () => {
     } catch (error) {
       console.error('Error updating profile:', error);
     }
-    navigate(`/profile`);
+    navigate(PATH.PROFILE);
   };
 
   return (
@@ -234,7 +240,10 @@ const imgStyle = css`
   position: relative;
   display: inline-block;
   width: 120px;
+  height: auto;
   border-radius: 50%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
 `;
 
 const caremaIconStyle = css`
