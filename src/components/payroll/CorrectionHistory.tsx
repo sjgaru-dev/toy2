@@ -5,6 +5,7 @@ import { HiChevronRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 import Badge from '@/components/common/Badge';
+import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
 interface CorrectionItem {
@@ -45,7 +46,7 @@ const CorrectionHistory: React.FC = () => {
   ];
 
   const handleViewDetails = (id: string) => {
-    navigate(`/correction-details/${id}`);
+    navigate(`${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id)}`);
   };
 
   return (
@@ -99,6 +100,7 @@ const getStatusColor = (status: string) => {
 
 const containerStyle = css`
   background-color: ${theme.colors.white};
+  padding: 16px;
   height: calc(100vh - 120px);
 `;
 

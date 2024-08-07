@@ -6,7 +6,7 @@ import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore
 import { MdDelete, MdOutlineCameraAlt } from 'react-icons/md';
 
 import { db } from '@/api';
-import { getUserData } from '@/api/User';
+import { getUserData } from '@/api/user';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';

@@ -15,7 +15,7 @@ const CorrectionForm: React.FC = () => {
   const [applicationDate, setApplicationDate] = useState('');
   const [category, setCategory] = useState('연장 근무');
   const [reason, setReason] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,8 +37,9 @@ const CorrectionForm: React.FC = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setFiles((prevFiles) => [...prevFiles, ...newFiles]);
     }
   };
 
@@ -59,15 +60,24 @@ const CorrectionForm: React.FC = () => {
             <span css={dateStyle}>{applicationDate}</span>
           </div>
 
+          <div css={correctionStyle}>
+            <span css={labelStyle}>정정항목</span>
+            <div css={selectWrapperStyle}>
+              <Select options={categoryOptions} selected={category} onChange={setCategory} />
+            </div>
+          </div>
+
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
-              {file && <span css={fileNameStyle}>{file.name}</span>}
+              {files.length === 1 && <span css={fileNameStyle}>{files[0].name}</span>}
+              {files.length > 1 && <span css={fileNameStyle}>파일 {files.length}개</span>}
               <input
                 type='file'
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 style={{ display: 'none' }}
+                multiple
               />
               <IconTextButton
                 Icon={HiOutlineDocumentArrowUp}
@@ -80,13 +90,6 @@ const CorrectionForm: React.FC = () => {
             </div>
           </div>
 
-          <div css={rowStyle}>
-            <span css={labelStyle}>정정 항목</span>
-            <div css={selectWrapperStyle}>
-              <Select options={categoryOptions} selected={category} onChange={setCategory} />
-            </div>
-          </div>
-
           <div css={reasonStyle}>
             <textarea
               value={reason}
@@ -95,7 +98,7 @@ const CorrectionForm: React.FC = () => {
               css={textareaStyle}
             />
           </div>
-          <div>
+          <div css={buttonStyle}>
             <Button
               onClick={() => handleSubmit()}
               styleType={isSubmitDisabled ? 'disabled' : 'primary'}
@@ -115,7 +118,6 @@ const containerStyle = css`
 
 const formStyle = css`
   background-color: ${theme.colors.white};
-  height: 745px;
 `;
 
 const fieldsetStyle = css`
@@ -125,7 +127,6 @@ const fieldsetStyle = css`
 
 const titleStyle = css`
   margin-bottom: 0.5rem;
-
   input {
     height: ${theme.heights.medium};
     padding: 0 12px;
@@ -133,6 +134,12 @@ const titleStyle = css`
   }
 `;
 
+const correctionStyle = css`
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  justify-content: space-between;
+`;
 const rowStyle = css`
   display: flex;
   align-items: center;
@@ -186,10 +193,14 @@ const selectWrapperStyle = css`
   }
 `;
 
+const buttonStyle = css`
+  margin-bottom: 24px;
+`;
+
 const fileUploadStyle = css`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const fileNameStyle = css`

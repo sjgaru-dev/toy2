@@ -5,7 +5,7 @@ import firebase from 'firebase/compat/app';
 import { MdEdit } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
-import { getUserData } from '@/api/User';
+import { getUserData } from '@/api/user';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';

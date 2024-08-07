@@ -8,10 +8,13 @@ import theme from '@/styles/theme';
 interface TabsProps {
   tabs: string[];
   children: React.ReactNode[];
+  activeTab?: number;
+  // eslint-disable-next-line no-unused-vars
+  onTabChange?: (index: number) => void;
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs, children }) => (
-  <TabGroup>
+const Tabs: React.FC<TabsProps> = ({ tabs, children, activeTab, onTabChange }) => (
+  <TabGroup selectedIndex={activeTab} onChange={onTabChange}>
     <TabList css={tabListStyle} className='wrapper'>
       {tabs.map((tab) => (
         <Tab key={tab} css={tabStyle}>
