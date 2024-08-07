@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { HiChevronRight } from 'react-icons/hi2';
+import { HiChevronRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 import theme from '@/styles/theme';
@@ -102,12 +102,13 @@ const amountStyle = css`
   font-size: ${theme.fontSizes.large};
   font-weight: 600;
   color: ${theme.colors.primary};
-  margin-right: 0.5rem;
+  margin-right: 4px;
 `;
 
 const arrowStyle = css`
   margin-bottom: 2px;
   color: ${theme.colors.darkGray};
+  font-size: ${theme.fontSizes.xxlarge};
 `;
 
 export default PayrollList;

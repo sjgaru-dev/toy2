@@ -98,7 +98,7 @@ const CorrectionForm: React.FC = () => {
               css={textareaStyle}
             />
           </div>
-          <div css={buttonStyle}>
+          <div>
             <Button
               onClick={() => handleSubmit()}
               styleType={isSubmitDisabled ? 'disabled' : 'primary'}
@@ -122,11 +122,16 @@ const formStyle = css`
 
 const fieldsetStyle = css`
   border: none;
-  padding-top: 32px;
+  padding-top: 20px;
 `;
 
 const titleStyle = css`
-  margin-bottom: 36px;
+  margin-bottom: 0.5rem;
+  input {
+    height: ${theme.heights.medium};
+    padding: 0 12px;
+    font-size: ${theme.fontSizes.large};
+  }
 `;
 
 const correctionStyle = css`
@@ -138,13 +143,14 @@ const correctionStyle = css`
 const rowStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
 
 const labelStyle = css`
   font-size: ${theme.fontSizes.large};
-  color: ${theme.colors.darkGray};
+  color: ${theme.colors.darkestGray};
 `;
 
 const dateStyle = css`
@@ -153,7 +159,7 @@ const dateStyle = css`
 `;
 
 const reasonStyle = css`
-  margin-bottom: 24px;
+  margin: 8px 0 24px;
 `;
 
 const textareaStyle = css`
@@ -172,7 +178,7 @@ const textareaStyle = css`
 
   &:focus {
     outline: none;
-    border-color: ${theme.colors.primary};
+    border-color: ${theme.colors.darkGray};
   }
 `;
 
@@ -186,6 +192,7 @@ const selectWrapperStyle = css`
     width: 100%;
   }
 `;
+
 
 const buttonStyle = css`
   margin-bottom: 36px;

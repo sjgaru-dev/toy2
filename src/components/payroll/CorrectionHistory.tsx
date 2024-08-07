@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
-import { LiaQuestionCircle } from 'react-icons/lia';
+import { HiChevronRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 import Badge from '@/components/common/Badge';
@@ -52,34 +51,23 @@ const CorrectionHistory: React.FC = () => {
 
   return (
     <div css={containerStyle} className='wrapper'>
-      <h2 css={titleStyle}>
-        정정 신청 내역
-        <Popover css={popoverStyle}>
-          <PopoverButton css={popoverButtonStyle}>
-            <LiaQuestionCircle />
-          </PopoverButton>
-          <PopoverPanel css={popoverPanelStyle}>
-            <p>신청 내역을 누르면 신청 상세 내역으로 이동합니다.</p>
-          </PopoverPanel>
-        </Popover>
-      </h2>
-      <div css={listStyle}>
+      <h2 css={titleStyle}>신청 현황</h2>
+      <ul css={listStyle}>
         {correctionItems.map((item) => (
-          <div key={item.id} css={itemStyle} onClick={() => handleViewDetails(item.id)}>
-            <div css={cardStyle}>
-              <div css={contentWrapper}>
-                <div css={dateStyle}>{item.date}</div>
-                <div css={contentStyle}>{item.content}</div>
+          <li key={item.id} onClick={() => handleViewDetails(item.id)}>
+            <div className='contents-wrapper'>
+              <div>
+                <div className='contents-title'>{item.content}</div>
+                <div className='contents-date'>{item.date}</div>
               </div>
-              <div css={actionWrapper}>
-                <div css={badgeWrapper}>
-                  <Badge label={getStatusLabel(item.status)} color={getStatusColor(item.status)} />
-                </div>
+              <div className='badge-container'>
+                <Badge label={getStatusLabel(item.status)} color={getStatusColor(item.status)} />
               </div>
             </div>
-          </div>
+            <HiChevronRight css={arrowStyle} />
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };
@@ -112,95 +100,61 @@ const getStatusColor = (status: string) => {
 const containerStyle = css`
   background-color: ${theme.colors.white};
   padding: 16px;
+  height: calc(100vh - 120px);
 `;
 
 const titleStyle = css`
-  font-size: ${theme.fontSizes.xlarge};
+  font-size: ${theme.fontSizes.large};
   font-weight: bold;
-  padding-top: 16px;
-  margin-bottom: 32px;
+  padding: 32px 0 12px;
   color: ${theme.colors.black};
   display: flex;
   align-items: center;
   gap: 8px;
 `;
 
-const popoverStyle = css`
-  position: relative;
-`;
-
-const popoverButtonStyle = css`
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: ${theme.fontSizes.xxlarge};
-  color: ${theme.colors.darkGray};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const popoverPanelStyle = css`
-  position: absolute;
-  z-index: 10;
-  background-color: ${theme.colors.darkGray};
-  border-radius: 8px;
-  padding: 12px;
-  width: 300px;
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.white};
-  font-weight: 300;
-  margin-top: 4px;
-`;
-
 const listStyle = css`
-  display: grid;
-  gap: 16px;
-`;
+  > li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    background-color: ${theme.colors.white};
+    cursor: pointer;
+  }
 
-const itemStyle = css`
-  background-color: ${theme.colors.white};
-  border-radius: 8px;
-  border: 1px solid ${theme.colors.lightGray};
-  cursor: pointer;
-`;
+  .contents-wrapper {
+    display: flex;
+    gap: 0.5rem;
+  }
 
-const cardStyle = css`
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const contentWrapper = css`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
 
 const dateStyle = css`
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.darkGray};
   margin-bottom: 8px;
-`;
 
-const contentStyle = css`
-  font-size: ${theme.fontSizes.xlarge};
-  font-weight: 500;
-  color: ${theme.colors.darkestGray};
-`;
-
-const actionWrapper = css`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const badgeWrapper = css`
-  span {
-    padding: 8px 16px;
-    font-size: ${theme.fontSizes.normal};
+  .contents-title {
+    font-weight: bold;
+    margin: 2px 0 0.5rem;
+    color: ${theme.colors.darkestGray};
   }
+
+
+  .contents-date {
+    font-size: ${theme.fontSizes.normal};
+    color: ${theme.colors.darkGray};
+  }
+
+  .badge-container {
+    height: 100%;
+  }
+`;
+
+const arrowStyle = css`
+  margin-bottom: 2px;
+  color: ${theme.colors.darkGray};
+  font-size: ${theme.fontSizes.xxlarge};
 `;
 
 export default CorrectionHistory;
