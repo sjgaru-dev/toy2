@@ -148,26 +148,37 @@ const fieldsetStyle = css`
 `;
 
 const titleContainerStyle = css`
-  margin-bottom: 36px;
+  margin-bottom: 0.5rem;
+  input {
+    height: ${theme.heights.medium};
+    padding: 0 12px;
+    font-size: ${theme.fontSizes.large};
+    &:focus {
+      outline: none;
+      border-color: ${theme.colors.primary};
+    }
+  }
 `;
 
 const rowStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
 
 const correctionEditStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
 
 const labelStyle = css`
   font-size: ${theme.fontSizes.large};
-  color: ${theme.colors.darkGray};
+  color: ${theme.colors.darkestGray};
 `;
 
 const dateStyle = css`
@@ -189,7 +200,7 @@ const selectWrapperStyle = css`
 const fileUploadStyle = css`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const fileNameStyle = css`
@@ -198,7 +209,7 @@ const fileNameStyle = css`
 `;
 
 const reasonStyle = css`
-  margin-bottom: 36px;
+  margin: 8px 0 24px;
 `;
 
 const textareaStyle = css`

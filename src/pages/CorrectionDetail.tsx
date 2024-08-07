@@ -155,6 +155,7 @@ const titleContainerStyle = css`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 36px;
+  padding: 0 12px;
 `;
 
 const titleStyle = css`
@@ -165,20 +166,22 @@ const titleStyle = css`
 const correctionStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
 
 const rowStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 36px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
 
 const labelStyle = css`
   font-size: ${theme.fontSizes.large};
-  color: ${theme.colors.darkGray};
+  color: ${theme.colors.darkestGray};
 `;
 
 const dateStyle = css`
@@ -187,7 +190,7 @@ const dateStyle = css`
 `;
 
 const reasonStyle = css`
-  margin-bottom: 36px;
+  margin: 8px 0 24px;
 `;
 
 const textareaStyle = css`
@@ -213,7 +216,7 @@ const textareaStyle = css`
 const fileUploadStyle = css`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const fileNameStyle = css`
