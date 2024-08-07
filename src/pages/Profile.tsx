@@ -5,7 +5,8 @@ import firebase from 'firebase/compat/app';
 import { MdEdit } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
-import { getUserData } from '@/api/User';
+import { getUserData } from '@/api/user';
+import userDefaultSvg from '@/assets/images/user_default.svg';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
@@ -14,8 +15,6 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchSignOut } from '@/store/reducer/authSlice';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
-
-import userDefaultSvg from '/src/assets/images/user_default.svg';
 
 const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
   const date = timestamp.toDate();
@@ -169,7 +168,10 @@ const imgStyle = css`
   position: relative;
   display: inline-block;
   width: 120px;
+  height: auto;
   border-radius: 50%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
 `;
 
 const editIconStyle = css`

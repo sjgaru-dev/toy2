@@ -145,28 +145,29 @@ const formStyle = css`
 
 const subjectInputStyle = css`
   width: 100%;
-  padding: 20px 0 24px;
+  padding: 20px 12px 24px;
   border: 0;
   outline: none;
   font-size: ${theme.fontSizes.xlarge};
-  font-weight: bold;
+  font-weight: 500;
 `;
 
 const divContainerStyle = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: ${theme.heights.tall};
+  height: 56px;
+  padding: 0 12px;
 
-  span {
-    font-size: ${theme.fontSizes.normal};
-    font-weight: 500;
+  > span {
+    font-size: ${theme.fontSizes.large};
+    color: ${theme.colors.darkestGray};
   }
 `;
 
 const datePickerContainerStyle = css`
   display: flex;
-  gap: 4px;
+  gap: 8px;
 
   button {
     width: 80px;
@@ -181,11 +182,11 @@ const datePickerContainerStyle = css`
 const textareaStyle = css`
   width: 100%;
   height: 140px;
-  padding: 1rem;
-  margin: 1rem 0;
+  padding: 12px;
+  margin: 1rem 0 24px;
   border: 1px solid ${theme.colors.lightGray};
   outline: none;
-  font-size: ${theme.fontSizes.normal};
+  font-size: ${theme.fontSizes.large};
   border-radius: 4px;
   resize: none;
 `;

@@ -8,7 +8,7 @@ export interface CorrectionProps {
   subject: string;
   content: string;
   attach?: string;
-  attachFile?: File;
+  attachFile?: File[];
 }
 
 export interface AttachProps {
