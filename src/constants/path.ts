@@ -3,7 +3,7 @@ export const PATH = {
   SCHEDULE: '/schedule',
   SCHEDULE_DETAIL: 'detail/:id',
   SCHEDULE_ADD: 'add',
-  SCHEDULE_EDIT: 'edit',
+  SCHEDULE_EDIT: 'edit/:id',
   SALARY: '/salary',
   SALARY_DETAIL: 'detail/:year/:month',
   SALARY_CORRECTION_HISTORY: 'correction',
