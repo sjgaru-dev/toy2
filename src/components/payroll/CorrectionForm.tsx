@@ -63,7 +63,7 @@ const CorrectionForm: React.FC = () => {
     dispatch(fetchAddCorrection(props)).then((status) => {
       if (status.meta.requestStatus === 'fulfilled') {
         toastTrigger('정정신청이 등록되었습니다');
-        navigate(PATH.SALARY_CORRECTION_HISTORY);
+        navigate(PATH.SALARY, { state: { activeTab: 1 } });
       }
     });
   };
