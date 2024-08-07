@@ -45,7 +45,8 @@ const sectionStyle = css`
 const titleStyle = css`
   padding: 24px 16px 0;
   font-size: ${theme.fontSizes.large};
-  font-weight: bold;
+  font-weight: 600;
+  color: ${theme.colors.darkestGray};
 `;
 
 const upcomingStyle = css`
