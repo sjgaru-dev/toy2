@@ -1,16 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { css } from '@emotion/react';
 import { Fieldset, Label } from '@headlessui/react';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
+import { db } from '@/api';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Select from '@/components/common/Select';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
+import { CorrectionProps } from '@/types/payroll';
 
 const CorrectionEdit: React.FC = () => {
   const navigate = useNavigate();
@@ -18,12 +21,22 @@ const CorrectionEdit: React.FC = () => {
   const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [title, setTitle] = useState('무급 휴가 안 썼어요');
-  const [category, setCategory] = useState('연장 근무');
-  const [reason, setReason] = useState('진짜로 무급 휴가 안 썼어요 정정해주세요');
-  const [files, setFiles] = useState<File[]>(location.state?.files || []);
+  const [correction, setCorrection] = useState<Partial<CorrectionProps> | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
+
+  useEffect(() => {
+    const fetchCorrection = async () => {
+      if (!id) return;
+      const docRef = doc(db, 'SalaryRequest', id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setCorrection({ id: docSnap.id, ...docSnap.data() } as unknown as CorrectionProps);
+      }
+    };
+    fetchCorrection();
+  }, [id]);
 
   const handleGoBack = () => {
     navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id || '')}`);
@@ -40,9 +53,10 @@ const CorrectionEdit: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  const handleSave = () => {
-    // 저장 로직 구현
-    navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id || '')}`);
+  const handleSave = async () => {
+    if (!correction || !id) return;
+    await updateDoc(doc(db, 'SalaryRequest', id), correction);
+    navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id)}`);
   };
 
   return (
@@ -51,18 +65,26 @@ const CorrectionEdit: React.FC = () => {
       <div css={formStyle} className='wrapper'>
         <Fieldset css={fieldsetStyle}>
           <div css={titleContainerStyle}>
-            <Input value={title} onChange={setTitle} placeholder='제목을 입력해주세요.' />
+            <Input
+              value={correction?.subject ?? ''}
+              onChange={(value) => setCorrection({ ...correction, subject: value })}
+              placeholder='제목을 입력해주세요.'
+            />
           </div>
 
           <div css={rowStyle}>
             <Label css={labelStyle}>신청일</Label>
-            <span css={dateStyle}>2024/07/23 (화)</span>
+            <span css={dateStyle}>{correction?.requestDate}</span>
           </div>
 
           <div css={correctionEditStyle}>
             <Label css={labelStyle}>정정항목</Label>
             <div css={selectWrapperStyle}>
-              <Select options={categoryOptions} selected={category} onChange={setCategory} />
+              <Select
+                options={categoryOptions}
+                selected={correction?.type || ''}
+                onChange={(value) => setCorrection({ ...correction, type: value })}
+              />
             </div>
           </div>
 
@@ -91,8 +113,8 @@ const CorrectionEdit: React.FC = () => {
 
           <div css={reasonStyle}>
             <textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              value={correction?.content ?? ''}
+              onChange={(e) => setCorrection({ ...correction, content: e.target.value })}
               placeholder='정정 사유를 입력해주세요.'
               css={textareaStyle}
             />

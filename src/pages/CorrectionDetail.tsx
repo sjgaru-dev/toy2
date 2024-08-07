@@ -1,55 +1,67 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
 import { Fieldset } from '@headlessui/react';
+import { doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { HiPencil } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { db } from '@/api';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
+import { CorrectionProps } from '@/types/payroll';
 
 const CorrectionDetail: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const correctionContainerRef = useRef<HTMLDivElement>(null);
-  const [title] = useState('무급 휴가 안 썼어요');
-  const [applicationDate] = useState('2024/07/23 (화)');
-  const [category] = useState('연장 근무');
-  const [reason] = useState('진짜로 무급 휴가 안 썼어요 정정해주세요');
-  const [file] = useState<File | null>(new File([''], '근무 내역.jpg'));
-  const [isPending] = useState(true);
+  const [correction, setCorrection] = useState<CorrectionProps | null>(null);
+  const [isPending, setIsPending] = useState(true);
+
+  useEffect(() => {
+    const fetchCorrectionDetail = async () => {
+      if (!id) return;
+      try {
+        const docRef = doc(db, 'SalaryRequest', id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setCorrection({ id: docSnap.id, ...docSnap.data() } as unknown as CorrectionProps);
+        }
+      } finally {
+        setIsPending(false);
+      }
+    };
+    fetchCorrectionDetail();
+  }, [id]);
 
   const handleGoBack = () => {
     navigate(PATH.SALARY, { state: { activeTab: 1 } });
   };
 
   const handleEdit = () => {
-    if (isPending) {
+    if (!isPending && correction) {
       navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_EDIT.replace(':id', id || '')}`, {
-        state: { file },
+        state: { correction },
       });
     }
   };
 
-  const handleFileDownload = () => {
-    if (file) {
-      const url = URL.createObjectURL(file);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = file.name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+  const handleFileDownload = (fileUrl: string) => {
+    window.open(fileUrl, '_blank');
+  };
+
+  const handleDelete = async () => {
+    if (!isPending && id) {
+      await deleteDoc(doc(db, 'SalaryRequest', id));
+      navigate(PATH.SALARY, { state: { activeTab: 1 } });
     }
   };
 
-  const handleDelete = () => {
-    if (isPending) {
-      // 삭제 로직 구현
-    }
+  const getFileName = (fileUrl: string) => {
+    const decodedUrl = decodeURIComponent(fileUrl);
+    return decodedUrl.split('/').pop()?.split('?')[0] || '파일';
   };
 
   return (
@@ -58,8 +70,8 @@ const CorrectionDetail: React.FC = () => {
       <div css={formStyle} className='wrapper' ref={correctionContainerRef}>
         <Fieldset css={fieldsetStyle}>
           <div css={titleContainerStyle}>
-            <h1 css={titleStyle}>{title}</h1>
-            {isPending && (
+            {correction && <h1 css={titleStyle}>{correction.subject}</h1>}
+            {!isPending && (
               <IconTextButton Icon={HiPencil} onClick={handleEdit}>
                 수정
               </IconTextButton>
@@ -68,42 +80,51 @@ const CorrectionDetail: React.FC = () => {
 
           <div css={rowStyle}>
             <span css={labelStyle}>신청일</span>
-            <span css={dateStyle}>{applicationDate}</span>
+            {correction && <span css={dateStyle}>{correction.requestDate}</span>}
           </div>
 
           <div css={correctionStyle}>
             <span css={labelStyle}>정정항목</span>
-            <span css={dateStyle}>{category}</span>
+            {correction && <span css={dateStyle}>{correction.type}</span>}
           </div>
 
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
-              {file ? (
+              {correction && Array.isArray(correction.attach) ? (
+                correction.attach.map((fileUrl, index) => (
+                  <span
+                    key={index}
+                    css={fileNameStyle}
+                    onClick={() => handleFileDownload(fileUrl)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {getFileName(fileUrl)}
+                  </span>
+                ))
+              ) : correction && correction.attach ? (
                 <span
                   css={fileNameStyle}
-                  onClick={handleFileDownload}
+                  onClick={() => correction.attach && handleFileDownload(correction.attach)}
                   style={{ cursor: 'pointer' }}
                 >
-                  {file.name}
+                  {getFileName(correction.attach)}
                 </span>
               ) : (
-                <span css={dateStyle} style={{ cursor: 'pointer' }}>
-                  근무 내역.jpg
-                </span>
+                <span css={dateStyle}>없음</span>
               )}
             </div>
           </div>
 
           <div css={reasonStyle}>
             <textarea
-              value={reason}
+              value={correction ? correction.content : ''}
               readOnly
               placeholder='정정 사유를 입력해주세요.'
               css={textareaStyle}
             />
           </div>
-          {isPending && (
+          {!isPending && (
             <div css={buttonStyle}>
               <button css={cancelButtonStyle} onClick={handleDelete}>
                 삭제하기
