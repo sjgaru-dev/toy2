@@ -6,13 +6,14 @@ import { useNavigate } from 'react-router-dom';
 
 import { getSalarys } from '@/api/payroll';
 import theme from '@/styles/theme';
-import { SalaryType } from '@/types/payroll';
+import { PayrollData, SalaryType } from '@/types/payroll';
 
 interface PayrollItem {
   year: string;
   month: string;
   amount: number;
   date: string;
+  receiveData: PayrollData;
 }
 
 const PayrollList: React.FC = () => {
@@ -23,24 +24,24 @@ const PayrollList: React.FC = () => {
   useEffect(() => {
     (async () => {
       const salaryList = await getSalarys();
-      console.log(salaryList);
       setPayrollItems([...salaryToPayroll(salaryList.response)]);
     })();
   }, []);
 
   const salaryToPayroll = (salaryList: SalaryType[]): PayrollItem[] =>
     salaryList.map((item) => {
-      const payday = item.payday.split(' ')[0];
+      const paydate = item.payday.split(' ')[0];
       return {
-        year: payday.substring(0, 4), // 2024-07
-        month: payday.substring(5, 7),
-        amount: item.paycheck,
-        date: payday.substring(5, 10) + ' 지급',
+        year: paydate.substring(0, 4),
+        month: paydate.substring(5, 7),
+        amount: item.receiveData?.receive || 0,
+        date: paydate.substring(5, 10) + ' 지급',
+        receiveData: item.receiveData,
       } as PayrollItem;
     });
 
-  const handleItemClick = (year: string, month: string, amount: number) => {
-    localStorage.setItem('currentDeatilSalary', amount.toString());
+  const handleItemClick = (year: string, month: string, receiveData: PayrollData) => {
+    localStorage.setItem('currentDeatilSalary', JSON.stringify(receiveData));
     navigate(`/salary/detail/${year}/${month}`);
   };
 
@@ -51,7 +52,10 @@ const PayrollList: React.FC = () => {
           {index === 0 || payrollItems[index - 1].year !== item.year ? (
             <h2 css={yearHeaderStyle}>{item.year}년</h2>
           ) : null}
-          <div css={itemStyle} onClick={() => handleItemClick(item.year, item.month, item.amount)}>
+          <div
+            css={itemStyle}
+            onClick={() => handleItemClick(item.year, item.month, item.receiveData)}
+          >
             <div css={leftContentStyle}>
               <span css={monthStyle}>{item.month}월 급여 명세서</span>
               <span css={dateStyle}>{item.date}</span>

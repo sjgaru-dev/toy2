@@ -24,6 +24,7 @@ export interface SalaryType {
   paycheck: number;
   payday: string;
   isCheck: boolean;
+  receiveData?: PayrollData;
 }
 
 export interface PayrollData {

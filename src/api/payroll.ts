@@ -7,6 +7,7 @@ import { FIRESTORE_COLLECTION, STORAGE_FOLDER } from '@/constants/api';
 import { ApiResponse, PayrollResponseType, SalaryResponseType } from '@/types/api';
 import { AttachProps, CorrectionProps, SalaryType } from '@/types/payroll';
 import { getUID } from '@/utils/auth';
+import { calcTax } from '@/utils/salary';
 
 export const addCorrection = async (
   props: CorrectionProps
@@ -57,5 +58,14 @@ export const getSalarys = async (): Promise<ApiResponse<SalaryResponseType>> => 
     )
   );
   const salaryList: SalaryType[] = fetchResult.docs.map((doc) => ({ ...doc.data() }) as SalaryType);
-  return { status: 'succeeded', response: salaryList };
+
+  const addTaxSalaryList: SalaryType[] = salaryList.map(
+    (item) =>
+      ({
+        ...item,
+        receiveData: calcTax(item.paycheck) || '',
+      }) as SalaryType
+  );
+
+  return { status: 'succeeded', response: addTaxSalaryList };
 };

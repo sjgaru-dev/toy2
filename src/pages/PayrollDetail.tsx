@@ -12,7 +12,6 @@ import { PATH } from '@/constants/path';
 import useToast from '@/hooks/useToast';
 import theme from '@/styles/theme';
 import { PayrollData } from '@/types/payroll';
-import { calcTax } from '@/utils/salary';
 
 const INIT_PAYROLL_DATA: PayrollData = {
   receive: 0,
@@ -42,8 +41,9 @@ const PayrollDetail = () => {
   const { toastTrigger } = useToast();
 
   useEffect(() => {
-    const amount = localStorage.getItem('currentDeatilSalary');
-    if (amount) setPayrollData(calcTax(Number(amount)));
+    const receiveData = localStorage.getItem('currentDeatilSalary');
+
+    if (receiveData) setPayrollData(JSON.parse(receiveData));
     else {
       toastTrigger('데이터를 불러오는데 실패했습니다.');
       navigate(PATH.SALARY, { state: { activeTab: 0 } });

@@ -10,8 +10,6 @@ import { getUID } from '@/utils/auth';
 export const addSchedule = async (
   data: ScheduleFormDataModel
 ): Promise<ApiResponse<ScheduleResponseType>> => {
-  console.log(data);
-
   const scheduleData: ScheduleModel = {
     ...data,
     id: await getCollectionId({
