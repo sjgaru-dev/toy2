@@ -1,3 +1,5 @@
+import { FaMountainSun } from 'react-icons/fa6';
+
 import theme from '@/styles/theme';
 import { CompanyType, UpcomingType } from '@/types/type';
 
@@ -9,8 +11,8 @@ interface MockData {
 export const mockData: MockData = {
   upcoming: [
     {
-      img: 'https://notion-emojis.s3-us-west-2.amazonaws.com/prod/svg-twitter/1f4c5.svg',
-      name: '김태화',
+      img: 'https://github.com/user-attachments/assets/e3bc9f9c-f998-4035-97f7-668190d3b78e',
+      name: '박예은',
       event: '생일',
       badge: {
         text: '오늘',
@@ -18,7 +20,8 @@ export const mockData: MockData = {
       },
     },
     {
-      name: '이직원',
+      img: 'https://api.dicebear.com/9.x/lorelei/svg?seed=Kiki&eyes=variant14',
+      name: '안민지',
       event: '입사일 1주년',
       badge: {
         text: 'D-2',
@@ -26,7 +29,7 @@ export const mockData: MockData = {
       },
     },
     {
-      name: '저직원',
+      name: '김준영',
       event: '입사일 1주년',
       badge: {
         text: 'D-6',
@@ -34,8 +37,8 @@ export const mockData: MockData = {
       },
     },
     {
-      name: '그직원',
-      event: '입사일 1주년',
+      name: '권도현',
+      event: '입사일 2주년',
       badge: {
         text: 'D-7',
         color: `${theme.colors.darkGray}`,
@@ -58,6 +61,7 @@ export const mockData: MockData = {
         text: 'D-1',
         color: `${theme.colors.darkGray}`,
       },
+      Icon: FaMountainSun,
     },
     {
       name: '창립기념일',
