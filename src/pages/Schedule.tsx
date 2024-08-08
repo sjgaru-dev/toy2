@@ -11,7 +11,7 @@ import useFetchSchedule from '@/hooks/useFetchSchedule';
 import theme from '@/styles/theme';
 
 const SchedulePage = () => {
-  const { schedule, events, status, error } = useFetchSchedule();
+  const { schedule, events } = useFetchSchedule();
   const [activeDate, setActiveDate] = useState(new Date());
   const navigate = useNavigate();
 

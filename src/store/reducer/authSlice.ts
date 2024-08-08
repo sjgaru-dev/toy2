@@ -22,7 +22,7 @@ export const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(fetchSignIn.fulfilled, (state, action) => {
+      .addCase(fetchSignIn.fulfilled, (state) => {
         state.isLoading = false;
         state.status = 'succeeded';
         state.error = null;

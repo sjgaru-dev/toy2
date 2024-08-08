@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import dayjs from 'dayjs';
-import { collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, deleteDoc, getDocs, query, where } from 'firebase/firestore';
 
 import { db } from '@/api';
 import { addSchedule, editSchedule } from '@/api/schedule';

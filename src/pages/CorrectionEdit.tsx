@@ -350,10 +350,4 @@ const primaryButtonStyle = css`
   margin-bottom: 16px;
 `;
 
-const secondaryButtonStyle = css`
-  ${buttonBaseStyle}
-  background-color: transparent;
-  color: ${theme.colors.darkGray};
-`;
-
 export default CorrectionEdit;

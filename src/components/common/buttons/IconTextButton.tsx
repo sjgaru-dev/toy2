@@ -17,7 +17,6 @@ const IconTextButton: React.FC<iconTextButtonProps> = ({
   Icon,
   iconPosition = 'right',
   backgroundButton = false,
-  type = 'submit',
   onClick,
   children,
 }: iconTextButtonProps) => (
