@@ -22,6 +22,8 @@ import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
 import { getUID } from '@/utils/auth';
 
+const UpdatedData: { [key: string]: string } = {};
+
 const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
   const date = timestamp.toDate();
   const year = date.getFullYear();
@@ -42,8 +44,8 @@ const ProfilePage = () => {
     const fetchData = async () => {
       const data = await getUserData(await getUID());
       setUserData(data);
-      setInputNickValue(data.nickname || '');
-      setInputPhoneValue(data.phone || '');
+      setInputNickValue(data.nickname);
+      setInputPhoneValue(data.phone);
     };
     fetchData();
   }, []);
@@ -65,9 +67,11 @@ const ProfilePage = () => {
             const downloadURL = await getDownloadURL(fileRef);
             setUserData({ ...userData, img: downloadURL });
             setInputImgValue(downloadURL);
-          } else {
+          } else if (file && file.size > 2 * 1024 * 1024) {
             toastTrigger('파일 크기가 제한을 초과했습니다. (최대 2MB)');
             console.error('File size exceeds the limit');
+          } else {
+            setInputImgValue(userData.img);
           }
           setLoading(false);
         };
@@ -83,11 +87,9 @@ const ProfilePage = () => {
     setUserData(Object.assign({}, userData, { img: userDefaultSvg }));
     setInputImgValue(userDefaultSvg);
   };
-
   const handleInputChangeNick = (value: string) => {
     setInputNickValue(value);
   };
-
   const handleInputChangePhone = (value: string) => {
     const formattedValue = value
       .replace(/[^0-9]/g, '')
@@ -95,23 +97,21 @@ const ProfilePage = () => {
       .replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
     setInputPhoneValue(formattedValue);
   };
-
   const navigate = useNavigate();
   const handleUpdateClick = async () => {
     try {
-      setUserData(await getUserData('EZRXBDo8fCXJj0obnYRhWPF92cy1'));
+      const uid = await getUID();
+      const userData = await getUserData(uid);
       if (userData) {
         const userRef = collection(db, 'User');
         const queryRef = query(userRef, where('userNo', '==', userData.userNo));
         const fetchResult = await getDocs(queryRef);
-
         if (!fetchResult.empty) {
           const userData = fetchResult.docs[0];
-          const updatedData = {
-            nickname: inputNickValue,
-            phone: inputPhoneValue,
-            img: inputImgValue,
-          };
+          const updatedData: typeof UpdatedData = {};
+          if (inputNickValue) updatedData.nickname = inputNickValue;
+          if (inputPhoneValue) updatedData.phone = inputPhoneValue;
+          if (inputImgValue) updatedData.img = inputImgValue;
           await updateDoc(userData.ref, updatedData);
         }
       }
