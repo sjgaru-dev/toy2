@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import firebase from 'firebase/compat/app';
-import { MdEdit } from 'react-icons/md';
+import { HiOutlinePencil } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 import { getUserData } from '@/api/user';
@@ -68,7 +68,7 @@ const ProfilePage = () => {
           <img src={userData?.img || defaultImg} css={imgStyle} />
         </div>
         <div css={editIconStyle}>
-          <IconTextButton Icon={MdEdit} onClick={handleEditClick}>
+          <IconTextButton Icon={HiOutlinePencil} onClick={handleEditClick}>
             프로필 수정
           </IconTextButton>
         </div>
@@ -114,7 +114,7 @@ const ProfilePage = () => {
           type='timestamp'
           onChange={() => {}}
           readOnly={true}
-        />{' '}
+        />
         <Input
           label='부서'
           value={userData ? userData.team : ''}
@@ -162,7 +162,7 @@ const ProfilePage = () => {
 };
 
 const wrapperStyle = css`
-  padding: 3rem;
+  padding: 60px 3rem 3rem;
   text-align: center;
   justify-content: center;
   background-color: ${theme.colors.white};
@@ -192,7 +192,8 @@ const formStyle = css`
 `;
 
 const signOutButtonStyle = css`
-  padding-bottom: 80px;
+  padding: 12px 16px 80px;
+  background-color: ${theme.colors.white};
 `;
 
 export default ProfilePage;
