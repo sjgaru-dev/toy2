@@ -192,8 +192,15 @@ const formStyle = css`
 `;
 
 const signOutButtonStyle = css`
-  padding: 12px 16px 80px;
-  background-color: ${theme.colors.white};
+  padding: 8px 16px 88px;
+  button {
+    background-color: transparent;
+
+    &:hover {
+      background-color: transparent;
+      color: ${theme.colors.alertRed};
+    }
+  }
 `;
 
 export default ProfilePage;
