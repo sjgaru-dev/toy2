@@ -12,11 +12,13 @@ import { calcTax } from '@/utils/salary';
 export const addCorrection = async (
   props: CorrectionProps
 ): Promise<ApiResponse<PayrollResponseType>> => {
+  const id = await getCollectionId({
+    collectionName: FIRESTORE_COLLECTION.salaryRequest,
+    selectValue: 'next',
+  });
+
   const data: CorrectionProps = {
-    id: await getCollectionId({
-      collectionName: FIRESTORE_COLLECTION.salaryRequest,
-      selectValue: 'next',
-    }),
+    id,
     salaryId: await getCollectionId({
       collectionName: FIRESTORE_COLLECTION.salary,
       selectValue: 'now',
@@ -27,13 +29,21 @@ export const addCorrection = async (
     subject: props.subject,
     content: props.content,
     type: props.type,
+    attachFile: [],
   };
-  const doc = await addDoc(collection(db, FIRESTORE_COLLECTION.salaryRequest), data);
+
+  const docRef = await addDoc(collection(db, FIRESTORE_COLLECTION.salaryRequest), data);
+  const docId = docRef.id;
+
   if (props.attachFile) {
-    props.attachFile.map(async (item) => {
-      const url = await addAttach({ file: item, docId: doc.id, data });
-      await updateDoc(doc, { attach: url });
-    });
+    const attachUrls = await Promise.all(
+      props.attachFile.map(async (item) => {
+        const url = await addAttach({ file: item, docId, data });
+        return url;
+      })
+    );
+
+    await updateDoc(docRef, { attach: attachUrls });
   }
 
   return { status: 'succeeded', response: true };
@@ -68,4 +78,15 @@ export const getSalarys = async (): Promise<ApiResponse<SalaryResponseType>> => 
   );
 
   return { status: 'succeeded', response: addTaxSalaryList };
+};
+
+export const fetchCorrectionHistory = async () => {
+  const querySnapshot = await getDocs(
+    query(collection(db, FIRESTORE_COLLECTION.salaryRequest), orderBy('requestDate', 'desc'))
+  );
+  const history = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as unknown as CorrectionProps[];
+  return { data: history };
 };

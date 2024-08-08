@@ -1,49 +1,91 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { HiOutlinePencil } from 'react-icons/hi2';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';
 import { schedulePickerColors } from '@/constants/colors';
+import { PATH } from '@/constants/path';
+import useFetchSchedule from '@/hooks/useFetchSchedule';
+import useToast from '@/hooks/useToast';
 import { useAppDispatch } from '@/store/hooks';
-import { deleteSchedule } from '@/store/reducer/scheduleSlice';
+import { deleteScheduleById } from '@/store/reducer/scheduleSlice';
 import theme from '@/styles/theme';
 import { ScheduleModel } from '@/types/schedule';
 import { formatTime, formatOnlyDate } from '@/utils/dailySchedule';
 
-const DailyScheduleDetail = () => {
-  const location = useLocation();
+const DailyScheduleDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // DailySchedule 에서 넘어온 파라미터
+  const { schedule, status } = useFetchSchedule(); // 전체 일정 데이터
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const schedule: ScheduleModel = location.state?.schedule;
-  const [text, setText] = useState(schedule.content);
+  const { toastTrigger } = useToast();
+  const [currentSchedule, setCurrentSchedule] = useState<ScheduleModel | null>(null);
+  // const currentSchedule = schedule?.find((s) => s.id === parseInt(id!, 10));
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 일정 삭제 버튼 클릭
+  const getScheduleData = (
+    schedules: ScheduleModel[],
+    scheduleId: string
+  ): ScheduleModel | undefined =>
+    schedules.find((schedule) => schedule.id === parseInt(scheduleId, 10));
+
+  useEffect(() => {
+    if (status === 'succeeded' && schedule && id) {
+      const foundSchedule = getScheduleData(schedule, id);
+      if (foundSchedule) {
+        setCurrentSchedule(foundSchedule);
+      } else {
+        console.error(`일정 ID ${id}를 찾을 수 없습니다.`);
+        // 여기서 사용자에게 알림을 줄 수 있습니다.
+      }
+      setIsLoading(false);
+    } else if (status === 'failed') {
+      console.error('일정을 불러오는데 실패했습니다.');
+      setIsLoading(false);
+    }
+  }, [status, schedule, id]);
+
   const handleDeleteClick = () => {
     setIsModalOpen(true);
   };
 
-  // 일정삭제 모달에서 일정 취소하기 버튼 클릭
-  const handleConfirmDelete = async (userNo: string) => {
+  useEffect(() => {
+    if (status !== 'loading' && schedule) {
+      setIsLoading(false);
+    }
+  }, [status, schedule]);
+
+  if (isLoading) {
+    return null; // 또는 로딩 인디케이터를 표시할 수 있습니다.
+  }
+
+  if (!currentSchedule) {
+    return null; // 또는 일정을 찾을 수 없다는 메시지를 표시할 수 있습니다.
+  }
+  const handleConfirmDelete = async () => {
     try {
-      // TODO: 일정 삭제 API 호출
-      await dispatch(deleteSchedule(userNo)).unwrap(); // unwrap()은 비동기 함수의 반환값(Promise)을 반환
+      await dispatch(
+        deleteScheduleById({
+          id: currentSchedule.id,
+          startDate: currentSchedule.startDate,
+          endDate: currentSchedule.endDate,
+        })
+      ).unwrap();
       setIsModalOpen(false);
-
-      // navigate해주기 전에 삭제되었다고 토스트ui 띄우기 코드 필요
-
-      navigate('/schedule');
+      toastTrigger('일정이 삭제되었습니다.');
+      navigate(PATH.SCHEDULE);
     } catch (error) {
-      console.error(error);
+      console.error('Failed to delete schedule:', error);
+      toastTrigger('일정 삭제에 실패했습니다.');
     }
   };
 
-  // 일정삭제 모달에서 취소 버튼 클릭
   const handleCancelDelete = () => {
     setIsModalOpen(false);
   };
@@ -56,8 +98,8 @@ const DailyScheduleDetail = () => {
       <div css={containerStyle}>
         <header css={headerStyle}>
           <div css={titleStyle}>
-            <div css={circleStyle(schedule)}></div>
-            <h1>{schedule.subject}</h1>
+            <div css={circleStyle(currentSchedule)}></div>
+            <h1>{currentSchedule.subject}</h1>
           </div>
           <IconTextButton Icon={HiOutlinePencil} onClick={() => {}}>
             수정
@@ -67,20 +109,18 @@ const DailyScheduleDetail = () => {
           <div>
             <span className='subtitle'>시작일</span>
             <p>
-              <span>{formatOnlyDate(schedule.startDate)}</span>
-              <span>{formatTime(schedule.startTime)}</span>
+              <span>{formatOnlyDate(currentSchedule.startDate)}</span>
+              <span>{formatTime(currentSchedule.startTime)}</span>
             </p>
           </div>
           <div>
             <span className='subtitle'>종료일</span>
             <p>
-              <span>{formatOnlyDate(schedule.endDate)}</span>
-              <span>{formatTime(schedule.endTime)}</span>
+              <span>{formatOnlyDate(currentSchedule.endDate)}</span>
+              <span>{formatTime(currentSchedule.endTime)}</span>
             </p>
           </div>
-          <textarea css={textareaStyle} value={text} readOnly>
-            {schedule.content}
-          </textarea>
+          <textarea css={textareaStyle} value={currentSchedule.content} readOnly></textarea>
           <Button styleType='text' customStyle={buttonStyle} onClick={handleDeleteClick}>
             일정 삭제하기
           </Button>
@@ -90,7 +130,7 @@ const DailyScheduleDetail = () => {
         <Modal
           isOpen={isModalOpen}
           onClose={handleCancelDelete}
-          onConfirm={() => handleConfirmDelete(schedule.userNo)}
+          onConfirm={handleConfirmDelete}
           title='일정을 삭제하시겠습니까?'
           confirmText='일정 삭제하기'
           cancelText='취소'

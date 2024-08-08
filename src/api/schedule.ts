@@ -1,4 +1,4 @@
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 
 import { db } from '@/api';
 import { getCollectionId } from '@/api/common';
@@ -20,6 +20,17 @@ export const addSchedule = async (
   };
 
   await addDoc(collection(db, FIRESTORE_COLLECTION.schedule), scheduleData);
+
+  return { status: 'succeeded', response: true };
+};
+
+export const editSchedule = async (
+  newData: ScheduleModel
+): Promise<ApiResponse<ScheduleResponseType>> => {
+  const scheduleRef = doc(db, FIRESTORE_COLLECTION.schedule, newData.docId as string);
+  await updateDoc(scheduleRef, {
+    ...newData,
+  });
 
   return { status: 'succeeded', response: true };
 };

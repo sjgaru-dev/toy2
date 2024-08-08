@@ -22,3 +22,13 @@ export interface UpcomingType {
     color: string;
   };
 }
+
+export interface CompanyType {
+  img?: string;
+  name: string;
+  date: string;
+  badge: {
+    text: string;
+    color: string;
+  };
+}

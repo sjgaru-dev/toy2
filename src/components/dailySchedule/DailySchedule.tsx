@@ -5,6 +5,7 @@ import { HiChevronRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
 import { schedulePickerColors } from '@/constants/colors';
+import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 import { ScheduleModel } from '@/types/schedule';
 import { formatDate, formatTimeRange, isDailySchedule } from '@/utils/dailySchedule';
@@ -32,7 +33,7 @@ const DailySchedule = ({ date, schedules }: DailyScheduleProps) => {
   }, [filterSchedules]);
 
   const handleClick = (schedule: ScheduleModel) => {
-    navigate(`/schedule/detail/${schedule.id}`, { state: { schedule } });
+    navigate(`${PATH.SCHEDULE}/${PATH.SCHEDULE_DETAIL.replace(':id', schedule.id.toString())}`);
   };
 
   return (
