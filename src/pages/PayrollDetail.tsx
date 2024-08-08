@@ -15,6 +15,7 @@ const PayrollDetail = () => {
   const { year, month } = useParams<{ year: string; month: string }>();
   const navigate = useNavigate();
   const payrollContainerRef = useRef<HTMLDivElement>(null);
+  const downloadButtonRef = useRef<HTMLDivElement>(null);
 
   const payrollData = {
     totalAmount: 4570000,
@@ -31,12 +32,18 @@ const PayrollDetail = () => {
 
   const handleDownload = async () => {
     const element = payrollContainerRef.current;
-    if (element) {
+    const downloadButton = downloadButtonRef.current;
+    if (element && downloadButton) {
+      downloadButton.style.display = 'none';
+
       const canvas = await html2canvas(element, {
         scrollY: -window.scrollY,
         windowWidth: document.documentElement.offsetWidth,
         windowHeight: document.documentElement.offsetHeight,
       });
+
+      downloadButton.style.display = 'block';
+
       const imgData = canvas.toDataURL('image/jpeg');
       const link = document.createElement('a');
       link.href = imgData;
@@ -64,7 +71,7 @@ const PayrollDetail = () => {
           <div css={totalAmountSectionStyle}>
             <span css={totalAmountStyle}>{payrollData.totalAmount.toLocaleString()}원</span>
             <Badge label='실수령액' color={theme.colors.paleOrange} />
-            <div css={downloadButtonStyle}>
+            <div css={downloadButtonStyle} ref={downloadButtonRef}>
               <IconTextButton Icon={HiDownload} backgroundButton={false} onClick={handleDownload}>
                 저장
               </IconTextButton>
