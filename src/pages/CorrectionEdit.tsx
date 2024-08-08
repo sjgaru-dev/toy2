@@ -191,9 +191,6 @@ const CorrectionEdit: React.FC = () => {
             <button css={primaryButtonStyle} onClick={handleEdit}>
               수정하기
             </button>
-            <button css={secondaryButtonStyle} onClick={handleGoBack}>
-              취소하기
-            </button>
           </div>
         </Fieldset>
       </div>
@@ -221,7 +218,7 @@ const formStyle = css`
 
 const fieldsetStyle = css`
   border: none;
-  padding-top: 32px;
+  padding-top: 12px;
 `;
 
 const titleContainerStyle = css`
@@ -232,7 +229,7 @@ const titleContainerStyle = css`
     font-size: ${theme.fontSizes.large};
     &:focus {
       outline: none;
-      border-color: ${theme.colors.primary};
+      border-color: ${theme.colors.darkGray};
     }
   }
 `;
@@ -281,7 +278,6 @@ const fileUploadStyle = css`
 `;
 
 const fileListStyle = css`
-  margin-top: 12px;
   padding: 0 12px;
 `;
 
@@ -320,6 +316,7 @@ const textareaStyle = css`
   border-radius: 4px;
   font-size: ${theme.fontSizes.large};
   color: ${theme.colors.darkestGray};
+  line-height: 160%;
   resize: none;
 
   &::placeholder {
@@ -328,20 +325,20 @@ const textareaStyle = css`
 
   &:focus {
     outline: none;
-    border-color: ${theme.colors.primary};
+    border-color: ${theme.colors.darkGray};
   }
 `;
 
 const buttonStyle = css`
-  margin-bottom: 36px;
+  margin-bottom: 80px;
 `;
 
 const buttonBaseStyle = css`
   width: 100%;
   padding: 16px;
   border-radius: 4px;
-  font-size: ${theme.fontSizes.normal};
-  font-weight: bold;
+  font-size: ${theme.fontSizes.large};
+  font-weight: 600;
   text-align: center;
   cursor: pointer;
 `;

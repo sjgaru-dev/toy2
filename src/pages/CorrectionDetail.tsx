@@ -75,7 +75,7 @@ const CorrectionDetail: React.FC = () => {
 
   const getFileName = (fileUrl: string) => {
     const decodedUrl = decodeURIComponent(fileUrl);
-    return decodedUrl.split('/').pop()?.split('?')[0] || '파일';
+    return decodedUrl.split('/').pop()?.split('?')[0] || '첨부파일 없음';
   };
 
   return (
@@ -102,32 +102,32 @@ const CorrectionDetail: React.FC = () => {
             {correction && <span css={dateStyle}>{correction.type}</span>}
           </div>
 
-          <div css={rowStyle}>
+          <div css={[rowStyle, fileContainerStyle]}>
             <span css={labelStyle}>첨부파일</span>
-          </div>
-          <div css={fileListStyle}>
-            {correction && Array.isArray(correction.attach) && correction.attach.length > 0 ? (
-              correction.attach.map((fileUrl, index) => (
-                <div key={index} css={fileItemStyle}>
-                  <span css={fileNameStyle} onClick={() => handleFileDownload(fileUrl)}>
-                    {getFileName(fileUrl)}
+            <div>
+              {correction && Array.isArray(correction.attach) && correction.attach.length > 0 ? (
+                correction.attach.map((fileUrl, index) => (
+                  <div key={index} css={fileItemStyle}>
+                    <span css={fileNameStyle} onClick={() => handleFileDownload(fileUrl)}>
+                      {getFileName(fileUrl)}
+                    </span>
+                  </div>
+                ))
+              ) : correction && correction.attach ? (
+                <div css={fileItemStyle}>
+                  <span
+                    css={fileNameStyle}
+                    onClick={() => handleFileDownload(correction.attach ?? '')}
+                  >
+                    {getFileName(correction.attach ?? '')}
                   </span>
                 </div>
-              ))
-            ) : correction && correction.attach ? (
-              <div css={fileItemStyle}>
-                <span
-                  css={fileNameStyle}
-                  onClick={() => handleFileDownload(correction.attach ?? '')}
-                >
-                  {getFileName(correction.attach ?? '')}
-                </span>
-              </div>
-            ) : (
-              <div css={fileItemStyle}>
-                <span css={fileNameStyle}>없음</span>
-              </div>
-            )}
+              ) : (
+                <div css={fileItemStyle}>
+                  <span css={fileNameStyle}>첨부파일 없음</span>
+                </div>
+              )}
+            </div>
           </div>
 
           <div css={reasonStyle}>
@@ -172,14 +172,14 @@ const formStyle = css`
 
 const fieldsetStyle = css`
   border: none;
-  padding-top: 32px;
+  padding-top: 12px;
 `;
 
 const titleContainerStyle = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 36px;
+  margin-bottom: 12px;
   padding: 0 12px;
 `;
 
@@ -192,7 +192,7 @@ const correctionStyle = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: ${theme.heights.xtall};
+  height: 56px;
   padding: 0 12px;
 `;
 
@@ -200,7 +200,7 @@ const rowStyle = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: ${theme.heights.xtall};
+  height: 56px;
   padding: 0 12px;
 `;
 
@@ -221,11 +221,12 @@ const reasonStyle = css`
 const textareaStyle = css`
   width: 100%;
   height: 300px;
-  padding: 16px;
+  padding: 12px;
   border: 1px solid ${theme.colors.lightGray};
   border-radius: 4px;
   font-size: ${theme.fontSizes.large};
   color: ${theme.colors.darkestGray};
+  line-height: 160%;
   resize: none;
 
   &::placeholder {
@@ -234,23 +235,24 @@ const textareaStyle = css`
 
   &:focus {
     outline: none;
-    border-color: ${theme.colors.primary};
+    border-color: ${theme.colors.darkGray};
   }
 `;
 
-const fileListStyle = css`
-  padding: 0 12px;
-  margin-bottom: 16px;
+const fileContainerStyle = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+  padding-bottom: 12px;
+  height: 100%;
 `;
 
 const fileItemStyle = css`
-  display: flex;
-  align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid ${theme.colors.lightGray};
+  margin-bottom: 4px;
 
   &:last-child {
-    border-bottom: none;
+    margin-bottom: 0;
   }
 `;
 
@@ -273,8 +275,8 @@ const buttonBaseStyle = css`
   width: 100%;
   padding: 16px;
   border-radius: 4px;
-  font-size: ${theme.fontSizes.normal};
-  font-weight: bold;
+  font-size: ${theme.fontSizes.large};
+  font-weight: 600;
   text-align: center;
   cursor: pointer;
 `;
