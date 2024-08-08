@@ -1,5 +1,7 @@
 import { UserCredential } from 'firebase/auth';
 
+import { SalaryType } from '@/api/payroll';
+
 export type status = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 // AuthState InitState로 대체 필요
@@ -21,6 +23,7 @@ export interface ApiResponse<T> {
 }
 
 export type AuthResponseType = UserCredential;
+export type SalaryResponseType = SalaryType[];
 export type PayrollResponseType = boolean;
 export type ScheduleResponseType = boolean;
 

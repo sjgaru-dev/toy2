@@ -1,12 +1,13 @@
-import { addDoc, collection, getDocs, updateDoc, query, orderBy } from 'firebase/firestore';
+import { addDoc, collection, getDocs, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 import { db, storage } from '@/api';
 import { getCollectionId } from '@/api/common';
 import { FIRESTORE_COLLECTION, STORAGE_FOLDER } from '@/constants/api';
-import { ApiResponse, PayrollResponseType } from '@/types/api';
-import { AttachProps, CorrectionProps } from '@/types/payroll';
+import { ApiResponse, PayrollResponseType, SalaryResponseType } from '@/types/api';
+import { AttachProps, CorrectionProps, SalaryType } from '@/types/payroll';
 import { getUID } from '@/utils/auth';
+import { calcTax } from '@/utils/salary';
 
 export const addCorrection = async (
   props: CorrectionProps
@@ -56,6 +57,27 @@ export const addAttach = async ({ file, docId, data }: AttachProps): Promise<str
   const url = await getDownloadURL(result.ref);
 
   return url;
+};
+
+export const getSalarys = async (): Promise<ApiResponse<SalaryResponseType>> => {
+  const fetchResult = await getDocs(
+    query(
+      collection(db, FIRESTORE_COLLECTION.salary),
+      where('userNo', '==', await getUID()),
+      orderBy('id', 'desc')
+    )
+  );
+  const salaryList: SalaryType[] = fetchResult.docs.map((doc) => ({ ...doc.data() }) as SalaryType);
+
+  const addTaxSalaryList: SalaryType[] = salaryList.map(
+    (item) =>
+      ({
+        ...item,
+        receiveData: calcTax(item.paycheck) || '',
+      }) as SalaryType
+  );
+
+  return { status: 'succeeded', response: addTaxSalaryList };
 };
 
 export const fetchCorrectionHistory = async () => {

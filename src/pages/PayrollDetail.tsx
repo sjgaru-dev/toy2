@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 import html2canvas from 'html2canvas';
@@ -9,7 +9,27 @@ import Badge from '@/components/common/Badge';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
+import useToast from '@/hooks/useToast';
 import theme from '@/styles/theme';
+import { PayrollData } from '@/types/payroll';
+
+const INIT_PAYROLL_DATA: PayrollData = {
+  receive: 0,
+  salary: {
+    total: 0,
+    base: 0,
+    overtime: 0,
+  },
+  tax: {
+    nationalPension: 0,
+    healthInsurance: 0,
+    longTermCare: 0,
+    employmentInsurance: 0,
+    incomeTax: 0,
+    localIncomeTax: 0,
+    total: 0,
+  },
+};
 
 const PayrollDetail = () => {
   const { year, month } = useParams<{ year: string; month: string }>();
@@ -17,18 +37,19 @@ const PayrollDetail = () => {
   const payrollContainerRef = useRef<HTMLDivElement>(null);
   const downloadButtonRef = useRef<HTMLDivElement>(null);
 
-  const payrollData = {
-    totalAmount: 4570000,
-    salary: 4000000,
-    overtime: 570000,
-    deductions: 582680,
-    nationalPension: 178490,
-    healthInsurance: 140610,
-    longTermCare: 18210,
-    employmentInsurance: 35690,
-    incomeTax: 190620,
-    localIncomeTax: 19060,
-  };
+  const [payrollData, setPayrollData] = useState<PayrollData>(INIT_PAYROLL_DATA);
+
+  const { toastTrigger } = useToast();
+
+  useEffect(() => {
+    const receiveData = localStorage.getItem('currentDeatilSalary');
+
+    if (receiveData) setPayrollData(JSON.parse(receiveData));
+    else {
+      toastTrigger('데이터를 불러오는데 실패했습니다.');
+      navigate(PATH.SALARY, { state: { activeTab: 0 } });
+    }
+  }, []);
 
   const handleDownload = async () => {
     const element = payrollContainerRef.current;
@@ -69,7 +90,7 @@ const PayrollDetail = () => {
             </span>
           </div>
           <div css={totalAmountSectionStyle}>
-            <span css={totalAmountStyle}>{payrollData.totalAmount.toLocaleString()}원</span>
+            <span css={totalAmountStyle}>{payrollData.receive.toLocaleString()}원</span>
             <Badge label='실수령액' color={theme.colors.paleOrange} />
             <div css={downloadButtonStyle} ref={downloadButtonRef}>
               <IconTextButton Icon={HiDownload} backgroundButton={false} onClick={handleDownload}>
@@ -82,15 +103,15 @@ const PayrollDetail = () => {
           <section css={sectionStyle}>
             <h2 css={sectionTitleStyle}>
               지급 총액{' '}
-              <span css={totalAmountColorStyle}>{payrollData.totalAmount.toLocaleString()}원</span>
+              <span css={totalAmountColorStyle}>{payrollData.salary.total.toLocaleString()}원</span>
             </h2>
             <div css={itemStyle}>
               <span>기본급</span>
-              <span>{payrollData.salary.toLocaleString()}원</span>
+              <span>{payrollData.salary.base.toLocaleString()}원</span>
             </div>
             <div css={itemStyle}>
               <span>초과근무수당</span>
-              <span>{payrollData.overtime.toLocaleString()}원</span>
+              <span>{payrollData.salary.overtime.toLocaleString()}원</span>
             </div>
           </section>
         </div>
@@ -99,32 +120,32 @@ const PayrollDetail = () => {
             <h2 css={sectionTitleStyle}>
               공제 총액
               <span css={deductionsTotalColorStyle}>
-                {payrollData.deductions.toLocaleString()}원
+                {payrollData.tax.total.toLocaleString()}원
               </span>
             </h2>
             <div css={itemStyle}>
               <span>국민연금</span>
-              <span>{payrollData.nationalPension.toLocaleString()}원</span>
+              <span>{payrollData.tax.nationalPension.toLocaleString()}원</span>
             </div>
             <div css={itemStyle}>
               <span>건강보험</span>
-              <span>{payrollData.healthInsurance.toLocaleString()}원</span>
+              <span>{payrollData.tax.healthInsurance.toLocaleString()}원</span>
             </div>
             <div css={itemStyle}>
               <span>장기요양</span>
-              <span>{payrollData.longTermCare.toLocaleString()}원</span>
+              <span>{payrollData.tax.longTermCare.toLocaleString()}원</span>
             </div>
             <div css={itemStyle}>
               <span>고용보험</span>
-              <span>{payrollData.employmentInsurance.toLocaleString()}원</span>
+              <span>{payrollData.tax.employmentInsurance.toLocaleString()}원</span>
             </div>
             <div css={itemStyle}>
               <span>소득세</span>
-              <span>{payrollData.incomeTax.toLocaleString()}원</span>
+              <span>{payrollData.tax.incomeTax.toLocaleString()}원</span>
             </div>
             <div css={itemStyle}>
               <span>지방소득세</span>
-              <span>{payrollData.localIncomeTax.toLocaleString()}원</span>
+              <span>{payrollData.tax.localIncomeTax.toLocaleString()}원</span>
             </div>
           </section>
         </div>

@@ -1,32 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { HiChevronRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
+import { getSalarys } from '@/api/payroll';
 import theme from '@/styles/theme';
+import { PayrollData, SalaryType } from '@/types/payroll';
 
 interface PayrollItem {
-  year: number;
-  month: number;
+  year: string;
+  month: string;
   amount: number;
   date: string;
+  receiveData: PayrollData;
 }
 
 const PayrollList: React.FC = () => {
   const navigate = useNavigate();
-  const payrollItems: PayrollItem[] = [
-    { year: 2024, month: 7, amount: 4570000, date: '8/1 지급' },
-    { year: 2024, month: 6, amount: 4570000, date: '7/1 지급' },
-    { year: 2024, month: 5, amount: 4570000, date: '6/1 지급' },
-    { year: 2024, month: 4, amount: 4570000, date: '5/1 지급' },
-    { year: 2024, month: 3, amount: 4570000, date: '4/1 지급' },
-    { year: 2024, month: 2, amount: 4570000, date: '3/1 지급' },
-    { year: 2024, month: 1, amount: 4570000, date: '2/1 지급' },
-    { year: 2023, month: 12, amount: 4570000, date: '1/1 지급' },
-  ];
 
-  const handleItemClick = (year: number, month: number) => {
+  const [payrollItems, setPayrollItems] = useState<PayrollItem[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const salaryList = await getSalarys();
+      setPayrollItems([...salaryToPayroll(salaryList.response)]);
+    })();
+  }, []);
+
+  const salaryToPayroll = (salaryList: SalaryType[]): PayrollItem[] =>
+    salaryList.map((item) => {
+      const paydate = item.payday.split(' ')[0];
+      return {
+        year: paydate.substring(0, 4),
+        month: paydate.substring(5, 7),
+        amount: item.receiveData?.receive || 0,
+        date: paydate.substring(5, 10) + ' 지급',
+        receiveData: item.receiveData,
+      } as PayrollItem;
+    });
+
+  const handleItemClick = (year: string, month: string, receiveData: PayrollData) => {
+    localStorage.setItem('currentDeatilSalary', JSON.stringify(receiveData));
     navigate(`/salary/detail/${year}/${month}`);
   };
 
@@ -37,7 +52,10 @@ const PayrollList: React.FC = () => {
           {index === 0 || payrollItems[index - 1].year !== item.year ? (
             <h2 css={yearHeaderStyle}>{item.year}년</h2>
           ) : null}
-          <div css={itemStyle} onClick={() => handleItemClick(item.year, item.month)}>
+          <div
+            css={itemStyle}
+            onClick={() => handleItemClick(item.year, item.month, item.receiveData)}
+          >
             <div css={leftContentStyle}>
               <span css={monthStyle}>{item.month}월 급여 명세서</span>
               <span css={dateStyle}>{item.date}</span>
