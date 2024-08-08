@@ -53,7 +53,9 @@ const CorrectionDetail: React.FC = () => {
   };
 
   const handleFileDownload = (fileUrl: string) => {
-    window.open(fileUrl, '_blank');
+    console.log(fileUrl);
+    console.log(correction);
+    if (fileUrl.length > 0) window.open(fileUrl, '_blank');
   };
 
   const handleDelete = () => {

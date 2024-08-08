@@ -101,7 +101,12 @@ const DailyScheduleDetail: React.FC = () => {
             <div css={circleStyle(currentSchedule)}></div>
             <h1>{currentSchedule.subject}</h1>
           </div>
-          <IconTextButton Icon={HiOutlinePencil} onClick={() => {}}>
+          <IconTextButton
+            Icon={HiOutlinePencil}
+            onClick={() => {
+              navigate(`${PATH.SCHEDULE}/edit/${currentSchedule.id}`);
+            }}
+          >
             수정
           </IconTextButton>
         </header>

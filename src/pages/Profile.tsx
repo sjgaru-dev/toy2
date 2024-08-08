@@ -14,6 +14,7 @@ import Modal from '@/components/common/Modal';
 import { PATH } from '@/constants/path';
 import { useAppDispatch } from '@/store/hooks';
 import { fetchSignOut } from '@/store/reducer/authSlice';
+import { setFetchedFalse } from '@/store/reducer/scheduleSlice';
 import theme from '@/styles/theme';
 import type { UserType } from '@/types/type';
 import { getUID } from '@/utils/auth';
@@ -46,6 +47,7 @@ const ProfilePage = () => {
   const handleModalLogout = async () => {
     await dispatch(fetchSignOut()).then((state) => {
       if (state.meta.requestStatus === 'fulfilled') {
+        dispatch(setFetchedFalse());
         navigate(PATH.SIGNIN);
       }
     });
