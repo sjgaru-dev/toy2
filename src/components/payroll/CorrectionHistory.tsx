@@ -95,7 +95,7 @@ const getStatusLabel = (status: string) => {
     case '반려':
       return '반려';
     default:
-      return status;
+      return '';
   }
 };
 
