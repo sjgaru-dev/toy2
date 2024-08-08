@@ -187,7 +187,7 @@ const itemStyle = css`
   justify-content: space-between;
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.darkGray};
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
 
   &:last-child {
     margin-bottom: 0;

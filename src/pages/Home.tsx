@@ -13,7 +13,7 @@ const HomePage = () => {
   const { schedule } = useFetchSchedule();
 
   return (
-    <>
+    <div css={homeContainerStyle}>
       <header css={headerStyle}>
         <h1 css={titleStyle} className='wrapper'>
           <img src={logoIcon} alt='공룡 로고' />
@@ -26,14 +26,18 @@ const HomePage = () => {
         <DailySchedule date={new Date().toISOString()} schedules={schedule} />
       </div>
       <div>
-        <UpcomingSchedules upcomingData={mockData.upcoming} />
-      </div>
-      <div>
         <CompanySchedules companyData={mockData.company} />
       </div>
-    </>
+      <div>
+        <UpcomingSchedules upcomingData={mockData.upcoming} />
+      </div>
+    </div>
   );
 };
+
+const homeContainerStyle = css`
+  padding-bottom: 80px;
+`;
 
 const headerStyle = css`
   height: 60px;

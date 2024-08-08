@@ -4,7 +4,8 @@ import { css } from '@emotion/react';
 import firebase from 'firebase/compat/app';
 import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { MdDelete, MdOutlineCameraAlt } from 'react-icons/md';
+import { HiOutlinePhotograph } from 'react-icons/hi';
+import { HiOutlineTrash } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 import { db, storage } from '@/api';
@@ -130,13 +131,13 @@ const ProfilePage = () => {
       )}
       <div css={wrapperStyle}>
         <div css={imgStyle}>
-          <img src={userData?.img} css={imgStyle} />
-          <div css={caremaIconStyle}>
-            <MdOutlineCameraAlt size={24} onClick={handleChangeImg} />
+          <img src={userData?.img || userDefaultSvg} css={imgStyle} />
+          <div css={cameraIconStyle}>
+            <HiOutlinePhotograph size={20} onClick={handleChangeImg} />
           </div>
         </div>
         <div css={editIconStyle}>
-          <IconTextButton Icon={MdDelete} onClick={handleDeleteImg}>
+          <IconTextButton Icon={HiOutlineTrash} onClick={handleDeleteImg}>
             이미지 삭제
           </IconTextButton>
         </div>
@@ -209,7 +210,7 @@ const ProfilePage = () => {
         />
       </div>
       <div css={signOutButtonStyle}>
-        <div css={editButtonStyle}>
+        <div>
           <Button onClick={handleUpdateClick}>수정하기</Button>
         </div>
       </div>
@@ -218,7 +219,7 @@ const ProfilePage = () => {
 };
 
 const wrapperStyle = css`
-  padding: 3rem;
+  padding-bottom: 3rem;
   text-align: center;
   justify-content: center;
   background-color: ${theme.colors.white};
@@ -247,15 +248,20 @@ const imgStyle = css`
   object-fit: cover;
 `;
 
-const caremaIconStyle = css`
+const cameraIconStyle = css`
   position: absolute;
   bottom: 10px;
   right: -10px;
-  background-color: ${theme.colors.toastGray};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: ${theme.colors.darkestGray};
   color: white;
   border-radius: 50%;
-  border: 2px solid white;
-  padding: 8px 8px 4px 8px;
+  border: 3px solid white;
+  cursor: pointer;
 `;
 
 const editIconStyle = css`
@@ -271,12 +277,9 @@ const formStyle = css`
   background-color: ${theme.colors.white};
 `;
 
-const editButtonStyle = css`
-  margin: 1rem;
-`;
-
 const signOutButtonStyle = css`
-  padding-bottom: 80px;
+  padding: 12px 16px 80px;
+  background-color: ${theme.colors.white};
 `;
 
 export default ProfilePage;

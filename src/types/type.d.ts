@@ -24,7 +24,7 @@ export interface UpcomingType {
 }
 
 export interface CompanyType {
-  img?: string;
+  Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   name: string;
   date: string;
   badge: {

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
+import { HiCalendar } from 'react-icons/hi';
 
-import LogoDefaultImage from '@/assets/images/logo_icon.svg';
 import Badge from '@/components/common/Badge';
 import theme from '@/styles/theme';
 import { CompanyType } from '@/types/type';
@@ -20,18 +20,22 @@ const CompanySchedules = ({ companyData }: companyProps) => (
     <ul css={companyStyle}>
       {companyData && companyData.length > 0 ? (
         <>
-          {companyData.map((item, index) => (
-            <li key={index} css={companyItemStyle}>
-              <div css={companyDataStyle}>
-                <div css={imgDivStyle}>
-                  <img src={item.img ? item.img : LogoDefaultImage} css={imgStyle} />
+          {companyData.map((item, index) => {
+            const Icon = item.Icon ? item.Icon : HiCalendar;
+
+            return (
+              <li key={index} css={companyItemStyle}>
+                <div css={companyDataStyle}>
+                  <div css={IconContainerStyle}>
+                    <Icon />
+                  </div>
+                  <div css={[textWrapStyle, nameStyle]}>{item.name}</div>
+                  <div css={[textWrapStyle, eventStyle]}>{item.date}</div>
                 </div>
-                <div css={[textWrapStyle, nameStyle]}>{item.name}</div>
-                <div css={[textWrapStyle, eventStyle]}>{item.date}</div>
-              </div>
-              <Badge label={item.badge.text} color={item.badge.color} />
-            </li>
-          ))}
+                <Badge label={item.badge.text} color={item.badge.color} />
+              </li>
+            );
+          })}
         </>
       ) : (
         <li>{COMPONENT_INFO.noEvent}</li>
@@ -74,17 +78,17 @@ const companyDataStyle = css`
   font-weight: 500;
 `;
 
-const imgDivStyle = css`
+const IconContainerStyle = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 36px;
   height: 36px;
-  border: 1px solid ${theme.colors.borderLightGray};
   border-radius: 4px;
+  color: ${theme.colors.darkestGray};
+  font-size: ${theme.fontSizes.xxlarge};
+  background-color: ${theme.colors.bgGray};
   overflow: hidden;
-`;
-
-const imgStyle = css`
-  width: 100%;
-  height: 100%;
 `;
 
 const textWrapStyle = css`
