@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
 import { Fieldset } from '@headlessui/react';
-import { HiOutlineDocumentArrowUp } from 'react-icons/hi2';
+import { HiOutlineDocumentArrowUp, HiOutlineTrash } from 'react-icons/hi2';
 import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
@@ -29,14 +29,10 @@ const CorrectionForm: React.FC = () => {
 
   const categoryOptions = ['연장 근무', '휴일 근무', '무급 휴가', '기타'];
 
-  const [isActive, setActive] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    setActive(false);
-  }, []);
-
-  useEffect(() => {
-    setActive(!title.trim() || !reason.trim());
+    setIsFormValid(title.trim() !== '' && reason.trim() !== '');
   }, [title, reason]);
 
   const dispatch = useAppDispatch();
@@ -45,13 +41,14 @@ const CorrectionForm: React.FC = () => {
   const { toastTrigger } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
-    if (e) e.preventDefault();
-    if (!checkAuth() || !getUID()) return;
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!isFormValid || !checkAuth() || !getUID()) return;
+
     const props: CorrectionProps = {
       id: 0,
       salaryId: 0,
-      userNo: '',
+      userNo: (await getUID()) || '',
       requestDate: convertDateWithFormat(new Date()),
       type: category,
       status: '대기',
@@ -60,12 +57,15 @@ const CorrectionForm: React.FC = () => {
       attachFile: files,
     };
 
-    dispatch(fetchAddCorrection(props)).then((status) => {
-      if (status.meta.requestStatus === 'fulfilled') {
+    try {
+      const result = await dispatch(fetchAddCorrection(props)).unwrap();
+      if (result) {
         toastTrigger('정정신청이 등록되었습니다');
-        navigate(PATH.SALARY_CORRECTION_HISTORY);
+        navigate(`${PATH.SALARY}`, { state: { activeTab: 1 } });
       }
-    });
+    } catch (error) {
+      toastTrigger('정정신청 등록에 실패했습니다');
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,12 +79,20 @@ const CorrectionForm: React.FC = () => {
     fileInputRef.current?.click();
   };
 
+  const handleFileDelete = (index: number) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
   return (
     <div css={containerStyle}>
       <form onSubmit={handleSubmit} css={formStyle} className='wrapper'>
         <Fieldset css={fieldsetStyle}>
           <div css={titleStyle}>
-            <Input value={title} onChange={setTitle} placeholder='제목을 입력해주세요.' />
+            <Input
+              value={title}
+              onChange={(value) => setTitle(value)}
+              placeholder='제목을 입력해주세요.'
+            />
           </div>
 
           <div css={rowStyle}>
@@ -102,8 +110,6 @@ const CorrectionForm: React.FC = () => {
           <div css={rowStyle}>
             <span css={labelStyle}>첨부파일</span>
             <div css={fileUploadStyle}>
-              {files.length === 1 && <span css={fileNameStyle}>{files[0].name}</span>}
-              {files.length > 1 && <span css={fileNameStyle}>파일 {files.length}개</span>}
               <input
                 type='file'
                 ref={fileInputRef}
@@ -123,16 +129,35 @@ const CorrectionForm: React.FC = () => {
             </div>
           </div>
 
+          {files.length > 0 && (
+            <div css={fileListStyle}>
+              {files.map((file, index) => (
+                <div key={index} css={fileItemStyle}>
+                  <span>{file.name}</span>
+                  <IconTextButton
+                    Icon={HiOutlineTrash}
+                    onClick={() => handleFileDelete(index)}
+                    iconPosition='left'
+                    backgroundButton={false}
+                    type='button'
+                  >
+                    삭제
+                  </IconTextButton>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div css={reasonStyle}>
             <textarea
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setReason(e.target.value)}
               placeholder='정정 사유를 입력해주세요.'
               css={textareaStyle}
             />
           </div>
           <div css={buttonStyle}>
-            <Button onClick={handleSubmit} styleType={isActive ? 'disabled' : 'primary'}>
+            <Button type='submit' styleType={isFormValid ? 'primary' : 'disabled'}>
               {status === 'loading' ? <Spinner /> : '정정 신청하기'}
             </Button>
           </div>
@@ -144,6 +169,7 @@ const CorrectionForm: React.FC = () => {
 
 const containerStyle = css`
   background-color: ${theme.colors.white};
+  padding-bottom: 80px;
 `;
 
 const formStyle = css`
@@ -161,15 +187,21 @@ const titleStyle = css`
     height: ${theme.heights.medium};
     padding: 0 12px;
     font-size: ${theme.fontSizes.large};
+    &:focus {
+      outline: none;
+      border-color: ${theme.colors.primary};
+    }
   }
 `;
 
 const correctionStyle = css`
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
   justify-content: space-between;
+  height: ${theme.heights.xtall};
+  padding: 0 12px;
 `;
+
 const rowStyle = css`
   display: flex;
   align-items: center;
@@ -208,7 +240,7 @@ const textareaStyle = css`
 
   &:focus {
     outline: none;
-    border-color: ${theme.colors.darkGray};
+    border-color: ${theme.colors.primary};
   }
 `;
 
@@ -233,9 +265,26 @@ const fileUploadStyle = css`
   gap: 12px;
 `;
 
-const fileNameStyle = css`
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.darkGray};
+const fileListStyle = css`
+  margin-top: 12px;
+  padding: 0 12px;
+`;
+
+const fileItemStyle = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid ${theme.colors.lightGray};
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  span {
+    font-size: ${theme.fontSizes.normal};
+    color: ${theme.colors.darkGray};
+  }
 `;
 
 export default CorrectionForm;
