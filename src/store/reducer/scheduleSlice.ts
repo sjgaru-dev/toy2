@@ -27,7 +27,11 @@ const initialState: ScheduleState = {
 export const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
-  reducers: {},
+  reducers: {
+    setFetchedFalse: (state) => {
+      state.isFetched = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchSchedule.pending, (state) => {
@@ -47,6 +51,7 @@ export const scheduleSlice = createSlice({
       })
       .addCase(deleteScheduleById.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        state.isFetched = false;
         state.schedule = state.schedule = state.schedule.filter(
           (item) => item.id !== action.payload
         );
@@ -195,5 +200,7 @@ export const fetchEditSchedule = createAsyncThunk(
     }
   }
 );
+
+export const { setFetchedFalse } = scheduleSlice.actions;
 
 export default scheduleSlice.reducer;
