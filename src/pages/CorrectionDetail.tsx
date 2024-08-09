@@ -3,10 +3,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { css } from '@emotion/react';
 import { Fieldset } from '@headlessui/react';
 import { doc, getDoc, deleteDoc } from 'firebase/firestore';
+import { ref, getDownloadURL } from 'firebase/storage';
 import { HiPencil } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { db } from '@/api';
+import { db, storage } from '@/api';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Modal from '@/components/common/Modal';
 import Header from '@/components/layout/Header';
@@ -52,10 +53,16 @@ const CorrectionDetail: React.FC = () => {
     }
   };
 
-  const handleFileDownload = (fileUrl: string) => {
-    console.log(fileUrl);
-    console.log(correction);
-    if (fileUrl.length > 0) window.open(fileUrl, '_blank');
+  const handleFileDownload = async (fileUrl: string) => {
+    if (!fileUrl) {
+      return;
+    }
+    try {
+      const url = await getDownloadURL(ref(storage, fileUrl));
+      window.open(url, '_blank');
+    } catch (error) {
+      toastTrigger('파일 다운로드에 실패했습니다.');
+    }
   };
 
   const handleDelete = () => {
@@ -77,7 +84,7 @@ const CorrectionDetail: React.FC = () => {
 
   const getFileName = (fileUrl: string) => {
     const decodedUrl = decodeURIComponent(fileUrl);
-    return decodedUrl.split('/').pop()?.split('?')[0] || '첨부파일 없음';
+    return decodedUrl.split('/').pop()?.split('?')[0] || '';
   };
 
   return (

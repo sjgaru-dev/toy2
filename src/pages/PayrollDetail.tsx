@@ -5,13 +5,13 @@ import html2canvas from 'html2canvas';
 import { HiDownload } from 'react-icons/hi';
 import { useParams, useNavigate } from 'react-router-dom';
 
+import { getSalarys } from '@/api/payroll';
 import Badge from '@/components/common/Badge';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Header from '@/components/layout/Header';
 import { PATH } from '@/constants/path';
-import useToast from '@/hooks/useToast';
 import theme from '@/styles/theme';
-import { PayrollData } from '@/types/payroll';
+import { PayrollData, SalaryType } from '@/types/payroll';
 
 const INIT_PAYROLL_DATA: PayrollData = {
   receive: 0,
@@ -39,15 +39,24 @@ const PayrollDetail = () => {
 
   const [payrollData, setPayrollData] = useState<PayrollData>(INIT_PAYROLL_DATA);
 
-  const { toastTrigger } = useToast();
-
   useEffect(() => {
-    const receiveData = localStorage.getItem('currentDeatilSalary');
+    let receiveData = localStorage.getItem('currentDeatilSalary');
 
     if (receiveData) setPayrollData(JSON.parse(receiveData));
     else {
-      toastTrigger('데이터를 불러오는데 실패했습니다.');
-      navigate(PATH.SALARY, { state: { activeTab: 0 } });
+      (async () => {
+        const { response } = await getSalarys();
+        const currentSalary: SalaryType[] = response.filter((item) => {
+          const paydate: string = item.payday.substring(0, 7);
+          if (paydate === `${year}-${month}`) return item as SalaryType;
+        });
+
+        if (currentSalary.length > 0) {
+          receiveData = JSON.stringify(currentSalary[0].receiveData);
+          localStorage.setItem('currentDeatilSalary', receiveData);
+          setPayrollData(JSON.parse(receiveData));
+        }
+      })();
     }
   }, []);
 
