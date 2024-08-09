@@ -19,9 +19,13 @@ const PayrollNotice: React.FC = () => {
     const currentMonth = now.getMonth() + 1;
 
     if (currentMonth === 1) {
-      return { year: currentYear - 1, month: 12 };
+      return { year: currentYear - 1, month: '12' };
     } else {
-      return { year: currentYear, month: currentMonth - 1 };
+      const prevMonth = currentMonth - 1;
+      return {
+        year: currentYear,
+        month: prevMonth.toString().padStart(2, '0'),
+      };
     }
   }, []);
 
@@ -52,7 +56,7 @@ const PayrollNotice: React.FC = () => {
   const handleButtonClick = () => {
     localStorage.setItem('payrollNoticeChecked', 'true');
     navigate(
-      `${PATH.SALARY}/${PATH.SALARY_DETAIL.replace(':year', year.toString()).replace(':month', month.toString())}`
+      `${PATH.SALARY}/${PATH.SALARY_DETAIL.replace(':year', year.toString()).replace(':month', month)}`
     );
   };
 

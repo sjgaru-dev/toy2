@@ -3,10 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { Fieldset, Label } from '@headlessui/react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { HiOutlineDocumentArrowUp, HiOutlineTrash } from 'react-icons/hi2';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { db } from '@/api';
+import { db, storage } from '@/api';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
@@ -74,9 +75,18 @@ const CorrectionEdit: React.FC = () => {
   const handleSave = async () => {
     if (!correction || !id) return;
     try {
+      const uploadPromises = files.map(async (file) => {
+        const storageRef = ref(storage, `correction/${id}/${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        return getDownloadURL(snapshot.ref);
+      });
+      const newFileUrls = await Promise.all(uploadPromises);
+
+      const updatedAttach = [...existingFiles, ...newFileUrls];
+
       await updateDoc(doc(db, 'SalaryRequest', id), {
         ...correction,
-        attach: [...existingFiles, ...files.map((file) => file.name)],
+        attach: updatedAttach,
       });
       toastTrigger('정정 신청이 수정되었습니다');
       navigate(`${PATH.SALARY}/${PATH.SALARY_CORRECTION_DETAIL.replace(':id', id)}`);
@@ -92,6 +102,11 @@ const CorrectionEdit: React.FC = () => {
 
   const confirmEdit = () => {
     handleSave();
+  };
+
+  const getFileName = (fileUrl: string) => {
+    const decodedUrl = decodeURIComponent(fileUrl);
+    return decodedUrl.split('/').pop()?.split('?')[0] || '';
   };
 
   return (
@@ -146,22 +161,19 @@ const CorrectionEdit: React.FC = () => {
 
           {(existingFiles.length > 0 || files.length > 0) && (
             <div css={fileListStyle}>
-              {existingFiles.map((file, index) => {
-                const fileName = decodeURIComponent(file).split('/').pop()?.split('?')[0];
-                return (
-                  <div key={`existing-${index}`} css={fileItemStyle}>
-                    <span css={fileNameStyle}>{fileName}</span>
-                    <IconTextButton
-                      Icon={HiOutlineTrash}
-                      onClick={() => handleExistingFileDelete(index)}
-                      iconPosition='left'
-                      backgroundButton={false}
-                    >
-                      삭제
-                    </IconTextButton>
-                  </div>
-                );
-              })}
+              {existingFiles.map((file, index) => (
+                <div key={`existing-${index}`} css={fileItemStyle}>
+                  <span css={fileNameStyle}>{getFileName(file)}</span>
+                  <IconTextButton
+                    Icon={HiOutlineTrash}
+                    onClick={() => handleExistingFileDelete(index)}
+                    iconPosition='left'
+                    backgroundButton={false}
+                  >
+                    삭제
+                  </IconTextButton>
+                </div>
+              ))}
               {files.map((file, index) => (
                 <div key={`new-${index}`} css={fileItemStyle}>
                   <span css={fileNameStyle}>{file.name}</span>
@@ -348,12 +360,6 @@ const primaryButtonStyle = css`
   background-color: ${theme.colors.primary};
   color: ${theme.colors.white};
   margin-bottom: 16px;
-`;
-
-const secondaryButtonStyle = css`
-  ${buttonBaseStyle}
-  background-color: transparent;
-  color: ${theme.colors.darkGray};
 `;
 
 export default CorrectionEdit;
