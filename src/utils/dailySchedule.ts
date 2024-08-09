@@ -47,13 +47,18 @@ const getTimeRangeString = (dateType: DateType, startTime: string, endTime: stri
     case 'end':
       return `오전 00:00 - ${formatTime(endTime)}`;
     case 'between':
-      return '하루종일';
+      return '하루 종일';
   }
 };
 
 // 메인 함수: ScheduleItem에 하루종일 또는 오후/오전시간 알려주는 함수
 const formatTimeRange = (date: string, schedule: ScheduleModel) => {
-  const dateType = getDateType(date, schedule.startDate, schedule.endDate);
+  let dateType = getDateType(date, schedule.startDate, schedule.endDate);
+
+  if (schedule.startTime === '00:00' && schedule.endTime === '23:59') {
+    dateType = 'between';
+  }
+
   return getTimeRangeString(dateType, schedule.startTime, schedule.endTime);
 };
 
