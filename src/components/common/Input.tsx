@@ -49,7 +49,7 @@ const Input = ({
 
 const wrapperStyle = css`
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   width: 100%;
 `;
 
@@ -84,14 +84,14 @@ const inputStyle = css`
 
   &:focus {
     outline: none;
-    border-color: ${theme.colors.primary};
+    border-color: ${theme.colors.darkGray};
   }
 `;
 
 const errorStyle = css`
   display: block;
-  margin-top: 0.5rem;
-  font-size: ${theme.fontSizes.normal};
+  margin-top: 4px;
+  font-size: ${theme.fontSizes.small};
   color: ${theme.colors.alertRed};
 `;
 

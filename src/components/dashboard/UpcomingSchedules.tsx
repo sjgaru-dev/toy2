@@ -11,7 +11,7 @@ const COMPONENT_INFO = {
 };
 
 const UpcomingSchedules = ({ upcomingData }: UpcomingProps) => (
-  <section className='wrapper'>
+  <section css={sectionStyle}>
     <h2 css={titleStyle}>{COMPONENT_INFO.title}</h2>
     <ul css={upcomingStyle}>
       {upcomingData && upcomingData.length > 0 ? (
@@ -36,10 +36,17 @@ const UpcomingSchedules = ({ upcomingData }: UpcomingProps) => (
   </section>
 );
 
+const sectionStyle = css`
+  margin: 16px;
+  background-color: ${theme.colors.white};
+  border-radius: 0.5rem;
+`;
+
 const titleStyle = css`
-  margin: 2rem 0 0.75rem;
+  padding: 24px 16px 0;
   font-size: ${theme.fontSizes.large};
-  font-weight: bold;
+  font-weight: 600;
+  color: ${theme.colors.darkestGray};
 `;
 
 const upcomingStyle = css`
@@ -47,9 +54,7 @@ const upcomingStyle = css`
   flex-direction: column;
   gap: 1rem;
   padding: 20px;
-  border-radius: 0.5rem;
   font-size: ${theme.fontSizes.normal};
-  background-color: ${theme.colors.white};
 `;
 
 const upcomingItemStyle = css`

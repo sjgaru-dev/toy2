@@ -1,208 +1,162 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-import { MdDelete, MdEdit, MdOutlineCameraAlt } from 'react-icons/md';
+import firebase from 'firebase/compat/app';
+import { HiOutlinePencil } from 'react-icons/hi2';
+import { useNavigate } from 'react-router-dom';
 
+import { getUserData } from '@/api/user';
+import userDefaultSvg from '@/assets/images/user_default.svg';
 import Button from '@/components/common/buttons/Button';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Input from '@/components/common/Input';
 import Modal from '@/components/common/Modal';
-import Header from '@/components/layout/Header';
+import { PATH } from '@/constants/path';
+import { useAppDispatch } from '@/store/hooks';
+import { fetchSignOut } from '@/store/reducer/authSlice';
+import { setFetchedFalse } from '@/store/reducer/scheduleSlice';
 import theme from '@/styles/theme';
+import type { UserType } from '@/types/type';
+import { getUID } from '@/utils/auth';
 
-export const user = {
-  name: '홍길동',
-  nickname: 'gildong',
-  email: 'abd@abc.com',
-  password: '1234asdf',
-  phone: '010-1234-5678',
-  birth: '1990-01-01',
-  part: '개발팀',
-  position: '개발자',
-  joinDate: '2021-01-01',
-  pic: 'https://firebasestorage.googleapis.com/v0/b/tiramisu-31d41.appspot.com/o/1.jpg?alt=media&token=c69fefa1-e36e-4cf6-bcd6-06b075fe8166',
+const formatDate = (timestamp: firebase.firestore.Timestamp): string => {
+  const date = timestamp.toDate();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };
 
 const ProfilePage = () => {
-  const [inputValue, setInputValue] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userData, setUserData] = useState<UserType>();
 
-  const handleInputChange = (value: string) => {
-    setInputValue(value);
-  };
+  const defaultImg = userDefaultSvg;
 
+  const navigate = useNavigate();
   const handleEditClick = () => {
-    setIsEditing(true);
+    navigate(`/profile/edit`);
   };
 
-  const handleCancelClick = () => {
-    setIsEditing(false);
+  const handleLogoutClick = () => {
     setIsModalOpen(true);
-    setInputValue('');
   };
 
-  const handleModalConfirm = () => {
-    setIsEditing(false);
-    setIsModalOpen(false);
+  const dispatch = useAppDispatch();
+
+  const handleModalLogout = async () => {
+    await dispatch(fetchSignOut()).then((state) => {
+      if (state.meta.requestStatus === 'fulfilled') {
+        dispatch(setFetchedFalse());
+        navigate(PATH.SIGNIN);
+      }
+    });
   };
 
   const handleModalCancel = () => {
     setIsModalOpen(false);
-    setInputValue('');
   };
+
+  useEffect(() => {
+    (async () => {
+      setUserData(await getUserData(await getUID()));
+    })();
+  }, []);
 
   return (
     <div>
-      {isEditing && <Header />}
-      <div
-        css={wrapperStyle}
-        style={{
-          display: 'block',
-          textAlign: 'center',
-          justifyContent: 'center',
-          padding: '2rem 0',
-        }}
-      >
-        <div style={{ position: 'relative', display: 'inline-block' }}>
-          <img src={user.pic} width='120px' alt='profile' style={{ borderRadius: '50%' }} />
-          {isEditing && (
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '-10px',
-                backgroundColor: theme.colors.toastGray,
-                color: 'white',
-                borderRadius: '50%',
-                border: '2px solid white',
-                padding: '8px 8px 4px 8px',
-              }}
-            >
-              <MdOutlineCameraAlt size={24} />
-            </div>
-          )}
+      <div css={wrapperStyle}>
+        <div css={imgStyle}>
+          <img src={userData?.img || defaultImg} css={imgStyle} />
         </div>
-
-        <div
-          style={{
-            display: 'flex',
-            textAlign: 'center',
-            justifyContent: 'center',
-            marginTop: '1rem',
-          }}
-        >
-          {!isEditing && (
-            <IconTextButton Icon={MdEdit} onClick={handleEditClick}>
-              프로필 수정
-            </IconTextButton>
-          )}
-          {isEditing && (
-            <>
-              <IconTextButton Icon={MdDelete} onClick={handleEditClick}>
-                이미지 삭제
-              </IconTextButton>
-            </>
-          )}
+        <div css={editIconStyle}>
+          <IconTextButton Icon={HiOutlinePencil} onClick={handleEditClick}>
+            프로필 수정
+          </IconTextButton>
         </div>
       </div>
-      <div css={[formStyle, wrapperStyle]}>
-        {/* Button components */}
+
+      <div css={[formStyle]}>
         <Input
           label='이름'
-          value={user.name}
+          value={userData ? userData.name : ''}
           placeholder='이름을 입력하세요'
-          onChange={handleInputChange}
           type='text'
+          onChange={() => {}}
           readOnly={true}
         />
         <Input
           label='닉네임'
-          value={user.nickname}
+          value={userData ? userData.nickname : ''}
           placeholder='닉네임을 입력하세요'
-          onChange={handleInputChange}
           type='text'
-          readOnly={!isEditing}
+          onChange={() => {}}
+          readOnly={true}
         />
         <Input
           label='이메일'
-          value={user.email}
+          value={userData ? userData.email : ''}
           placeholder='이메일을 입력하세요'
-          onChange={handleInputChange}
           type='text'
+          onChange={() => {}}
           readOnly={true}
-        />
-        <Input
-          label='비밀번호'
-          value={inputValue}
-          placeholder='비밀번호를 입력하세요'
-          onChange={handleInputChange}
-          type='password'
-          readOnly={!isEditing}
         />
         <Input
           label='연락처'
-          value={user.phone}
+          value={userData ? userData.phone : ''}
           placeholder='연락처를 입력하세요'
-          onChange={handleInputChange}
           type='text'
-          readOnly={!isEditing}
+          onChange={() => {}}
+          readOnly={true}
         />
         <Input
           label='생일'
-          value={user.birth}
+          value={userData?.birthday ? formatDate(userData.birthday) : ''}
           placeholder='생일을 입력하세요'
-          onChange={handleInputChange}
-          type='date'
+          type='timestamp'
+          onChange={() => {}}
           readOnly={true}
-        />{' '}
+        />
         <Input
           label='부서'
-          value={user.part}
+          value={userData ? userData.team : ''}
           placeholder='부서를 입력하세요'
-          onChange={handleInputChange}
           type='text'
+          onChange={() => {}}
           readOnly={true}
         />
         <Input
           label='직무'
-          value={user.position}
+          value={userData ? userData.position : ''}
           placeholder='직무를 입력하세요'
-          onChange={handleInputChange}
           type='text'
+          onChange={() => {}}
           readOnly={true}
         />
         <Input
           label='입사일'
-          value={user.joinDate}
+          value={userData?.hireDate ? formatDate(userData.hireDate) : ''}
           placeholder='입사일을 입력하세요'
-          onChange={handleInputChange}
           type='date'
+          onChange={() => {}}
           readOnly={true}
         />
       </div>
-      <div css={signOutButtonDivStyle}>
-        {!isEditing && <Button styleType='tertiary'>로그아웃</Button>}
-        {isEditing && (
-          <>
-            <div style={{ margin: '1rem' }}>
-              <Button>수정하기</Button>
-              <Button styleType='ghost' onClick={handleCancelClick}>
-                취소
-              </Button>
-            </div>
-          </>
-        )}
+
+      <div css={signOutButtonStyle}>
+        <Button styleType='tertiary' onClick={handleLogoutClick}>
+          로그아웃
+        </Button>
       </div>
 
       {isModalOpen && (
         <Modal
           isOpen={true}
-          title='변경사항을 저장하시겠습니까?'
-          confirmText='저장하기'
-          onClose={handleModalCancel}
+          title='정말 로그아웃 하시겠습니까?'
+          confirmText='로그아웃'
+          onConfirm={handleModalLogout}
           cancelText='취소하기'
-          onConfirm={handleModalConfirm}
+          onClose={handleModalCancel}
         />
       )}
     </div>
@@ -210,19 +164,44 @@ const ProfilePage = () => {
 };
 
 const wrapperStyle = css`
+  padding: 60px 3rem 3rem;
+  text-align: center;
+  justify-content: center;
   background-color: ${theme.colors.white};
+`;
+
+const imgStyle = css`
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: auto;
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+`;
+
+const editIconStyle = css`
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin-top: 1rem;
 `;
 
 const formStyle = css`
   margin-top: 12px;
-  padding: 20px 16px;
+  padding: 20px 25px;
+  background-color: ${theme.colors.white};
 `;
 
-const signOutButtonDivStyle = css`
-  padding-bottom: 80px;
-
+const signOutButtonStyle = css`
+  padding: 8px 16px 88px;
   button {
-    border-radius: 0;
+    background-color: transparent;
+
+    &:hover {
+      background-color: transparent;
+      color: ${theme.colors.alertRed};
+    }
   }
 `;
 

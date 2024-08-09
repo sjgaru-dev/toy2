@@ -1,38 +1,32 @@
-import React, { Fragment, ReactNode, useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 
 import { css } from '@emotion/react';
 import { Transition } from '@headlessui/react';
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi2';
 
+import useToast from '@/hooks/useToast';
 import theme from '@/styles/theme';
 import '@/styles/transition.css';
 
 interface ToastProps {
-  isVisible: boolean;
-  onClose: () => void;
   duration?: number;
   status?: 'success' | 'fail';
-  children: ReactNode;
 }
 
-const Toast: React.FC<ToastProps> = ({
-  isVisible,
-  onClose,
-  duration = 2000,
-  status = 'success',
-  children,
-}) => {
+const Toast: React.FC<ToastProps> = ({ duration = 2000, status = 'success' }) => {
+  const { isToastOn, toastMsg, onClose } = useToast();
+
   useEffect(() => {
-    if (isVisible) {
+    if (isToastOn) {
       const timer = setTimeout(onClose, duration);
       return () => clearTimeout(timer);
     }
-  }, [isVisible, onClose, duration]);
+  }, [isToastOn, onClose, duration]);
 
   return (
     <Transition
-      show={isVisible}
-      appear={isVisible}
+      show={isToastOn}
+      appear={isToastOn}
       as={Fragment}
       enterFrom='transition-enter-from'
       enterTo='transition-enter-to'
@@ -47,17 +41,19 @@ const Toast: React.FC<ToastProps> = ({
             <HiXCircle css={failStyle} />
           )}
         </div>
-        <span css={messageStyle}>{children}</span>
+        <span css={messageStyle}>{toastMsg}</span>
       </div>
     </Transition>
   );
 };
 
 const toastStyle = css`
+  width: calc(100vw - 32px);
+  max-width: 468px;
   position: fixed;
-  left: 16px;
-  right: 16px;
   bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;

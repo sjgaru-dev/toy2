@@ -14,6 +14,13 @@ const formatTime = (time: string) => {
   return dayjs().hour(parseInt(hour)).minute(parseInt(minute)).format('A hh:mm');
 };
 
+// 날짜 포맷팅
+
+export const convertDateWithFormat = (date: Date, format: string = 'YYYY-MM-DD'): string =>
+  dayjs(date).format(format);
+
+const formatOnlyDate = (date: string) => dayjs(date).format('M월 D일');
+
 // DateType 정의
 type DateType = 'same' | 'start' | 'end' | 'between';
 
@@ -40,24 +47,38 @@ const getTimeRangeString = (dateType: DateType, startTime: string, endTime: stri
     case 'end':
       return `오전 00:00 - ${formatTime(endTime)}`;
     case 'between':
-      return '하루종일';
+      return '하루 종일';
   }
 };
 
 // 메인 함수: ScheduleItem에 하루종일 또는 오후/오전시간 알려주는 함수
 const formatTimeRange = (date: string, schedule: ScheduleModel) => {
-  const dateType = getDateType(date, schedule.startDate, schedule.endDate);
+  let dateType = getDateType(date, schedule.startDate, schedule.endDate);
+
+  if (schedule.startTime === '00:00' && schedule.endTime === '23:59') {
+    dateType = 'between';
+  }
+
   return getTimeRangeString(dateType, schedule.startTime, schedule.endTime);
 };
 
-// isDailySchedule 함수를 dayjs를 사용하여 구현
+// 1. 모든 날짜를 일(day) 단위로 비교 => 시간차이로 인한 오류를 방지하기 위해 startOf('day') 사용
+// dayjs().startOf('day') => 오늘 날짜 00:00:00
+// dayjs().endOf('day') => 오늘 날짜 23:59:59
+// 2. 당일 일정(시작날짜와 종료날짜가 같은 경우)인지 여부를 판단하는 함수
+// 3. 여러 날에 걸친 일정의 경우, 시작일, 종료일, 그 사이 날짜에 대한 판단을 추가
 const isDailySchedule = (date: string, schedule: ScheduleModel): boolean => {
-  const checkDate = dayjs(date);
-  return (
-    checkDate.isSame(schedule.startDate) ||
-    checkDate.isSame(schedule.endDate) ||
-    (checkDate.isAfter(schedule.startDate) && checkDate.isBefore(schedule.endDate))
-  );
+  const checkDate = dayjs(date).startOf('day');
+  const startDate = dayjs(schedule.startDate).startOf('day');
+  const endDate = dayjs(schedule.endDate).startOf('day');
+
+  // 체크 날짜가 시작일 또는 종료일과 같은 경우(당일 일정인 경우)
+  if (checkDate.isSame(startDate, 'day') || checkDate.isSame(endDate, 'day')) {
+    return true;
+  }
+
+  // 여러 날에 걸친 일정의 경우, 시작일과 종료일 사이에 있는지 여부를 판단
+  return checkDate.isAfter(startDate) && checkDate.isBefore(endDate);
 };
 
-export { formatDate, formatTime, formatTimeRange, isDailySchedule };
+export { formatDate, formatOnlyDate, formatTime, formatTimeRange, isDailySchedule };

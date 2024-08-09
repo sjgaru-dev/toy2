@@ -3,7 +3,7 @@ import React from 'react';
 import { css } from '@emotion/react';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 
-import Button from './buttons/Button';
+import Button from '@/components/common/buttons/Button';
 import theme from '@/styles/theme';
 
 interface ModalProps {
@@ -44,7 +44,7 @@ const Modal: React.FC<ModalProps> = ({
           </Button>
           <Button
             onClick={onClose}
-            styleType='secondary'
+            styleType='text'
             customStyle={
               styleType === 'primary' ? cancelButtonStylePrimary : cancelButtonStyleSecondary
             }
@@ -59,6 +59,8 @@ const Modal: React.FC<ModalProps> = ({
 
 const dialogStyle = css`
   position: fixed;
+  max-width: 500px;
+  margin: 0 auto;
   inset: 0;
   z-index: 1000;
   overflow-y: auto;
@@ -66,8 +68,13 @@ const dialogStyle = css`
 
 const overlayStyle = css`
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  max-width: 500px;
   background-color: rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
 `;
 
 const containerStyle = css`
@@ -80,31 +87,33 @@ const containerStyle = css`
 const panelStylePrimary = css`
   width: 100%;
   background-color: ${theme.colors.white};
-  padding: 20px;
-  border-radius: 16px 16px 0 0;
+  padding: 60px 1rem 2rem 1rem;
+  border-radius: 8px 8px 0 0;
   z-index: 1001;
 `;
 
 const panelStyleSecondary = css`
   width: 100%;
   background-color: ${theme.colors.white};
-  padding: 20px;
-  border-radius: 16px 16px 0 0;
+  padding: 60px 1rem 2rem 1rem;
+  border-radius: 8px 8px 0 0;
   z-index: 1001;
 `;
 
 const titleStylePrimary = css`
   font-size: ${theme.fontSizes.large};
   color: ${theme.colors.black};
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 `;
 
 const titleStyleSecondary = css`
   font-size: ${theme.fontSizes.large};
   color: ${theme.colors.black};
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 `;
 
 const buttonContainerStyle = css`

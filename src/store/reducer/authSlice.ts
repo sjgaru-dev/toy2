@@ -1,23 +1,14 @@
-/* eslint-disable @typescript-eslint/ban-types */
-import { createAsyncThunk, createSlice, SerializedError } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { doSignIn, doSignOut } from '@/api/Auth';
+import { doSignIn, doSignOut } from '@/api/auth';
+import { ApiResponse, AuthResponseType } from '@/types/api';
+import { AuthState } from '@/types/api';
 import { SignInProps } from '@/types/props';
-import { ApiResponse, AuthResponseType, LoadingType } from '@/types/type';
-
-type AuthState = {
-  isLoading: LoadingType;
-  isAuth: boolean;
-  apiResult: ApiResponse<AuthResponseType | null | SerializedError>;
-};
 
 const initialState: AuthState = {
-  isLoading: 'idle',
-  isAuth: false,
-  apiResult: {
-    status: 'idle',
-    response: null,
-  },
+  isLoading: false,
+  status: 'idle',
+  error: null,
 };
 
 export const authSlice = createSlice({
@@ -27,17 +18,33 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchSignIn.pending, (state) => {
-        state.isLoading = 'pending';
-        state.apiResult = { status: 'idle', response: null };
+        state.isLoading = true;
+        state.status = 'loading';
+        state.error = null;
       })
-      .addCase(fetchSignIn.fulfilled, (state, { payload }) => {
-        state.isLoading = 'fulfilled';
-        state.isAuth = true;
-        state.apiResult = payload;
+      .addCase(fetchSignIn.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.status = 'succeeded';
+        state.error = null;
       })
       .addCase(fetchSignIn.rejected, (state, action) => {
-        state.isLoading = 'idle';
-        state.apiResult = { status: 'error', response: action.error };
+        state.isLoading = false;
+        state.status = 'failed';
+        state.error = action.error.message || '로그인에 실패했습니다.';
+      })
+      .addCase(fetchSignOut.pending, (state) => {
+        state.isLoading = true;
+        state.status = 'loading';
+      })
+      .addCase(fetchSignOut.fulfilled, (state) => {
+        state.isLoading = false;
+        state.status = 'succeeded';
+        state.error = null;
+      })
+      .addCase(fetchSignOut.rejected, (state, action) => {
+        state.isLoading = false;
+        state.status = 'failed';
+        state.error = action.error.message || '로그아웃에 실패했습니다.';
       });
   },
 });

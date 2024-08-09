@@ -4,12 +4,11 @@ import { db } from '@/api';
 import { UserType } from '@/types/type';
 
 export const getUserData = async (uid: string): Promise<UserType> => {
-  const fetchResult = await getDocs(query(collection(db, 'User'), where('uid', '==', uid)));
+  const fetchResult = await getDocs(query(collection(db, 'User'), where('userNo', '==', uid)));
   const userData = fetchResult.docs[0].data();
 
   const getData: UserType = {
     name: userData.name,
-    uid: userData.uid,
     userNo: userData.userNo,
     nickname: userData.nickname,
     email: userData.email,

@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-import { HiChevronRight } from 'react-icons/hi2';
+import { HiChevronRight } from 'react-icons/hi';
 import { useNavigate } from 'react-router-dom';
 
-import { scheduleColors } from '@/constants/colors';
+import { schedulePickerColors } from '@/constants/colors';
+import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 import { ScheduleModel } from '@/types/schedule';
 import { formatDate, formatTimeRange, isDailySchedule } from '@/utils/dailySchedule';
@@ -32,7 +33,7 @@ const DailySchedule = ({ date, schedules }: DailyScheduleProps) => {
   }, [filterSchedules]);
 
   const handleClick = (schedule: ScheduleModel) => {
-    navigate(`/schedule/${schedule.id}`);
+    navigate(`${PATH.SCHEDULE}/${PATH.SCHEDULE_DETAIL.replace(':id', schedule.id.toString())}`);
   };
 
   return (
@@ -70,17 +71,14 @@ const DailySchedule = ({ date, schedules }: DailyScheduleProps) => {
 
 // 스타일
 const dailyScheduleWrap = css`
-  margin: 12px 0 80px;
-  padding: 1.5rem 1rem;
+  margin-top: 12px;
+  padding: 1.5rem 1rem 108px;
   background-color: ${theme.colors.white};
   h2 {
     color: ${theme.colors.darkestGray};
-    font-size: ${theme.fontSizes.normal};
+    font-size: ${theme.fontSizes.large};
     margin-bottom: 1rem;
     font-weight: 600;
-  }
-  span {
-    color: ${theme.colors.primary};
   }
 `;
 const scheduleListStyle = css`
@@ -89,9 +87,10 @@ const scheduleListStyle = css`
 
   justify-content: flex-start;
   align-items: center;
-  font-size: ${theme.fontSizes.normal};
+  font-size: ${theme.fontSizes.large};
   width: 100%;
   gap: 50px;
+
   & > h3 {
     width: 60px;
     display: flex;
@@ -99,10 +98,12 @@ const scheduleListStyle = css`
     color: ${theme.colors.darkGray};
     align-self: flex-start;
     font-weight: 600;
-  }
-  span {
-    display: block;
-    margin-left: 4px;
+
+    span {
+      display: block;
+      margin-left: 4px;
+      color: ${theme.colors.primary};
+    }
   }
 `;
 const scheduleItemsStyle = css`
@@ -111,20 +112,22 @@ const scheduleItemsStyle = css`
   justify-content: flex-start;
   align-items: flex-start;
   width: inherit;
-  gap: 12px;
+  gap: 1rem;
   cursor: pointer;
 
   &:has(.empty) {
-    position: relative;
     height: 100px;
 
-    .empty{
+    .empty {
       position: absolute;
       top: 50px;
-      left: 50%;
+      left: 48%;
       transform: translateX(-50%);
+      text-align: center;
     }
+  }
 `;
+
 const emptyListStyle = css`
   width: inherit;
   height: 35px;
@@ -134,12 +137,14 @@ const emptyListStyle = css`
   font-size: ${theme.fontSizes.normal};
   font-weight: 600;
 `;
+
 const scheduleItemStyle = (schedule: ScheduleModel) => css`
   position: relative;
   min-width: 200px;
   background-color: ${theme.colors.white};
   color: ${theme.colors.darkestGray};
   padding-left: 12px;
+
   &::before {
     content: '';
     position: absolute;
@@ -147,8 +152,9 @@ const scheduleItemStyle = (schedule: ScheduleModel) => css`
     left: 0;
     width: 4px;
     height: 100%;
-    background-color: ${scheduleColors[schedule.color] + '9a'};
+    background-color: ${schedulePickerColors[schedule.color]};
   }
+
   h3 {
     color: ${theme.colors.darkestGray};
     font-weight: 600;
@@ -157,26 +163,29 @@ const scheduleItemStyle = (schedule: ScheduleModel) => css`
     align-items: center;
     gap: 4px;
   }
+
   svg {
-    display: block;
-    width: 12px;
-    height: 14px;
-    stroke-width: 1.2;
-    color: ${theme.colors.darkGray};
     flex-shrink: 0;
     min-width: 12px;
     min-height: 14px;
+    margin-bottom: 2px;
+    font-size: 20px;
+    color: ${theme.colors.darkGray};
   }
+
   p {
+    margin-top: 6px;
     line-height: 1rem;
     color: ${theme.colors.darkGray};
-    font-size: ${theme.fontSizes.small};
+    font-size: ${theme.fontSizes.normal};
   }
 `;
+
 const subjectStyle = css`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+
   span {
     display: block;
     margin-left: 0;
